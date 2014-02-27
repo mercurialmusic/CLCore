@@ -1,0 +1,3 @@
+name: CLCore
+main: de.craftlancer.core.CLCore
+version: ${project.version}
