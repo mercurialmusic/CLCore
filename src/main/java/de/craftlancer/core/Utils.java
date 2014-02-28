@@ -10,28 +10,21 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-// TODO tests
 public class Utils
 {
-    public static String TimeToString(long time)
-    {
-        long h = time / 3600;
-        long min = (time - h * 3600) / 60;
-        long s = time - h * 3600 - min * 60;
-        
-        return h + "h " + min + "min " + s + "s";
-    }
-    
+    // TODO tests
     public static String getItemString(ItemStack i)
     {
         return (i == null) ? "" : i.getType().name() + " " + i.getAmount();
     }
     
+    // TODO tests
     public static String getLocationString(Location loc)
     {
         return (loc == null) ? "" : loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ() + " " + loc.getWorld().getName();
     }
     
+    // TODO tests
     public static Location parseLocation(String loc)
     {
         if (loc == null)
@@ -56,6 +49,7 @@ public class Utils
         return new Location(Bukkit.getServer().getWorld(coords[3]), x, y, z);
     }
     
+    // TODO tests
     public static boolean isLocationString(String loc)
     {
         if (loc == null)
@@ -91,6 +85,7 @@ public class Utils
         return cmp[2];
     }
     
+    // TODO tests
     public static ItemStack parseItem(String k)
     {
         if (k == null)
@@ -114,6 +109,7 @@ public class Utils
         return new ItemStack(mat, amount);
     }
     
+    // TODO tests
     public static boolean isItemStackString(String k)
     {
         if (k == null)
@@ -140,6 +136,7 @@ public class Utils
         return false;
     }
     
+    // TODO tests
     /**
      * Get all values of a String Collection which start with a given String
      * 
@@ -158,6 +155,7 @@ public class Utils
         return result;
     }
     
+    // TODO tests
     /**
      * Get all values of a String array which start with a given String
      * 
@@ -189,6 +187,7 @@ public class Utils
         }
     }
     
+    // TODO tests
     public static int getExp(double level)
     {
         int exp = 0;
@@ -219,6 +218,7 @@ public class Utils
         return exp;
     }
     
+    // TODO tests
     public static double getLevel(int exp)
     {
         double i = 0;
@@ -263,11 +263,22 @@ public class Utils
         return i;
     }
     
+    // TODO tests
     public static String getTimeString(long time)
     {
         long h = time / (60 * 60 * 1000);
         long min = (time / (60 * 1000)) % 60;
         long s = (time / (1000)) % 60;
+        
+        return h + "h " + min + "min " + s + "s";
+    }
+    
+    // TODO tests
+    public static String timeToString(long time)
+    {
+        long h = time / 3600;
+        long min = (time - h * 3600) / 60;
+        long s = time - h * 3600 - min * 60;
         
         return h + "h " + min + "min " + s + "s";
     }
