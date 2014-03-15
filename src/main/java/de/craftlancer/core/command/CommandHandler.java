@@ -78,14 +78,19 @@ public abstract class CommandHandler implements TabExecutor
     {
         args = parseArgumentStrings(args);
         
+        String message = null;
+        
         if (args.length == 0 || !commands.containsKey(args[0]))
             if (commands.containsKey("help"))
-                commands.get("help").execute(sender, cmd, label, args);
+                 message = commands.get("help").execute(sender, cmd, label, args);
             else
                 return false;
         else
-            commands.get(args[0]).execute(sender, cmd, label, args);
+             message = commands.get(args[0]).execute(sender, cmd, label, args);
         
+        if(message != null)
+            sender.sendMessage(message);
+            
         return true;
     }
     

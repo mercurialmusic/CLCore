@@ -21,15 +21,18 @@ public abstract class SubCommandHandler extends SubCommand
     }
     
     @Override
-    protected void execute(CommandSender sender, Command cmd, String label, String[] args)
+    protected String execute(CommandSender sender, Command cmd, String label, String[] args)
     {
         if (args.length <= 1 || !commands.containsKey(args[1]))
             if (commands.containsKey("help"))
-                commands.get("help").execute(sender, cmd, label, args);
-            else                
+                return commands.get("help").execute(sender, cmd, label, args);
+            else
+            {
                 help(sender);
+                return null;
+            }
         else
-            commands.get(args[1]).execute(sender, cmd, label, args);        
+            return commands.get(args[1]).execute(sender, cmd, label, args);
     }
     
     @Override

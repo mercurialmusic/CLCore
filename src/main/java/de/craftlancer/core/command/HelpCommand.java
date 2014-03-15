@@ -21,14 +21,17 @@ public abstract class HelpCommand extends SubCommand
     }
     
     @Override
-    protected void execute(CommandSender sender, Command cmd, String label, String[] args)
+    protected String execute(CommandSender sender, Command cmd, String label, String[] args)
     {
         if (sender instanceof Player && !sender.hasPermission(getPermission()))
-            sender.sendMessage(cmd.getPermissionMessage());
-        else if (args.length >= 2 && commands.containsKey(args[1]))
+            return cmd.getPermissionMessage();
+        
+        if (args.length >= 2 && commands.containsKey(args[1]))
             commands.get(args[1]).help(sender);
         else
             help(sender);
+        
+        return null;
     }
     
     @Override

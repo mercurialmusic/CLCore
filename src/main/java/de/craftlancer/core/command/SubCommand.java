@@ -47,7 +47,16 @@ public abstract class SubCommand
         return permission;
     }
     
-    protected abstract void execute(CommandSender sender, Command cmd, String label, String[] args);
+    /**
+     * The code that will be executed when the sub command is called
+     * 
+     * @param sender the sender of the command
+     * @param cmd the root command
+     * @param label the command's label
+     * @param args the arguments provided to the command, they are already processed to support input with space chars
+     * @return a String, that will be send to the player, used for error messages. No message will be shown, when this is null
+     */
+    protected abstract String execute(CommandSender sender, Command cmd, String label, String[] args);
     
     protected List<String> onTabComplete(CommandSender sender, String[] args)
     {

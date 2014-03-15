@@ -10,6 +10,18 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+/*
+ * ItemStack: <Material> <Amount> <Data> <Name> <Lore>
+ * 
+ * ItemStack:
+ *   Material: material
+ *   Data: Data
+ *   Amount: amount
+ *   Name:
+ *   Enchants:
+ *   Lore:
+ *   
+ */
 public class Utils
 {
     // TODO tests
