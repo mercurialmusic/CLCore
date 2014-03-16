@@ -7,6 +7,18 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
+  <distributionManagement>
+    <repository>
+      <id>releases</id>
+      <url>http://craftlancer.de:8081/nexus/content/repositories/releases</url>
+    </repository>
+    <snapshotRepository>
+      <id>releases</id>
+      <url>http://craftlancer.de:8081/nexus/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <repositories>
     <repository>
       <id>bukkit-repo</id>
@@ -27,6 +39,7 @@
     </dependency>
   </dependencies>
   <build>
+    <defaultGoal>install deploy</defaultGoal>
     <resources>
       <resource>
         <directory>${basedir}/src/main/resources</directory>
