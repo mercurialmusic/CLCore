@@ -39,7 +39,6 @@
     </dependency>
   </dependencies>
   <build>
-    <defaultGoal>install deploy</defaultGoal>
     <resources>
       <resource>
         <directory>${basedir}/src/main/resources</directory>
