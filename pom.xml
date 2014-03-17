@@ -60,5 +60,5 @@
       </plugin>
     </plugins>
   </build>
-  <version>3</version>
+  <version>4-SNAPSHOT</version>
 </project>
