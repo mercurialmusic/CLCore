@@ -7,15 +7,15 @@ import java.util.Map;
 import org.apache.commons.lang.Validate;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 
-import de.craftlancer.core.CLPlugin;
 import de.craftlancer.core.Utils;
 
 public abstract class SubCommandHandler extends SubCommand
 {
     private Map<String, SubCommand> commands = new HashMap<String, SubCommand>();
     
-    public SubCommandHandler(String permission, CLPlugin plugin, boolean console)
+    public SubCommandHandler(String permission, Plugin plugin, boolean console)
     {
         super(permission, plugin, console);
     }

@@ -5,16 +5,15 @@ import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import de.craftlancer.core.CLPlugin;
+import org.bukkit.plugin.Plugin;
 
 public abstract class SubCommand
 {
     private String permission = "";
-    protected CLPlugin plugin;
+    protected Plugin plugin;
     private boolean console;
     
-    public SubCommand(String permission, CLPlugin plugin, boolean console)
+    public SubCommand(String permission, Plugin plugin, boolean console)
     {
         this.permission = permission;
         this.plugin = plugin;
@@ -32,7 +31,7 @@ public abstract class SubCommand
         return false;
     }
     
-    public CLPlugin getPlugin()
+    public Plugin getPlugin()
     {
         return plugin;
     }

@@ -6,15 +6,15 @@ import java.util.Map;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
-import de.craftlancer.core.CLPlugin;
 import de.craftlancer.core.Utils;
 
 public abstract class HelpCommand extends SubCommand
 {
     private Map<String, SubCommand> commands;
     
-    public HelpCommand(String permission, CLPlugin plugin, Map<String, SubCommand> map)
+    public HelpCommand(String permission, Plugin plugin, Map<String, SubCommand> map)
     {
         super(permission, plugin, true);
         commands = map;
