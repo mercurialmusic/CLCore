@@ -8,6 +8,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /*
@@ -24,6 +25,25 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Utils
 {
+    public static Direction getPlayerDirection(Player player)
+    {
+        int facing = Math.abs((Math.round((player.getLocation().getYaw()) / 90)) % 4);
+        
+        switch (facing)
+        {
+            case 0:
+                return Direction.SOUTH;
+            case 1:
+                return Direction.WEST;
+            case 2:
+                return Direction.NORTH;
+            case 3:
+                return Direction.EAST;
+            default:
+                throw new RuntimeException("Illegal facing value! Must be between 0 and 3 but was " + facing);
+        }
+    }
+    
     // TODO tests
     public static String getItemString(ItemStack i)
     {
