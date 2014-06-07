@@ -27,7 +27,7 @@ public class Utils
 {
     public static Direction getPlayerDirection(Player player)
     {
-        int facing = Math.abs((Math.round((player.getLocation().getYaw()) / 90)) % 4);
+        int facing = Math.abs(((Math.round((player.getLocation().getYaw()) / 90)) + 4) % 4);
         
         switch (facing)
         {
