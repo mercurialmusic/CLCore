@@ -10,10 +10,15 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 
 /*
  * Config Format
@@ -95,6 +100,7 @@ public class CraftItYourself
             
             registerExchangeRecipes(result, recipes);
         }
+        
     }
     
     public static void registerExchangeRecipes(Material result, List<ExchangeRecipe> recipes)
@@ -293,6 +299,26 @@ public class CraftItYourself
             
             if (!fail)
                 return recipe;
+        }
+        
+        for(Recipe recipe : Bukkit.getRecipesFor(item))
+        {
+            ItemStack result = recipe.getResult();
+            ItemStack[] input;
+            
+            //TODO implement
+            if(recipe instanceof ShapedRecipe)
+            {
+                ((ShapedRecipe) recipe).getIngredientMap();
+            }
+            if(recipe instanceof FurnaceRecipe)
+            {
+                ((FurnaceRecipe) recipe).getInput();
+            }
+            if(recipe instanceof ShapelessRecipe)
+            {
+                ((ShapelessRecipe) recipe).getIngredientList();
+            }
         }
         
         return null;
