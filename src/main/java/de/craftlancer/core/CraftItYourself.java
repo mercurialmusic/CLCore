@@ -211,12 +211,12 @@ public class CraftItYourself
     {
         return removeItem(inventory, items.toArray(new ItemStack[0]));
     }
-
+    
     public static List<ItemStack> removeItem(Inventory inventory, ItemStack... items)
     {
         Validate.notNull(items, "Items cannot be null");
         List<ItemStack> leftover = new ArrayList<ItemStack>();
-                
+        
         for (ItemStack item : items)
         {
             if (!ignoreDataAndMetaValues(item))
@@ -269,6 +269,13 @@ public class CraftItYourself
     
     private static ExchangeRecipe isCraftable(Inventory inv, ItemStack item, Set<Material> ignore)
     {
+        return isCraftable(inv, item, ignore, true, true);
+    }
+    
+    // TODO extend system to support Material and durability/data - ItemMeta CAN'T be supported easily with vanilla recipes
+    // TODO add ItemMeta support
+    private static ExchangeRecipe isCraftable(Inventory inv, ItemStack item, Set<Material> ignore, boolean useVanillaRecipes, boolean useFurnaceRecipes)
+    {
         if (ignore.contains(item.getType()))
             return null;
         
@@ -276,7 +283,7 @@ public class CraftItYourself
         
         if (!exchange.containsKey(item.getType()))
             return null;
-        for (ExchangeRecipe recipe : exchange.get(item.getType()))
+        for (ExchangeRecipe recipe : getApplicableRecipes(item, useVanillaRecipes, useFurnaceRecipes))
         {
             int rounds = (int) Math.ceil((double) item.getAmount() / recipe.getResult().getAmount());
             
@@ -301,27 +308,49 @@ public class CraftItYourself
                 return recipe;
         }
         
-        for(Recipe recipe : Bukkit.getRecipesFor(item))
-        {
-            ItemStack result = recipe.getResult();
-            ItemStack[] input;
-            
-            //TODO implement
-            if(recipe instanceof ShapedRecipe)
-            {
-                ((ShapedRecipe) recipe).getIngredientMap();
-            }
-            if(recipe instanceof FurnaceRecipe)
-            {
-                ((FurnaceRecipe) recipe).getInput();
-            }
-            if(recipe instanceof ShapelessRecipe)
-            {
-                ((ShapelessRecipe) recipe).getIngredientList();
-            }
-        }
-        
         return null;
+    }
+    
+    private static List<ExchangeRecipe> getApplicableRecipes(ItemStack item, boolean useVanillaRecipes, boolean useFurnaceRecipes)
+    {
+        List<ExchangeRecipe> list = new ArrayList<ExchangeRecipe>();
+        
+        if (exchange.containsKey(item.getType()))
+            list.addAll(exchange.get(item.getType()));
+        
+        if (useVanillaRecipes)
+            for (Recipe recipe : Bukkit.getRecipesFor(item))
+            {
+                ItemStack result = recipe.getResult();
+                ItemStack[] input;
+                
+                if (recipe instanceof ShapedRecipe)
+                {
+                    List<ItemStack> ingredient = new ArrayList<ItemStack>();
+                    
+                    Map<Character, ItemStack> map = ((ShapedRecipe) recipe).getIngredientMap();
+                    for (String str : ((ShapedRecipe) recipe).getShape())
+                        for (char c : str.toCharArray())
+                        {
+                            ItemStack localItem = map.get(c);
+                            if (localItem != null)
+                                ingredient.add(localItem.clone());
+                        }
+                    
+                    list.add(new ExchangeRecipe(result, ingredient));
+                }
+                else if (useFurnaceRecipes && recipe instanceof FurnaceRecipe)
+                {
+                    input = new ItemStack[] { ((FurnaceRecipe) recipe).getInput() };
+                    list.add(new ExchangeRecipe(result, input));
+                }
+                else if (recipe instanceof ShapelessRecipe)
+                {
+                    list.add(new ExchangeRecipe(result, ((ShapelessRecipe) recipe).getIngredientList()));
+                }
+            }
+        
+        return list;
     }
     
     public static boolean removeItemFromInventory(Inventory inv, ItemStack item)
@@ -341,7 +370,7 @@ public class CraftItYourself
         
         if (recipe == null)
             return false;
-
+        
         craft(inv, recipe, item.getAmount());
         removeItem(inv, item);
         return true;
@@ -350,7 +379,7 @@ public class CraftItYourself
     public static void craft(Inventory inv, ExchangeRecipe recipe, int amount)
     {
         int rounds = (int) Math.ceil((double) amount / recipe.getResult().getAmount());
-
+        
         for (ItemStack i : recipe.getItems())
             for (int j = 0; j < rounds; j++)
                 removeItem(inv, i);
