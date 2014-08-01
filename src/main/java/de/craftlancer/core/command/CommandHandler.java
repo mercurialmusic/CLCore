@@ -13,6 +13,7 @@ import org.bukkit.plugin.Plugin;
 
 import de.craftlancer.core.Utils;
 
+// TODO implement usage of HelpMap and HelpTopic via HelpMapFactory
 // TODO externalize common code between CommandHandler and SubCommandHandler
 public abstract class CommandHandler implements TabExecutor
 {
