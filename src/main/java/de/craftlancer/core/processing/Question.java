@@ -7,6 +7,11 @@ public abstract class Question
     private CommandSender sender;
     private String answer = null;
     
+    public Question(CommandSender sender)
+    {
+        this.sender = sender;
+    }
+    
     public CommandSender getSender()
     {
         return sender;
@@ -26,7 +31,7 @@ public abstract class Question
 
     public boolean isAnswered()
     {
-        return answer == null;
+        return answer != null;
     }
     
     public String getAnswer()
