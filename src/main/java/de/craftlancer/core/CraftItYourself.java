@@ -29,28 +29,11 @@ import org.bukkit.inventory.ShapelessRecipe;
  * 
  * 
  */
+// TODO update to 1.14
+@Deprecated
 public class CraftItYourself
 {
     private static Map<Material, List<ExchangeRecipe>> exchange = new HashMap<Material, List<ExchangeRecipe>>();
-    
-    /*
-     * static
-     * {
-     * List<ExchangeRecipe> tmp;
-     * tmp = new ArrayList<ExchangeRecipe>();
-     * tmp.add(new ExchangeRecipe(new ItemStack(Material.WOOD_DOOR), new ItemStack(Material.WOOD, 6)));
-     * exchange.put(Material.WOOD_DOOR, tmp);
-     * tmp = new ArrayList<ExchangeRecipe>();
-     * tmp.add(new ExchangeRecipe(new ItemStack(Material.COBBLESTONE_STAIRS, 4), new ItemStack(Material.COBBLESTONE, 6)));
-     * exchange.put(Material.COBBLESTONE_STAIRS, tmp);
-     * tmp = new ArrayList<ExchangeRecipe>();
-     * tmp.add(new ExchangeRecipe(new ItemStack(Material.DIRT), new ItemStack(Material.GRASS)));
-     * exchange.put(Material.DIRT, tmp);
-     * tmp = new ArrayList<ExchangeRecipe>();
-     * tmp.add(new ExchangeRecipe(new ItemStack(Material.GRASS), new ItemStack(Material.DIRT)));
-     * exchange.put(Material.GRASS, tmp);
-     * }
-     */
     
     public static void load(FileConfiguration config)
     {
@@ -108,6 +91,8 @@ public class CraftItYourself
     
     public static Material cleanupTechnical(Material mat)
     {
+        return mat;
+        /*
         switch (mat)
         {
             case WOODEN_DOOR:
@@ -173,6 +158,7 @@ public class CraftItYourself
             default:
                 return mat;
         }
+        */
     }
     
     public static boolean ignoreDataAndMetaValues(ItemStack item)

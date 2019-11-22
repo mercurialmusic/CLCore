@@ -1,14 +1,14 @@
 package de.craftlancer.core.command;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-
-import de.craftlancer.core.Utils;
 
 public abstract class HelpCommand extends SubCommand
 {
@@ -40,9 +40,9 @@ public abstract class HelpCommand extends SubCommand
         switch (args.length)
         {
             case 2:
-                return Utils.getMatches(args[1], commands.keySet());
+                return commands.keySet().stream().filter(a -> a.startsWith(args[1])).collect(Collectors.toList());
             default:
-                return null;
+                return Collections.emptyList();
         }
     }
     

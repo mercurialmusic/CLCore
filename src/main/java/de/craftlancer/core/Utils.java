@@ -23,14 +23,14 @@ import org.bukkit.inventory.ItemStack;
  *   Lore:
  *   
  */
-public class Utils
-{
-    public static Direction getPlayerDirection(Player player)
-    {
+public class Utils {
+    
+    private Utils() { }
+    
+    public static Direction getPlayerDirection(Player player) {
         int facing = Math.abs(((Math.round((player.getLocation().getYaw()) / 90)) + 4) % 4);
         
-        switch (facing)
-        {
+        switch (facing) {
             case 0:
                 return Direction.SOUTH;
             case 1:
@@ -45,20 +45,17 @@ public class Utils
     }
     
     // TODO tests
-    public static String getItemString(ItemStack i)
-    {
+    public static String getItemString(ItemStack i) {
         return (i == null) ? "" : i.getType().name() + " " + i.getAmount();
     }
     
     // TODO tests
-    public static String getLocationString(Location loc)
-    {
+    public static String getLocationString(Location loc) {
         return (loc == null) ? "" : loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ() + " " + loc.getWorld().getName();
     }
     
     // TODO tests
-    public static Location parseLocation(String loc)
-    {
+    public static Location parseLocation(String loc) {
         if (loc == null)
             return null;
         
@@ -82,8 +79,7 @@ public class Utils
     }
     
     // TODO tests
-    public static boolean isLocationString(String loc)
-    {
+    public static boolean isLocationString(String loc) {
         if (loc == null)
             return false;
         
@@ -102,8 +98,7 @@ public class Utils
         return true;
     }
     
-    public static Point parsePointString(String posi)
-    {
+    public static Point parsePointString(String posi) {
         String[] cmp = posi.split(" ");
         int x = Integer.parseInt(cmp[0]);
         int y = Integer.parseInt(cmp[1]);
@@ -111,19 +106,17 @@ public class Utils
         return new Point(x, y);
     }
     
-    public static String parsePointWorld(String posi)
-    {
+    public static String parsePointWorld(String posi) {
         String[] cmp = posi.split(" ");
         return cmp[2];
     }
     
     // TODO tests
-    public static ItemStack parseItem(String k)
-    {
+    public static ItemStack parseItem(String k) {
         if (k == null)
             return null;
         
-        String value[] = k.split(" ", 2);
+        String[] value = k.split(" ", 2);
         
         if (value.length != 2)
             return null;
@@ -142,8 +135,7 @@ public class Utils
     }
     
     // TODO tests
-    public static boolean isItemStackString(String k)
-    {
+    public static boolean isItemStackString(String k) {
         if (k == null)
             return false;
         
@@ -158,8 +150,7 @@ public class Utils
         return true;
     }
     
-    public static <T> boolean arrayContains(T[] a, T o)
-    {
+    public static <T> boolean arrayContains(T[] a, T o) {
         if (a != null && a.length != 0)
             for (T ob : a)
                 if (ob.equals(o))
@@ -176,9 +167,8 @@ public class Utils
      * @param list the Collection
      * @return a List of all matches
      */
-    public static List<String> getMatches(String value, Collection<String> list)
-    {
-        List<String> result = new LinkedList<String>();
+    public static List<String> getMatches(String value, Collection<String> list) {
+        List<String> result = new LinkedList<>();
         
         for (String str : list)
             if (str.startsWith(value))
@@ -195,8 +185,7 @@ public class Utils
      * @param list the array
      * @return a List of all matches
      */
-    public static List<String> getMatches(String value, String[] list)
-    {
+    public static List<String> getMatches(String value, String[] list) {
         List<String> result = new LinkedList<String>();
         
         for (String str : list)
@@ -206,98 +195,18 @@ public class Utils
         return result;
     }
     
-    public static boolean isInt(String string)
-    {
-        try
-        {
+    public static boolean isInt(String string) {
+        try {
             Integer.parseInt(string);
             return true;
         }
-        catch (NumberFormatException e)
-        {
+        catch (NumberFormatException e) {
             return false;
         }
     }
     
     // TODO tests
-    public static int getExp(double level)
-    {
-        int exp = 0;
-        
-        double nlevel = Math.ceil(level);
-        
-        if (nlevel - 32 > 0)
-            exp += (1 - (nlevel - level)) * (65 + (nlevel - 32) * 7);
-        else if (nlevel - 16 > 0)
-            exp += (1 - (nlevel - level)) * (17 + (level - 16) * 3);
-        else
-            exp += (1 - (nlevel - level)) * 17;
-        
-        level = Math.ceil(level - 1);
-        
-        while (level > 0)
-        {
-            if (level - 32 > 0)
-                exp += 65 + (level - 32) * 7;
-            else if (level - 16 > 0)
-                exp += 17 + (level - 16) * 3;
-            else
-                exp += 17;
-            
-            level--;
-        }
-        
-        return exp;
-    }
-    
-    // TODO tests
-    public static double getLevel(int exp)
-    {
-        double i = 0;
-        boolean stop = true;
-        
-        while (stop)
-        {
-            i++;
-            
-            if (i - 32 > 0)
-            {
-                if (exp - (65 + (i - 32) * 7) > 0)
-                    exp = (int) (exp - (65 + (i - 32) * 7));
-                else
-                    stop = false;
-            }
-            else if (i - 16 > 0)
-            {
-                if (exp - (17 + (i - 16) * 3) > 0)
-                    exp = (int) (exp - (17 + (i - 16) * 3));
-                else
-                    stop = false;
-            }
-            else if (exp > 17)
-                exp -= 17;
-            else
-                stop = false;
-        }
-        
-        if (exp != 0)
-            if (i - 32 > 0)
-                i += exp / (65 + (i - 32) * 7);
-            else if (i - 16 > 0)
-                i += exp / (17 + (i - 16) * 3);
-            else
-                i += exp / 17D;
-        
-        if (exp == 0)
-            i--;
-        
-        i--;
-        return i;
-    }
-    
-    // TODO tests
-    public static String getTimeString(long time)
-    {
+    public static String getTimeString(long time) {
         long h = time / (60 * 60 * 1000);
         long min = (time / (60 * 1000)) % 60;
         long s = (time / (1000)) % 60;
@@ -305,13 +214,38 @@ public class Utils
         return h + "h " + min + "min " + s + "s";
     }
     
+    public static String ticksToTimeString(long ticks) {
+        long h = (ticks / 72000);
+        long min = (ticks / 1200) % 60;
+        long s = (ticks / 20) % 60;
+        
+        return String.format("%dh %02dmin %02ds", h, min, s);
+    }
+    
     // TODO tests
-    public static String timeToString(long time)
-    {
+    public static String timeToString(long time) {
         long h = time / 3600;
         long min = (time - h * 3600) / 60;
         long s = time - h * 3600 - min * 60;
         
         return h + "h " + min + "min " + s + "s";
+    }
+    
+    public static boolean isBetween(int locX, int x, int x2) {
+        return (x > x2 && locX >= x2 && locX <= x) || (x < x2 && locX <= x2 && locX >= x);
+    }
+    
+    public static boolean isBetween(double d, double x, double x2) {
+        return (x > x2 && d >= x2 && d <= x) || (x < x2 && d <= x2 && d >= x);
+    }
+    
+    public static boolean isDouble(String string) {
+        try {
+            Double.parseDouble(string);
+            return true;
+        }
+        catch (NumberFormatException e) {
+            return false;
+        }
     }
 }

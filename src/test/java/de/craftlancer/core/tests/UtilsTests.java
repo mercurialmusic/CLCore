@@ -12,7 +12,6 @@ import de.craftlancer.core.Utils;
 
 public class UtilsTests
 {
-    
     @Test
     public void testIsInt()
     {
@@ -87,6 +86,12 @@ public class UtilsTests
 
 class TestClass
 {
+    private int random;
+    
+    public TestClass(int i)
+    {
+        random = i;
+    }
     
     @Override
     public int hashCode()
@@ -110,17 +115,5 @@ class TestClass
         if (random != other.random)
             return false;
         return true;
-    }
-    
-    private int random;
-    
-    public TestClass(int i)
-    {
-        random = i;
-    }
-    
-    protected int getRandomSeed()
-    {
-        return random;
     }
 }

@@ -1,15 +1,15 @@
 package de.craftlancer.core.command;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
-
-import de.craftlancer.core.Utils;
 
 public abstract class SubCommandHandler extends SubCommand
 {
@@ -49,18 +49,17 @@ public abstract class SubCommandHandler extends SubCommand
         switch (args.length - depth)
         {
             case 0:
-                return null;
+                return Collections.emptyList();
             case 1:
-                List<String> l = Utils.getMatches(args[args.length - 1], commands.keySet());
-                for (String str : l)
-                    if (!sender.hasPermission(commands.get(str).getPermission()))
-                        l.remove(l);
-                return l;
+                return commands.keySet().stream()
+                    .filter(a -> a.startsWith(args[args.length - 1]))
+                    .filter(a -> sender.hasPermission(commands.get(a).getPermission()))
+                    .collect(Collectors.toList());
             default:
-                if (!commands.containsKey(args[args.length - 1]))
-                    return null;
+                if (!commands.containsKey(args[depth]))
+                    return Collections.emptyList();
                 else
-                    return commands.get(args[args.length - 1]).onTabComplete(sender, args);
+                    return commands.get(args[depth]).onTabComplete(sender, args);
         }
     }
     

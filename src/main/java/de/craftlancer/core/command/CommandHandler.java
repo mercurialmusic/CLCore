@@ -1,9 +1,12 @@
 package de.craftlancer.core.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.command.Command;
@@ -11,32 +14,28 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.plugin.Plugin;
 
-import de.craftlancer.core.Utils;
-
 // TODO implement usage of HelpMap and HelpTopic via HelpMapFactory
 // TODO externalize common code between CommandHandler and SubCommandHandler
-public abstract class CommandHandler implements TabExecutor
-{
-    private Map<String, SubCommand> commands = new HashMap<String, SubCommand>();
+public abstract class CommandHandler implements TabExecutor {
+    private Map<String, SubCommand> commands = new HashMap<>();
     private Plugin plugin;
     
-    public CommandHandler(Plugin plugin)
-    {
+    public CommandHandler(Plugin plugin) {
         this.plugin = plugin;
     }
     
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
-    {
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         args = parseArgumentStrings(args);
         
-        String message = null;
+        String message;
         
-        if (args.length == 0 || !commands.containsKey(args[0]))
+        if (args.length == 0 || !commands.containsKey(args[0])) {
             if (commands.containsKey("help"))
                 message = commands.get("help").execute(sender, cmd, label, args);
             else
                 return false;
+        }
         else
             message = commands.get(args[0]).execute(sender, cmd, label, args);
         
@@ -47,28 +46,22 @@ public abstract class CommandHandler implements TabExecutor
     }
     
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args)
-    {
-        switch (args.length)
-        {
+    public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
+        switch (args.length) {
             case 0:
-                return null;
+                return Collections.emptyList();
             case 1:
-                List<String> l = Utils.getMatches(args[0], commands.keySet());
-                for (String str : l)
-                    if (!sender.hasPermission(commands.get(str).getPermission()))
-                        l.remove(l);
-                return l;
+                return commands.keySet().stream().filter(a -> a.startsWith(args[0])).filter(a -> sender.hasPermission(commands.get(a).getPermission()))
+                               .collect(Collectors.toList());
             default:
                 if (!commands.containsKey(args[0]))
-                    return null;
+                    return Collections.emptyList();
                 else
                     return commands.get(args[0]).onTabComplete(sender, args);
         }
     }
     
-    public void registerSubCommand(String name, SubCommand command, String... alias)
-    {
+    public void registerSubCommand(String name, SubCommand command, String... alias) {
         Validate.notNull(command, "Command can't be null!");
         Validate.notEmpty(name, "Commandname can't be empty!");
         Validate.isTrue(!commands.containsKey(name), "Command " + name + " is already defined");
@@ -83,69 +76,61 @@ public abstract class CommandHandler implements TabExecutor
             commands.put(s, command);
     }
     
-    protected Plugin getPlugin()
-    {
+    protected Plugin getPlugin() {
         return plugin;
     }
     
-    protected Map<String, SubCommand> getCommands()
-    {
+    protected Map<String, SubCommand> getCommands() {
         return commands;
     }
     
-    public static String[] parseArgumentStrings(String[] args)
-    {
-        List<String> tmp = new ArrayList<String>();
+    public static String[] parseArgumentStrings(String[] args) {
+        List<String> tmp = new ArrayList<>();
         
-        StringBuilder b = null;
-        boolean open = false;
+        // count " at the start and end of each string
+        int[] open = new int[args.length];
+        int[] close = new int[args.length];
         
-        for (String s : args)
-        {
-            if (b == null)
-            {
-                if (s.startsWith("\"") && !s.endsWith("\""))
-                {
-                    b = new StringBuilder();
-                    b.append(s.substring(1));
-                    b.append(" ");
-                }
-                else
-                    tmp.add(s);
-            }
-            else
-            {
-                if ((s.endsWith("\"") && !open) || s.endsWith("\"\""))
-                {
-                    b.append(s.substring(0, s.length() - 1));
-                    tmp.add(b.toString());
-                    b = null;
-                }
-                else if (s.startsWith("\""))
-                {
-                    if (open)
-                        return null;
-                    
-                    open = true;
-                    b.append(s);
-                    b.append(" ");
-                }
-                else
-                {
-                    if (s.endsWith("\""))
-                        if (open)
-                            open = false;
-                        else
-                            return null;
-                    
-                    b.append(s);
-                    b.append(" ");
-                }
+        for (int i = 0; i < args.length; i++) {
+            for (int j = 0; j < args[i].length() && args[i].charAt(j) == '\"'; j++)
+                open[i]++;
+            
+            for (int j = args[i].length() - 1; j >= 0 && args[i].charAt(j) == '\"'; j--)
+                close[i]++;
+        }
+        
+        // iterate over the input strings with a string pointer
+        int stringPtr = 0;
+        while (stringPtr < args.length) {
+            // if it doesn't start with a ", leave it as it is
+            if (open[stringPtr] <= 0) {
+                tmp.add(args[stringPtr]);
+                stringPtr++;
+                continue;
             }
             
+            // otherwise count the difference between the opening/closing count of " for the string
+            // and subsequent input strings until it is <= 0. Join the strings between stringPtr and j,
+            // trim the starting and ending " and set the stringPtr to the value of j. 
+            int count = 0;
+            for (int j = stringPtr; j < args.length; j++) {
+                count += open[j];
+                count -= close[j];
+                
+                if (count <= 0) {
+                    String joined = String.join(" ", Arrays.copyOfRange(args, stringPtr, j + 1));
+                    tmp.add(joined.substring(1, joined.length() - 1));
+                    stringPtr = j; // we dealt with those strings already
+                    break;
+                }
+            }
+
+            // If the count never reaches <= 0, leave the current input string as it is.
+            if (count > 0)
+                tmp.add(args[stringPtr]);
+            
+            stringPtr++;
         }
-        if (b != null)
-            return null;
         
         return tmp.toArray(new String[tmp.size()]);
     }
