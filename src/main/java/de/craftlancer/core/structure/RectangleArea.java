@@ -1,4 +1,4 @@
-package de.craftlancer.core;
+package de.craftlancer.core.structure;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,6 +6,8 @@ import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+
+import de.craftlancer.core.Utils;
 
 public class RectangleArea implements Area {
     

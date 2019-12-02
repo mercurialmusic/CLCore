@@ -1,9 +1,12 @@
 package de.craftlancer.core;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,129 +30,6 @@ public class Utils {
     
     private Utils() { }
     
-    public static Direction getPlayerDirection(Player player) {
-        int facing = Math.abs(((Math.round((player.getLocation().getYaw()) / 90)) + 4) % 4);
-        
-        switch (facing) {
-            case 0:
-                return Direction.SOUTH;
-            case 1:
-                return Direction.WEST;
-            case 2:
-                return Direction.NORTH;
-            case 3:
-                return Direction.EAST;
-            default:
-                throw new RuntimeException("Illegal facing value! Must be between 0 and 3 but was " + facing);
-        }
-    }
-    
-    // TODO tests
-    public static String getItemString(ItemStack i) {
-        return (i == null) ? "" : i.getType().name() + " " + i.getAmount();
-    }
-    
-    // TODO tests
-    public static String getLocationString(Location loc) {
-        return (loc == null) ? "" : loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ() + " " + loc.getWorld().getName();
-    }
-    
-    // TODO tests
-    public static Location parseLocation(String loc) {
-        if (loc == null)
-            return null;
-        
-        String coords[] = loc.split(" ", 4);
-        
-        if (coords.length != 4)
-            return null;
-        
-        for (int i = 0; i <= 2; i++)
-            if (!coords[i].matches("-?[0-9]+"))
-                return null;
-        
-        if (Bukkit.getServer().getWorld(coords[3]) == null)
-            return null;
-        
-        int x = Integer.parseInt(coords[0]);
-        int y = Integer.parseInt(coords[1]);
-        int z = Integer.parseInt(coords[2]);
-        
-        return new Location(Bukkit.getServer().getWorld(coords[3]), x, y, z);
-    }
-    
-    // TODO tests
-    public static boolean isLocationString(String loc) {
-        if (loc == null)
-            return false;
-        
-        String coords[] = loc.split(" ", 4);
-        
-        if (coords.length != 4)
-            return false;
-        
-        for (int i = 0; i <= 2; i++)
-            if (!coords[i].matches("-?[0-9]+"))
-                return false;
-        
-        if (Bukkit.getServer().getWorld(coords[3]) == null)
-            return false;
-        
-        return true;
-    }
-    
-    public static Point parsePointString(String posi) {
-        String[] cmp = posi.split(" ");
-        int x = Integer.parseInt(cmp[0]);
-        int y = Integer.parseInt(cmp[1]);
-        
-        return new Point(x, y);
-    }
-    
-    public static String parsePointWorld(String posi) {
-        String[] cmp = posi.split(" ");
-        return cmp[2];
-    }
-    
-    // TODO tests
-    public static ItemStack parseItem(String k) {
-        if (k == null)
-            return null;
-        
-        String[] value = k.split(" ", 2);
-        
-        if (value.length != 2)
-            return null;
-        
-        for (int i = 0; i < 2; i++)
-            if (!value[i].matches("[0-9]"))
-                return null;
-        
-        Material mat = Material.getMaterial(value[0]);
-        int amount = Integer.parseInt(value[1]);
-        
-        if (mat == null)
-            return null;
-        
-        return new ItemStack(mat, amount);
-    }
-    
-    // TODO tests
-    public static boolean isItemStackString(String k) {
-        if (k == null)
-            return false;
-        
-        String value[] = k.split(" ", 2);
-        
-        if (value.length != 2)
-            return false;
-        
-        if (!value[1].matches("[0-9]"))
-            return false;
-        
-        return true;
-    }
-    
     public static <T> boolean arrayContains(T[] a, T o) {
         if (a != null && a.length != 0)
             for (T ob : a)
@@ -159,7 +39,6 @@ public class Utils {
         return false;
     }
     
-    // TODO tests
     /**
      * Get all values of a String Collection which start with a given String
      * 
@@ -168,16 +47,9 @@ public class Utils {
      * @return a List of all matches
      */
     public static List<String> getMatches(String value, Collection<String> list) {
-        List<String> result = new LinkedList<>();
-        
-        for (String str : list)
-            if (str.startsWith(value))
-                result.add(str);
-        
-        return result;
+        return list.stream().filter(a -> a.startsWith(value)).collect(Collectors.toList());
     }
     
-    // TODO tests
     /**
      * Get all values of a String array which start with a given String
      * 
@@ -186,32 +58,7 @@ public class Utils {
      * @return a List of all matches
      */
     public static List<String> getMatches(String value, String[] list) {
-        List<String> result = new LinkedList<String>();
-        
-        for (String str : list)
-            if (str.startsWith(value))
-                result.add(str);
-        
-        return result;
-    }
-    
-    public static boolean isInt(String string) {
-        try {
-            Integer.parseInt(string);
-            return true;
-        }
-        catch (NumberFormatException e) {
-            return false;
-        }
-    }
-    
-    // TODO tests
-    public static String getTimeString(long time) {
-        long h = time / (60 * 60 * 1000);
-        long min = (time / (60 * 1000)) % 60;
-        long s = (time / (1000)) % 60;
-        
-        return h + "h " + min + "min " + s + "s";
+        return Arrays.stream(list).filter(a -> a.startsWith(value)).collect(Collectors.toList());
     }
     
     public static String ticksToTimeString(long ticks) {
@@ -222,30 +69,11 @@ public class Utils {
         return String.format("%dh %02dmin %02ds", h, min, s);
     }
     
-    // TODO tests
-    public static String timeToString(long time) {
-        long h = time / 3600;
-        long min = (time - h * 3600) / 60;
-        long s = time - h * 3600 - min * 60;
-        
-        return h + "h " + min + "min " + s + "s";
-    }
-    
     public static boolean isBetween(int locX, int x, int x2) {
         return (x > x2 && locX >= x2 && locX <= x) || (x < x2 && locX <= x2 && locX >= x);
     }
     
     public static boolean isBetween(double d, double x, double x2) {
         return (x > x2 && d >= x2 && d <= x) || (x < x2 && d <= x2 && d >= x);
-    }
-    
-    public static boolean isDouble(String string) {
-        try {
-            Double.parseDouble(string);
-            return true;
-        }
-        catch (NumberFormatException e) {
-            return false;
-        }
     }
 }

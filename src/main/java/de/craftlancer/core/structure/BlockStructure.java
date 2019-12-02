@@ -1,8 +1,7 @@
-package de.craftlancer.core;
+package de.craftlancer.core.structure;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -57,10 +56,6 @@ public class BlockStructure implements ConfigurationSerializable, Iterable<Locat
         return new BlockStructure((List<Location>) map.get("blocks"));
     }
     
-    private Collection<Location> getBlocks() {
-        return Collections.unmodifiableCollection(blocks);
-    }
-
     @Override
     public Iterator<Location> iterator() {
         return blocks.iterator();

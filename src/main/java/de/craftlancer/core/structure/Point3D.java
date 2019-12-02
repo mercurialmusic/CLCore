@@ -1,4 +1,4 @@
-package de.craftlancer.core;
+package de.craftlancer.core.structure;
 
 import java.util.HashMap;
 import java.util.Map;

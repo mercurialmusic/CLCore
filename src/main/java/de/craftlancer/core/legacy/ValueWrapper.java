@@ -1,4 +1,4 @@
-package de.craftlancer.core;
+package de.craftlancer.core.legacy;
 
 import java.util.HashMap;
 
@@ -22,7 +22,7 @@ public class ValueWrapper
         catch (NumberFormatException e)
         {
             value = null;
-            cache = new HashMap<Integer, Double>();
+            cache = new HashMap<>();
         }
     }
     

@@ -4,17 +4,17 @@ import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class IntRingBuffer {
-    private int[] playerBuffer;
+    private int[] buffer;
     private int currentOffset = 0;
     private final int size;
     
     public IntRingBuffer(int size) {
         this.size = size;
-        playerBuffer = new int[size];
+        buffer = new int[size];
     }
     
     public void push(int value) {
-        playerBuffer[currentOffset] = value;
+        buffer[currentOffset] = value;
         increaseOffset();
     }
     
@@ -25,6 +25,6 @@ public class IntRingBuffer {
     }
     
     public IntStream stream() {
-        return Arrays.stream(playerBuffer);
+        return Arrays.stream(buffer);
     }
 }

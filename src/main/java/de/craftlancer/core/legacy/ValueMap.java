@@ -1,4 +1,4 @@
-package de.craftlancer.core;
+package de.craftlancer.core.legacy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+@Deprecated
 public class ValueMap
 {
     private Random random = new Random();

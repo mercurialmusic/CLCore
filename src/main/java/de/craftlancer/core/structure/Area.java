@@ -1,4 +1,4 @@
-package de.craftlancer.core;
+package de.craftlancer.core.structure;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;

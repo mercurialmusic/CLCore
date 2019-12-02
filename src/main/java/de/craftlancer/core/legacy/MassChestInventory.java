@@ -1,4 +1,4 @@
-package de.craftlancer.core;
+package de.craftlancer.core.legacy;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,6 +22,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
+@Deprecated
 public class MassChestInventory implements Inventory, ConfigurationSerializable {
     private MassChestInventoryHolder holder = new MassChestInventoryHolder(this);
     private final List<Location> inventories = new ArrayList<>();

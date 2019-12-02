@@ -23,7 +23,7 @@ public abstract class SubCommand {
         if (!(sender instanceof Player) && isConsoleCommand())
             return true;
         
-        return sender.hasPermission(getPermission());
+        return getPermission().equals("") || sender.hasPermission(getPermission());
     }
     
     public Plugin getPlugin() {
