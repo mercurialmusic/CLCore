@@ -51,7 +51,7 @@ public abstract class CommandHandler implements TabExecutor {
             case 0:
                 return Collections.emptyList();
             case 1:
-                return commands.keySet().stream().filter(a -> a.startsWith(args[0])).filter(a -> sender.hasPermission(commands.get(a).getPermission()))
+                return commands.keySet().stream().filter(a -> a.startsWith(args[0])).filter(a -> commands.get(a).getPermission().isEmpty() || sender.hasPermission(commands.get(a).getPermission()))
                                .collect(Collectors.toList());
             default:
                 if (!commands.containsKey(args[0]))
