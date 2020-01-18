@@ -25,6 +25,6 @@ public class IntRingBuffer {
     }
     
     public IntStream stream() {
-        return Arrays.stream(buffer);
+        return IntStream.concat(Arrays.stream(buffer, currentOffset, size), Arrays.stream(buffer, 0, currentOffset));
     }
 }

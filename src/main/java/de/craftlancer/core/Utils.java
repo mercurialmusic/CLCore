@@ -1,18 +1,14 @@
 package de.craftlancer.core;
 
-import java.awt.Point;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_14_R1.NBTTagCompound;
 
 /*
  * ItemStack: <Material> <Amount> <Data> <Name> <Lore>
@@ -28,14 +24,15 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Utils {
     
-    private Utils() { }
+    private Utils() {
+    }
     
     public static <T> boolean arrayContains(T[] a, T o) {
         if (a != null && a.length != 0)
             for (T ob : a)
                 if (ob.equals(o))
                     return true;
-        
+                
         return false;
     }
     
@@ -75,5 +72,9 @@ public class Utils {
     
     public static boolean isBetween(double d, double x, double x2) {
         return (x > x2 && d >= x2 && d <= x) || (x < x2 && d <= x2 && d >= x);
+    }
+    
+    public static TextComponent getItemComponent(ItemStack item) {
+        return new TextComponent(org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack.asNMSCopy(item).save(new NBTTagCompound()).toString());
     }
 }

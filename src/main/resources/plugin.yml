@@ -5,4 +5,5 @@ api-version: 1.14
 commands:
   convo:
     description: Used for conversations to prevent input spam.
-    
+  registerItem:
+    description: Commands to access the custom item registry
