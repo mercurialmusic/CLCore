@@ -28,7 +28,7 @@ public class CustomItemListCommand extends SubCommand {
         
         int page = (args.length == 2 ? Integer.parseInt(args[1]) : 1) - 1;
         
-        if(page < 1)
+        if(page < 0)
             return "Page can't be negative!";
         
         BaseComponent base = new TextComponent("Key - Item - Action");
