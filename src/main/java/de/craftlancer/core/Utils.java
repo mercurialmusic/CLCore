@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 
 import org.bukkit.inventory.ItemStack;
 
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_14_R1.NBTTagCompound;
+import net.md_5.bungee.api.chat.HoverEvent.Action;
 
 /*
  * ItemStack: <Material> <Amount> <Data> <Name> <Lore>
@@ -37,25 +39,26 @@ public class Utils {
     }
     
     /**
-     * Get all values of a String Collection which start with a given String
+     * Get all values of a string Collection which start with a given, case insensitive, string.
+     * 
      * 
      * @param value the given String
      * @param list the Collection
      * @return a List of all matches
      */
     public static List<String> getMatches(String value, Collection<String> list) {
-        return list.stream().filter(a -> a.startsWith(value)).collect(Collectors.toList());
+        return list.stream().filter(a -> a.toLowerCase().startsWith(value.toLowerCase())).collect(Collectors.toList());
     }
     
     /**
-     * Get all values of a String array which start with a given String
+     * Get all values of a string array which start with a given, case insensitive, string
      * 
      * @param value the given String
      * @param list the array
      * @return a List of all matches
      */
     public static List<String> getMatches(String value, String[] list) {
-        return Arrays.stream(list).filter(a -> a.startsWith(value)).collect(Collectors.toList());
+        return Arrays.stream(list).filter(a -> a.toLowerCase().startsWith(value.toLowerCase())).collect(Collectors.toList());
     }
     
     public static String ticksToTimeString(long ticks) {
@@ -75,6 +78,11 @@ public class Utils {
     }
     
     public static TextComponent getItemComponent(ItemStack item) {
-        return new TextComponent(org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack.asNMSCopy(item).save(new NBTTagCompound()).toString());
+        String displayName = item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : item.getType().name();
+        
+        TextComponent component = new TextComponent(displayName);
+        component.setHoverEvent(new HoverEvent(Action.SHOW_ITEM, new BaseComponent[] { NMSUtils.getItemHoverComponent(item) }));
+        
+        return component;
     }
 }

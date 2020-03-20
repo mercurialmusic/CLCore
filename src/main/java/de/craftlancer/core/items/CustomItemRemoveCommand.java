@@ -29,7 +29,7 @@ public class CustomItemRemoveCommand extends SubCommand {
         String key = args[1];
         if(!key.matches("[a-zA-Z0-9_]+"))
             return "Key must match [a-zA-Z0-9_]+";
-        if(registry.hasItem(key))
+        if(!registry.hasItem(key))
             return "This key is not in use.";
 
         if(registry.removeItem(key))

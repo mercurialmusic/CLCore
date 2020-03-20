@@ -1,16 +1,11 @@
 package de.craftlancer.core.items;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import de.craftlancer.core.CLCore;
-import de.craftlancer.core.Utils;
 import de.craftlancer.core.command.SubCommand;
 
 public class CustomItemAddCommand extends SubCommand {
