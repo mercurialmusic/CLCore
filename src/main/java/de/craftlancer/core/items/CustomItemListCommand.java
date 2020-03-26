@@ -36,7 +36,7 @@ public class CustomItemListCommand extends SubCommand {
         registry.getItems().entrySet().stream().skip(page * PAGE_ENTRY_COUNT).forEach(a -> {
             BaseComponent delete = new TextComponent("[Delete]");
             delete.setColor(ChatColor.RED);
-            delete.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/itemregistry remove " + a.getKey()));
+            delete.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/registeritem remove " + a.getKey()));
             
             BaseComponent entry = new TextComponent(a.getKey());
             entry.addExtra(" - ");

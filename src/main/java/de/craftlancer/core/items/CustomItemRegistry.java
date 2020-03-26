@@ -66,7 +66,7 @@ public class CustomItemRegistry {
      * @return true when an association has been successfully removed, false otherwise
      */
     public boolean removeItem(@Nonnull String key) {
-        return items.remove(key) == null;
+        return items.remove(key) != null;
     }
     
     /**
