@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -26,6 +27,8 @@ import net.md_5.bungee.api.chat.HoverEvent.Action;
  */
 public class Utils {
     
+    public static final int ELEMENTS_PER_PAGE = 10;
+
     private Utils() {
     }
     
@@ -84,5 +87,13 @@ public class Utils {
         component.setHoverEvent(new HoverEvent(Action.SHOW_ITEM, new BaseComponent[] { NMSUtils.getItemHoverComponent(item) }));
         
         return component;
+    }
+
+    public static <T> List<T> paginate(Stream<T> clans, long page) {
+        return clans.skip(page * Utils.ELEMENTS_PER_PAGE).limit(Utils.ELEMENTS_PER_PAGE).collect(Collectors.toList());
+    }
+
+    public static <T> List<T> paginate(Collection<T> clans, long page) {
+        return paginate(clans.stream(), page);
     }
 }
