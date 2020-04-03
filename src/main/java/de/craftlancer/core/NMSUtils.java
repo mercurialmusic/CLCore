@@ -9,17 +9,17 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Statistic;
-import org.bukkit.craftbukkit.v1_14_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_14_R1.CraftStatistic;
+import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_15_R1.CraftStatistic;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_14_R1.DimensionManager;
-import net.minecraft.server.v1_14_R1.EntityPlayer;
-import net.minecraft.server.v1_14_R1.PlayerList;
-import net.minecraft.server.v1_14_R1.ServerStatisticManager;
+import net.minecraft.server.v1_15_R1.DimensionManager;
+import net.minecraft.server.v1_15_R1.EntityPlayer;
+import net.minecraft.server.v1_15_R1.PlayerList;
+import net.minecraft.server.v1_15_R1.ServerStatisticManager;
 
 public class NMSUtils {
     private static final String NMS_VERSION = Bukkit.getServer().getClass().getPackage().getName().substring(23);
@@ -75,7 +75,6 @@ public class NMSUtils {
         return new TextComponent("Error");
     }
 
-    // TODO update for 1.15.2, waiting for PR to be merged?
     @SuppressWarnings("resource")
     public static int getStatistic(UUID uuid, Statistic statistic) {
         PlayerList list = ((CraftServer) Bukkit.getServer()).getHandle();
