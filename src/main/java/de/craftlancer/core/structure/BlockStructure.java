@@ -4,16 +4,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 public class BlockStructure implements ConfigurationSerializable, Iterable<Location> {
-    private List<Location> blocks = new ArrayList<>();
+    private Set<Location> blocks = new HashSet<>();
     
     public BlockStructure() {
     }
@@ -46,8 +48,8 @@ public class BlockStructure implements ConfigurationSerializable, Iterable<Locat
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
-        
-        map.put("blocks", blocks);
+
+        map.put("blocks", new ArrayList<Location>(blocks));
         
         return map;
     }
@@ -62,7 +64,7 @@ public class BlockStructure implements ConfigurationSerializable, Iterable<Locat
         return blocks.iterator();
     }
     
-    public List<Location> getBlocks() {
-        return Collections.unmodifiableList(blocks);
+    public Set<Location> getBlocks() {
+        return Collections.unmodifiableSet(blocks);
     }
 }
