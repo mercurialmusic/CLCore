@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_15_R1.DedicatedServer;
 
 public class NMSUtils {
     private static final String NMS_VERSION = Bukkit.getServer().getClass().getPackage().getName().substring(23);
@@ -70,5 +71,18 @@ public class NMSUtils {
     @SuppressWarnings("resource")
     public static int getServerTick() {
         return ((CraftServer) Bukkit.getServer()).getHandle().getServer().ak();
+    }
+    
+    @SuppressWarnings("resource")
+    public static double[] getRecentTPS() {
+        DedicatedServer server = ((CraftServer) Bukkit.getServer()).getHandle().getServer();
+        try {
+            return (double[]) server.getClass().getField("recentTps").get(server);
+        }
+        catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+            Bukkit.getLogger().warning(e.getMessage());
+            return new double[] { 20D, 20D, 20D };
+        }
+        
     }
 }
