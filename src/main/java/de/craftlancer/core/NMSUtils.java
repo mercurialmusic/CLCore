@@ -7,8 +7,11 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.spigotmc.ActivationRange;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -84,5 +87,9 @@ public class NMSUtils {
             return new double[] { 20D, 20D, 20D };
         }
         
+    }
+
+    public static boolean isEntityActive(Entity e) {
+        return ActivationRange.checkIfActive(((CraftEntity) e).getHandle());
     }
 }
