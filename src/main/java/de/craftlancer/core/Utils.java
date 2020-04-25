@@ -32,6 +32,15 @@ public class Utils {
     private Utils() {
     }
     
+    public static int parseIntegerOrDefault(String val, int defaultVal) {
+        try {
+            return Integer.parseInt(val);
+        }
+        catch(NumberFormatException e) {
+            return defaultVal;
+        }
+    }
+    
     public static <T> boolean arrayContains(T[] a, T o) {
         if (a != null && a.length != 0)
             for (T ob : a)
