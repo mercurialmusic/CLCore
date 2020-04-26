@@ -75,6 +75,11 @@ public class NMSUtils {
     public static int getServerTick() {
         return ((CraftServer) Bukkit.getServer()).getHandle().getServer().ak();
     }
+
+    @SuppressWarnings("resource")
+    public static boolean isRunning() {
+        return ((CraftServer) Bukkit.getServer()).getHandle().getServer().isRunning();
+    }
     
     @SuppressWarnings("resource")
     public static double[] getRecentTPS() {
@@ -86,7 +91,6 @@ public class NMSUtils {
             Bukkit.getLogger().warning(e.getMessage());
             return new double[] { 20D, 20D, 20D };
         }
-        
     }
 
     public static boolean isEntityActive(Entity e) {

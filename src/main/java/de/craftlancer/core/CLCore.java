@@ -26,6 +26,7 @@ public class CLCore extends JavaPlugin {
     private Chat chat = null;
     
     private CustomItemRegistry itemRegistry;
+    private LastSeenCache lastSeenCache;
     
     @Override
     public void onEnable() {
@@ -41,6 +42,8 @@ public class CLCore extends JavaPlugin {
         getCommand("convo").setExecutor(new ConvoCommand());
         
         itemRegistry = new CustomItemRegistry(this);
+        lastSeenCache = new LastSeenCache(this);
+        
         setupChat();
         setupEconomy();
         setupPermissions();
@@ -49,6 +52,7 @@ public class CLCore extends JavaPlugin {
     @Override
     public void onDisable() {
         itemRegistry.save();
+        lastSeenCache.save();
     }
     
     private boolean setupEconomy() {
@@ -89,6 +93,10 @@ public class CLCore extends JavaPlugin {
     
     public Chat getChat() {
         return chat;
+    }
+
+    public LastSeenCache getLastSeenCache() {
+        return lastSeenCache;
     }
     
     public static CLCore getInstance() {
