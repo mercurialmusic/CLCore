@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -13,19 +14,24 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import de.craftlancer.core.CLCore;
+import de.craftlancer.core.LambdaRunnable;
+import de.craftlancer.core.NMSUtils;
 
 /**
  * Register custom items under a unique name to be used by other plugins.
  * Keys used are case sensitive.
  */
 public class CustomItemRegistry {
-    
-    private Map<String, ItemStack> items = new HashMap<>();
+    private final CLCore plugin;
     private final File file;
     
+    private Map<String, ItemStack> items = new HashMap<>();
+    
     public CustomItemRegistry(CLCore plugin) {
+        this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), "itemRegistry.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         config.getValues(false).forEach((a, b) -> items.put(a, (ItemStack) b));
@@ -36,12 +42,20 @@ public class CustomItemRegistry {
     public void save() {
         YamlConfiguration config = new YamlConfiguration();
         items.forEach(config::set);
-        try {
-            config.save(file);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        BukkitRunnable saveTask = new LambdaRunnable(() -> {
+            try {
+                config.save(file);
+            }
+            catch (IOException e) {
+                plugin.getLogger().log(Level.SEVERE, "Error while saving ItemRegistry: ", e);
+            }
+        });
+        
+        if (NMSUtils.isRunning())
+            saveTask.runTaskAsynchronously(plugin);
+        else
+            saveTask.run();
     }
     
     /**
@@ -56,7 +70,7 @@ public class CustomItemRegistry {
     public ItemStack addItem(@Nonnull String key, @Nonnull ItemStack item) {
         Validate.notNull(item, "the given ItemStack may not be null!");
         Validate.notNull(key, "the given key may not be null!");
-        return items.put(key, item);
+        return items.put(key, item.clone());
     }
     
     /**
@@ -77,7 +91,7 @@ public class CustomItemRegistry {
      */
     @Nullable
     public ItemStack getItem(@Nonnull String key) {
-        return items.get(key);
+        return items.get(key).clone();
     }
     
     /**

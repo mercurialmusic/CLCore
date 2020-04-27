@@ -47,10 +47,16 @@ public class CLCore extends JavaPlugin {
         setupChat();
         setupEconomy();
         setupPermissions();
+        
+        new LambdaRunnable(this::autosave).runTaskTimer(this, 18000L, 18000L);
     }
     
     @Override
     public void onDisable() {
+        autosave();
+    }
+    
+    private void autosave() {
         itemRegistry.save();
         lastSeenCache.save();
     }

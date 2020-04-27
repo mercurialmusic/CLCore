@@ -27,22 +27,24 @@ public class LastSeenCache implements Listener {
     public LastSeenCache(Plugin plugin) {
         this.plugin = plugin;
         this.rankingsFile = new File(plugin.getDataFolder(), "lastSeen.yml");
-
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(rankingsFile);
-        lastSeenMap = config.getConfigurationSection("lastSeenMap").getValues(false).entrySet().stream()
-                         .collect(Collectors.toMap(a -> UUID.fromString(a.getKey()), b -> (Long) b.getValue()));
+        
+        if (rankingsFile.exists()) {
+            YamlConfiguration config = YamlConfiguration.loadConfiguration(rankingsFile);
+            lastSeenMap = config.getConfigurationSection("lastSeenMap").getValues(false).entrySet().stream()
+                                .collect(Collectors.toConcurrentMap(a -> UUID.fromString(a.getKey()), b -> (Long) b.getValue()));
+        }
         
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
     
     public long getLastSeen(UUID uuid) {
         Player p = Bukkit.getPlayer(uuid);
-        if(p != null)
+        if (p != null)
             return System.currentTimeMillis();
         
         Long lastSeen = lastSeenMap.get(uuid);
         
-        if(lastSeen != null)
+        if (lastSeen != null)
             return lastSeen;
         
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
@@ -50,12 +52,12 @@ public class LastSeenCache implements Listener {
     }
     
     public long getLastSeen(OfflinePlayer player) {
-        if(player.isOnline())
+        if (player.isOnline())
             return System.currentTimeMillis();
         
         Long lastSeen = lastSeenMap.get(player.getUniqueId());
         
-        if(lastSeen != null)
+        if (lastSeen != null)
             return lastSeen;
         
         return lastSeenMap.computeIfAbsent(player.getUniqueId(), a -> player.getLastPlayed());
@@ -78,7 +80,7 @@ public class LastSeenCache implements Listener {
                 plugin.getLogger().log(Level.SEVERE, "Error while saving Rankings: ", e);
             }
         });
-
+        
         if (NMSUtils.isRunning())
             saveTask.runTaskAsynchronously(plugin);
         else
