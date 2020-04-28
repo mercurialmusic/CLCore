@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -28,6 +29,14 @@ import net.md_5.bungee.api.chat.HoverEvent.Action;
 public class Utils {
     
     public static final int ELEMENTS_PER_PAGE = 10;
+    
+    public static final ChatColor TEXT_COLOR_UNIMPORTANT = ChatColor.GRAY;
+    public static final ChatColor TEXT_COLOR_IMPORTANT = ChatColor.WHITE;
+    public static final String INDENTATION = "  ";
+
+    public static final int MS_PER_MINUTE = 60 * 1000;
+    public static final int MS_PER_HOUR = 60 * MS_PER_MINUTE;
+    public static final int MS_PER_DAY = 24 * MS_PER_HOUR;
 
     private Utils() {
     }

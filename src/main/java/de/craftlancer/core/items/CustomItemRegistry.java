@@ -91,7 +91,7 @@ public class CustomItemRegistry {
      */
     @Nullable
     public ItemStack getItem(@Nonnull String key) {
-        return items.get(key).clone();
+        return items.containsKey(key) ? items.get(key).clone() : null;
     }
     
     /**
