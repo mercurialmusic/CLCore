@@ -8,3 +8,5 @@ commands:
     description: Used for conversations to prevent input spam.
   registerItem:
     description: Commands to access the custom item registry
+  newCommandTest:
+    description: Test

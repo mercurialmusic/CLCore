@@ -4,7 +4,7 @@ import static org.junit.Assert.assertArrayEquals;
 
 import org.junit.Test;
 
-import de.craftlancer.core.command.CommandHandler;
+import de.craftlancer.core.command.CommandUtils;
 
 public class ParseArgumentTest
 {    
@@ -45,18 +45,22 @@ public class ParseArgumentTest
 
         String s12 = "set \"Hallo \"sehr schöne\" Welt\"\"\"";
         String[] s12res = { "set", "Hallo \"sehr schöne\" Welt\"\"" };
+        
+        String s13 = "set \"Hallo \"";
+        String[] s13res = { "set", "Hallo " };
 
-        assertArrayEquals(s1res, CommandHandler.parseArgumentStrings(s1.split(" ")));
-        assertArrayEquals(s2res, CommandHandler.parseArgumentStrings(s2.split(" ")));
-        assertArrayEquals(s3res, CommandHandler.parseArgumentStrings(s3.split(" ")));
-        assertArrayEquals(s4res, CommandHandler.parseArgumentStrings(s4.split(" ")));
-        assertArrayEquals(s5res, CommandHandler.parseArgumentStrings(s5.split(" ")));
-        assertArrayEquals(s6res, CommandHandler.parseArgumentStrings(s6.split(" ")));
-        assertArrayEquals(s7res, CommandHandler.parseArgumentStrings(s7.split(" ")));
-        assertArrayEquals(s8res, CommandHandler.parseArgumentStrings(s8.split(" ")));
-        assertArrayEquals(s9res, CommandHandler.parseArgumentStrings(s9.split(" ")));
-        assertArrayEquals(s10res, CommandHandler.parseArgumentStrings(s10.split(" ")));
-        assertArrayEquals(s11res, CommandHandler.parseArgumentStrings(s11.split(" ")));
-        assertArrayEquals(s12res, CommandHandler.parseArgumentStrings(s12.split(" ")));
+        assertArrayEquals(s1res, CommandUtils.parseArgumentStrings(s1.split(" ")));
+        assertArrayEquals(s2res, CommandUtils.parseArgumentStrings(s2.split(" ")));
+        assertArrayEquals(s3res, CommandUtils.parseArgumentStrings(s3.split(" ")));
+        assertArrayEquals(s4res, CommandUtils.parseArgumentStrings(s4.split(" ")));
+        assertArrayEquals(s5res, CommandUtils.parseArgumentStrings(s5.split(" ")));
+        assertArrayEquals(s6res, CommandUtils.parseArgumentStrings(s6.split(" ")));
+        assertArrayEquals(s7res, CommandUtils.parseArgumentStrings(s7.split(" ")));
+        assertArrayEquals(s8res, CommandUtils.parseArgumentStrings(s8.split(" ")));
+        assertArrayEquals(s9res, CommandUtils.parseArgumentStrings(s9.split(" ")));
+        assertArrayEquals(s10res, CommandUtils.parseArgumentStrings(s10.split(" ")));
+        assertArrayEquals(s11res, CommandUtils.parseArgumentStrings(s11.split(" ")));
+        assertArrayEquals(s12res, CommandUtils.parseArgumentStrings(s12.split(" ")));
+        //assertArrayEquals(s13res, CommandUtils.parseArgumentStrings(s13.split(" ")));
     }
 }

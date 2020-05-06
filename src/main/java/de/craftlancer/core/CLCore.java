@@ -48,6 +48,8 @@ public class CLCore extends JavaPlugin {
         setupEconomy();
         setupPermissions();
         
+        //getCommand("newCommandTest").setExecutor(new NewCommandTestHandler(this));
+        
         new LambdaRunnable(this::autosave).runTaskTimer(this, 18000L, 18000L);
     }
     
