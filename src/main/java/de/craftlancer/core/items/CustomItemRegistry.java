@@ -18,7 +18,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import de.craftlancer.core.CLCore;
 import de.craftlancer.core.LambdaRunnable;
-import de.craftlancer.core.NMSUtils;
 
 /**
  * Register custom items under a unique name to be used by other plugins.
@@ -52,7 +51,7 @@ public class CustomItemRegistry {
             }
         });
         
-        if (NMSUtils.isRunning())
+        if (plugin.isEnabled())
             saveTask.runTaskAsynchronously(plugin);
         else
             saveTask.run();

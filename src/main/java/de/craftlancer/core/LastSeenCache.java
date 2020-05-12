@@ -81,7 +81,7 @@ public class LastSeenCache implements Listener {
             }
         });
         
-        if (NMSUtils.isRunning())
+        if (plugin.isEnabled())
             saveTask.runTaskAsynchronously(plugin);
         else
             saveTask.run();
