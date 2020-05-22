@@ -36,11 +36,11 @@ public class Utils {
     public static final ChatColor TEXT_COLOR_UNIMPORTANT = ChatColor.GRAY;
     public static final ChatColor TEXT_COLOR_IMPORTANT = ChatColor.WHITE;
     public static final String INDENTATION = "  ";
-
+    
     public static final int MS_PER_MINUTE = 60 * 1000;
     public static final int MS_PER_HOUR = 60 * MS_PER_MINUTE;
     public static final int MS_PER_DAY = 24 * MS_PER_HOUR;
-
+    
     private Utils() {
     }
     
@@ -48,7 +48,7 @@ public class Utils {
         try {
             return Integer.parseInt(val);
         }
-        catch(NumberFormatException e) {
+        catch (NumberFormatException e) {
             return defaultVal;
         }
     }
@@ -109,15 +109,15 @@ public class Utils {
         
         return component;
     }
-
+    
     public static <T> List<T> paginate(Stream<T> clans, long page) {
         return clans.skip(page * Utils.ELEMENTS_PER_PAGE).limit(Utils.ELEMENTS_PER_PAGE).collect(Collectors.toList());
     }
-
+    
     public static <T> List<T> paginate(Collection<T> clans, long page) {
         return paginate(clans.stream(), page);
     }
-
+    
     public static BoundingBox calculateBoundingBoxBlock(Collection<Block> blocks) {
         int minX = blocks.stream().map(Block::getX).min(Integer::compare).orElse(0);
         int maxX = blocks.stream().map(Block::getX).max(Integer::compare).orElse(0);
@@ -136,5 +136,13 @@ public class Utils {
         int minZ = blocks.stream().map(Location::getBlockZ).min(Integer::compare).orElse(0);
         int maxZ = blocks.stream().map(Location::getBlockZ).max(Integer::compare).orElse(0);
         return new BoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+    
+    public static Collection<String> toString(Collection<? extends Object> input) {
+        return input.stream().map(Object::toString).collect(Collectors.toList());
+    }
+    
+    public static Collection<String> toString(Object[] values) {
+        return Arrays.stream(values).map(Object::toString).collect(Collectors.toList());
     }
 }
