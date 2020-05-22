@@ -7,7 +7,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.BoundingBox;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -113,5 +116,25 @@ public class Utils {
 
     public static <T> List<T> paginate(Collection<T> clans, long page) {
         return paginate(clans.stream(), page);
+    }
+
+    public static BoundingBox calculateBoundingBoxBlock(Collection<Block> blocks) {
+        int minX = blocks.stream().map(Block::getX).min(Integer::compare).orElse(0);
+        int maxX = blocks.stream().map(Block::getX).max(Integer::compare).orElse(0);
+        int minY = blocks.stream().map(Block::getY).min(Integer::compare).orElse(0);
+        int maxY = blocks.stream().map(Block::getY).max(Integer::compare).orElse(0);
+        int minZ = blocks.stream().map(Block::getZ).min(Integer::compare).orElse(0);
+        int maxZ = blocks.stream().map(Block::getZ).max(Integer::compare).orElse(0);
+        return new BoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+    
+    public static BoundingBox calculateBoundingBoxLocation(Collection<Location> blocks) {
+        int minX = blocks.stream().map(Location::getBlockX).min(Integer::compare).orElse(0);
+        int maxX = blocks.stream().map(Location::getBlockX).max(Integer::compare).orElse(0);
+        int minY = blocks.stream().map(Location::getBlockY).min(Integer::compare).orElse(0);
+        int maxY = blocks.stream().map(Location::getBlockY).max(Integer::compare).orElse(0);
+        int minZ = blocks.stream().map(Location::getBlockZ).min(Integer::compare).orElse(0);
+        int maxZ = blocks.stream().map(Location::getBlockZ).max(Integer::compare).orElse(0);
+        return new BoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
     }
 }

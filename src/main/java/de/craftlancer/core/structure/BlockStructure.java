@@ -13,9 +13,13 @@ import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.util.BoundingBox;
+
+import de.craftlancer.core.Utils;
 
 public class BlockStructure implements ConfigurationSerializable, Iterable<Location> {
     private Set<Location> blocks = new HashSet<>();
+    private BoundingBox boundingBox;
     
     public BlockStructure() {
     }
@@ -23,10 +27,17 @@ public class BlockStructure implements ConfigurationSerializable, Iterable<Locat
     public BlockStructure(Location... blocks) {
         for (Location block : blocks)
             this.blocks.add(block);
+        
+        recalculateBoundingBox();
     }
     
     public BlockStructure(Collection<Location> blocks) {
         this.blocks.addAll(blocks);
+        recalculateBoundingBox();
+    }
+    
+    private void recalculateBoundingBox() {
+        this.boundingBox = Utils.calculateBoundingBoxLocation(blocks).expand(0.5D);
     }
     
     public void addBlock(Block block) {
@@ -35,6 +46,7 @@ public class BlockStructure implements ConfigurationSerializable, Iterable<Locat
     
     public void addBlock(Location block) {
         blocks.add(block);
+        recalculateBoundingBox();
     }
     
     public boolean containsBlock(Block block) {
@@ -43,6 +55,10 @@ public class BlockStructure implements ConfigurationSerializable, Iterable<Locat
     
     public boolean containsBlock(Location block) {
         return blocks.contains(block);
+    }
+    
+    public boolean containsBoundingBox(BoundingBox box) {
+        return this.boundingBox.overlaps(box);
     }
     
     public boolean containsAnyBlock(Collection<Block> otherBlocks) {
