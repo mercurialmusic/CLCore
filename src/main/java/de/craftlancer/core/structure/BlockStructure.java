@@ -45,6 +45,10 @@ public class BlockStructure implements ConfigurationSerializable, Iterable<Locat
         return blocks.contains(block);
     }
     
+    public boolean containsAnyBlock(Collection<Block> otherBlocks) {
+        return otherBlocks.stream().anyMatch(this::containsBlock);
+    }
+    
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();

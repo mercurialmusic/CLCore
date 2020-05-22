@@ -31,14 +31,16 @@ public class CustomItemListCommand extends SubCommand {
         if(page < 0)
             return "Page can't be negative!";
         
-        BaseComponent base = new TextComponent("Key - Item - Action");
+        sender.sendMessage("Page " + (page + 1));
+        BaseComponent base = new TextComponent(ChatColor.YELLOW + "Key - Item - Action" + ChatColor.RESET);
         
         registry.getItems().entrySet().stream().skip(page * PAGE_ENTRY_COUNT).forEach(a -> {
             BaseComponent delete = new TextComponent("[Delete]");
             delete.setColor(ChatColor.RED);
             delete.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/registeritem remove " + a.getKey()));
             
-            BaseComponent entry = new TextComponent(a.getKey());
+            BaseComponent entry = new TextComponent("  ");
+            entry.addExtra(a.getKey());
             entry.addExtra(" - ");
             entry.addExtra(Utils.getItemComponent(a.getValue()));
             entry.addExtra(" | ");
