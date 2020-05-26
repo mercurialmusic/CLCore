@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
@@ -52,6 +53,24 @@ public class Utils {
             return defaultVal;
         }
     }
+
+    public static double parseDoubleOrDefault(String val, double defaultVal) {
+        try {
+            return Double.parseDouble(val);
+        }
+        catch (NumberFormatException e) {
+            return defaultVal;
+        }
+    }
+
+    public static float parseFloatOrDefault(String val, float defaultVal) {
+        try {
+            return Float.parseFloat(val);
+        }
+        catch (NumberFormatException e) {
+            return defaultVal;
+        }
+    }
     
     public static <T> boolean arrayContains(T[] a, T o) {
         if (a != null && a.length != 0)
@@ -83,6 +102,14 @@ public class Utils {
      */
     public static List<String> getMatches(String value, String[] list) {
         return Arrays.stream(list).filter(a -> a.toLowerCase().startsWith(value.toLowerCase())).collect(Collectors.toList());
+    }
+    
+    public static float clamp(float value, float min, float max) {
+        return Math.max(Math.min(value, max), min);
+    }
+    
+    public static double clamp(double value, double min, double max) {
+        return Math.max(Math.min(value, max), min);
     }
     
     public static String ticksToTimeString(long ticks) {
@@ -144,5 +171,13 @@ public class Utils {
     
     public static Collection<String> toString(Object[] values) {
         return Arrays.stream(values).map(Object::toString).collect(Collectors.toList());
+    }
+    
+    public static boolean isChunkLoaded(Location loc) {
+        return loc.getWorld().isChunkLoaded(loc.getBlockX() >> 4, loc.getBlockZ() >> 4);
+    }
+    
+    public static boolean isChunkLoaded(World world, int chunkX, int chunkZ) {
+        return world.isChunkLoaded(chunkX, chunkZ);
     }
 }
