@@ -54,6 +54,9 @@ public class BlockStructure implements ConfigurationSerializable, Iterable<Locat
     }
     
     public boolean containsBlock(Location block) {
+        if(block == null)
+            return false;
+        
         Location loc = block.clone();
         loc.setX(loc.getBlockX());
         loc.setY(loc.getBlockY());
