@@ -50,11 +50,15 @@ public class BlockStructure implements ConfigurationSerializable, Iterable<Locat
     }
     
     public boolean containsBlock(Block block) {
-        return containsBlock(block.getLocation());
+        return blocks.contains(block.getLocation());
     }
     
     public boolean containsBlock(Location block) {
-        return blocks.contains(block);
+        Location loc = block.clone();
+        loc.setX(loc.getBlockX());
+        loc.setY(loc.getBlockY());
+        loc.setZ(loc.getBlockZ());
+        return blocks.contains(loc);
     }
     
     public boolean containsBoundingBox(BoundingBox box) {
@@ -68,7 +72,7 @@ public class BlockStructure implements ConfigurationSerializable, Iterable<Locat
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
-
+        
         map.put("blocks", new ArrayList<Location>(blocks));
         
         return map;
