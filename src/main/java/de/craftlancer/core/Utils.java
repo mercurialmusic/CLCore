@@ -8,9 +8,11 @@ import java.util.stream.Stream;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.BoundingBox;
 
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -179,5 +181,18 @@ public class Utils {
     
     public static boolean isChunkLoaded(World world, int chunkX, int chunkZ) {
         return world.isChunkLoaded(chunkX, chunkZ);
+    }
+
+    public static ItemStack buildItemStack(Material type, String name, List<String> lore) {
+        ItemStack item = new ItemStack(type);
+        ItemMeta meta = item.getItemMeta();
+        
+        if(name != null)
+            meta.setDisplayName(name);
+        if(!lore.isEmpty())
+            meta.setLore(lore);
+        
+        item.setItemMeta(meta);
+        return item;
     }
 }
