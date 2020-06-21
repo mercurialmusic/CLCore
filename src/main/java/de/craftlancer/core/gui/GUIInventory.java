@@ -16,10 +16,16 @@ import org.bukkit.plugin.Plugin;
 
 public class GUIInventory implements InventoryHolder, Listener {
 
-    private Inventory inventory = Bukkit.createInventory(this, 54);
+    private final Inventory inventory;
     private Map<Integer, Runnable> clickActions = new HashMap<>();
     
+    public GUIInventory(Plugin plugin, String title) {
+        this.inventory = Bukkit.createInventory(this, 54, title);
+        Bukkit.getPluginManager().registerEvents(this, plugin);
+    }
+    
     public GUIInventory(Plugin plugin) {
+        this.inventory = Bukkit.createInventory(this, 54);
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
     
