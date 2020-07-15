@@ -27,6 +27,10 @@ public class MessageUtil {
         sender.spigot().sendMessage(settings.getOrDefault(plugin != null ? plugin.getName() : "", NULL_SETTINGS).formatMessage(level, message));
     }
     
+    public static void sendMessage(Plugin plugin, CommandSender sender, MessageLevel level, BaseComponent message) {
+        sender.spigot().sendMessage(settings.getOrDefault(plugin != null ? plugin.getName() : "", NULL_SETTINGS).formatMessage(level, message));
+    }
+    
     private static class MessageSettings {
         private BaseComponent prefix;
         private Map<MessageLevel, ChatColor> levelColors = new EnumMap<>(MessageLevel.class);
@@ -46,6 +50,10 @@ public class MessageUtil {
         }
         
         public BaseComponent formatMessage(MessageLevel level, String message) {
+            return formatMessage(level, new TextComponent(message));
+        }
+
+        public BaseComponent formatMessage(MessageLevel level, BaseComponent message) {
             ChatColor levelColor = levelColors.get(level);
             
             BaseComponent base = new TextComponent();

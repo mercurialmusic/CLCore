@@ -55,7 +55,7 @@ public class Utils {
             return defaultVal;
         }
     }
-
+    
     public static double parseDoubleOrDefault(String val, double defaultVal) {
         try {
             return Double.parseDouble(val);
@@ -64,7 +64,7 @@ public class Utils {
             return defaultVal;
         }
     }
-
+    
     public static float parseFloatOrDefault(String val, float defaultVal) {
         try {
             return Float.parseFloat(val);
@@ -139,12 +139,16 @@ public class Utils {
         return component;
     }
     
-    public static <T> List<T> paginate(Stream<T> clans, long page) {
-        return clans.skip(page * Utils.ELEMENTS_PER_PAGE).limit(Utils.ELEMENTS_PER_PAGE).collect(Collectors.toList());
+    public static <T> List<T> paginate(Stream<T> values, long page) {
+        return values.skip(page * Utils.ELEMENTS_PER_PAGE).limit(Utils.ELEMENTS_PER_PAGE).collect(Collectors.toList());
     }
     
-    public static <T> List<T> paginate(Collection<T> clans, long page) {
-        return paginate(clans.stream(), page);
+    public static <T> List<T> paginate(Collection<T> values, long page) {
+        return paginate(values.stream(), page);
+    }
+    
+    public static <T> List<T> paginate(T[] values, long page) {
+        return paginate(Arrays.stream(values), page);
     }
     
     public static BoundingBox calculateBoundingBoxBlock(Collection<Block> blocks) {
@@ -182,14 +186,14 @@ public class Utils {
     public static boolean isChunkLoaded(World world, int chunkX, int chunkZ) {
         return world.isChunkLoaded(chunkX, chunkZ);
     }
-
+    
     public static ItemStack buildItemStack(Material type, String name, List<String> lore) {
         ItemStack item = new ItemStack(type);
         ItemMeta meta = item.getItemMeta();
         
-        if(name != null)
+        if (name != null)
             meta.setDisplayName(name);
-        if(!lore.isEmpty())
+        if (!lore.isEmpty())
             meta.setLore(lore);
         
         item.setItemMeta(meta);
