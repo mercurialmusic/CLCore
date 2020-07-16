@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -44,7 +45,13 @@ public class Utils {
     public static final int MS_PER_HOUR = 60 * MS_PER_MINUTE;
     public static final int MS_PER_DAY = 24 * MS_PER_HOUR;
     
+    public static final SemanticVersion MC_VERSION = SemanticVersion.of(Bukkit.getBukkitVersion().split("-")[0]);
+    
     private Utils() {
+    }
+    
+    public static SemanticVersion getMCVersion() {
+        return MC_VERSION;
     }
     
     public static int parseIntegerOrDefault(String val, int defaultVal) {
