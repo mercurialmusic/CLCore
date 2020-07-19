@@ -24,7 +24,7 @@ public class SemanticVersion {
     }
     
     public static SemanticVersion of(String string) {
-        String[] arr = string.split(".");
+        String[] arr = string.split("\\.");
         int major = Utils.parseIntegerOrDefault(arr.length > 0 ? arr[0] : "0", 0);
         int minor = Utils.parseIntegerOrDefault(arr.length > 1 ? arr[1] : "0", 0);
         int revision = Utils.parseIntegerOrDefault(arr.length > 2 ? arr[2] : "0", 0);
