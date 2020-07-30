@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import javax.annotation.Nonnull;
@@ -88,9 +89,9 @@ public class CustomItemRegistry {
      * @param key the key to look for
      * @return the item associated with the given key, or null if non is found
      */
-    @Nullable
-    public ItemStack getItem(@Nonnull String key) {
-        return items.containsKey(key) ? items.get(key).clone() : null;
+    @Nonnull
+    public Optional<ItemStack> getItem(@Nonnull String key) {
+        return Optional.ofNullable(items.get(key)).map(ItemStack::clone);
     }
     
     /**

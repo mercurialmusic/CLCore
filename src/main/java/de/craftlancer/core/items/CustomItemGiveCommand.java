@@ -1,6 +1,7 @@
 package de.craftlancer.core.items;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -31,14 +32,14 @@ public class CustomItemGiveCommand extends SubCommand {
             return "You must specify a player and an item name.";
         
         Player player = Bukkit.getPlayer(args[1]);
-        ItemStack item = registry.getItem(args[2]);
+        Optional<ItemStack> item = registry.getItem(args[2]);
         
         if(player == null)
             return "Player not found.";
-        if(item == null)
+        if(!item.isPresent())
             return "Item not found.";
         
-        player.getInventory().addItem(item);
+        player.getInventory().addItem(item.get());
         return String.format("Item %s given to player %s.", args[2], player.getName());
     }
     
