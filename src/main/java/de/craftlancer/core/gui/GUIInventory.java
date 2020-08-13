@@ -85,6 +85,9 @@ public class GUIInventory implements InventoryHolder, Listener {
     
     @EventHandler
     public void onInteract(InventoryClickEvent event) {
+        if (event.getView().getTopInventory() == inventory)
+            event.setCancelled(true);
+        
         if (event.getClickedInventory() != inventory)
             return;
         
