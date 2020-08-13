@@ -1,6 +1,6 @@
 package de.craftlancer.core.gui;
 
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 public class PageItem {
     
     private ItemStack item;
-    private Map<ClickType, Consumer<Player>> clickActions = new EnumMap<>(ClickType.class);
+    private Map<ClickType, Consumer<Player>> clickActions = new HashMap<>();
     
     public PageItem(@Nonnull ItemStack item) {
         this.item = item;
