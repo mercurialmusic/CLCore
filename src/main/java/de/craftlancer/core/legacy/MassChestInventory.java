@@ -450,6 +450,11 @@ public class MassChestInventory implements Inventory, ConfigurationSerializable 
     public Location getLocation() {
         return null;
     }
+
+    @Override
+    public boolean isEmpty() {
+        return getInventories().stream().allMatch(a -> a.isEmpty());
+    }
 }
 
 /*

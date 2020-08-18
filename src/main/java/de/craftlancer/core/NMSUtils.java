@@ -6,8 +6,8 @@ import java.lang.reflect.Method;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_16_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -15,7 +15,7 @@ import org.spigotmc.ActivationRange;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_15_R1.DedicatedServer;
+import net.minecraft.server.v1_16_R2.DedicatedServer;
 
 public class NMSUtils {
     private static final String NMS_VERSION = Bukkit.getServer().getClass().getPackage().getName().substring(23);
@@ -65,7 +65,7 @@ public class NMSUtils {
             return new TextComponent(save.invoke(nmsItemStack, nbttag).toString());
         }
         catch (Exception e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Exception while trying an item's hover component.", e);
+            Bukkit.getLogger().log(Level.SEVERE, "Exception while trying an item''s hover component.", e);
         }
         
         return new TextComponent("Error");
@@ -73,7 +73,7 @@ public class NMSUtils {
     
     @SuppressWarnings("resource")
     public static int getServerTick() {
-        return ((CraftServer) Bukkit.getServer()).getHandle().getServer().ak();
+        return ((CraftServer) Bukkit.getServer()).getHandle().getServer().ah();
     }
 
     @SuppressWarnings("resource")
