@@ -61,6 +61,11 @@ public class ItemBuilder {
         return this;
     }
     
+    public ItemBuilder setAmountUnsafe(int amount) {
+        item.setAmount(amount);
+        return this;
+    }
+    
     public ItemBuilder setLore(String... lore) {
         setLore(Arrays.asList(lore));
         
