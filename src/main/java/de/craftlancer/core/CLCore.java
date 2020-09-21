@@ -1,8 +1,12 @@
 package de.craftlancer.core;
 
+import java.io.File;
+
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 
 import de.craftlancer.core.conversation.ConvoCommand;
 import de.craftlancer.core.items.CustomItemRegistry;
@@ -27,6 +31,17 @@ public class CLCore extends JavaPlugin {
     
     private CustomItemRegistry itemRegistry;
     private LastSeenCache lastSeenCache;
+    
+    /* MockBukkit start */
+    public CLCore() {
+        super();
+    }
+    
+    protected CLCore(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file)
+    {
+        super(loader, description, dataFolder, file);
+    }
+    /* MockBukkit end */
     
     @Override
     public void onEnable() {

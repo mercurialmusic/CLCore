@@ -190,10 +190,6 @@ public class Utils {
         return loc.getWorld().isChunkLoaded(loc.getBlockX() >> 4, loc.getBlockZ() >> 4);
     }
     
-    public static boolean isChunkLoaded(World world, int chunkX, int chunkZ) {
-        return world.isChunkLoaded(chunkX, chunkZ);
-    }
-    
     public static ItemStack buildItemStack(Material type, String name, List<String> lore) {
         ItemStack item = new ItemStack(type);
         ItemMeta meta = item.getItemMeta();

@@ -12,7 +12,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -54,14 +56,14 @@ public class GUIInventory implements InventoryHolder, Listener {
     
     public void fill(ItemStack item) {
         for (int i = 0; i < inventory.getSize(); i++)
-            inventory.setItem(i, item);
+            inventory.setItem(i, item != null ? item.clone() : null);
     }
     
     public void setItem(int slotId, ItemStack item) {
         if (slotId < 0 || slotId >= 54)
             return;
         
-        inventory.setItem(slotId, item);
+        inventory.setItem(slotId, item != null ? item.clone() : null);
     }
     
     public void setClickAction(int slotId, @Nonnull Runnable action) {
@@ -85,14 +87,22 @@ public class GUIInventory implements InventoryHolder, Listener {
     
     @EventHandler
     public void onInteract(InventoryClickEvent event) {
-        if (event.getView().getTopInventory() == inventory)
-            event.setCancelled(true);
+        InventoryAction action = event.getAction();
         
+        if (event.getView().getTopInventory() == inventory && action == InventoryAction.COLLECT_TO_CURSOR)
+            event.setCancelled(true);
+
         if (event.getClickedInventory() != inventory)
             return;
         
         event.setCancelled(true);
         Map<ClickType, Consumer<Player>> map = clickActions.getOrDefault(event.getSlot(), Collections.emptyMap());
         map.getOrDefault(event.getClick(), map.getOrDefault(null, a -> {})).accept((Player) event.getWhoClicked());
+    }
+
+    @EventHandler
+    public void onDrag(InventoryDragEvent event) {
+        if (event.getView().getTopInventory() == inventory || event.getInventory() == inventory)
+            event.setCancelled(true);
     }
 }
