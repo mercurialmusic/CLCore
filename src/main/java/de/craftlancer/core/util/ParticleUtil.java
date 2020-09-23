@@ -1,11 +1,17 @@
 package de.craftlancer.core.util;
 
+import java.util.function.Supplier;
+
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
+
+import de.craftlancer.core.CLCore;
 
 public class ParticleUtil {
     private ParticleUtil() {
@@ -31,11 +37,11 @@ public class ParticleUtil {
         spawnParticleCircle(startingLocation, 1);
     }
     
-    public static void spawnParticleCircle(Location startingLocation, int radius) {
+    public static void spawnParticleCircle(Location startingLocation, double radius) {
         spawnParticleCircle(startingLocation, radius, Color.WHITE);
     }
     
-    public static void spawnParticleCircle(Location startingLocation, int radius, Color color) {
+    public static void spawnParticleCircle(Location startingLocation, double radius, Color color) {
         World world = startingLocation.getWorld();
         Particle.DustOptions particle = new Particle.DustOptions(color, 1F);
         
@@ -87,6 +93,49 @@ public class ParticleUtil {
         for (int i = 0; i < numParticles; i++) {
             current.getWorld().spawnParticle(Particle.REDSTONE, current, 1, particle);
             current.add(direction);
+        }
+    }
+    
+    public static void spawnSpinningParticleCircle(Supplier<Location> location, int numTicks, int particlesPerTick, long peroid, double radius, Color color) {
+        Particle.DustOptions particle = new Particle.DustOptions(color, 1F);
+        new SpinningParticle(location, particlesPerTick, numTicks, radius, particle).runTaskTimer(CLCore.getInstance(), 0, peroid);
+    }
+    
+    private static class SpinningParticle extends BukkitRunnable {
+        
+        private final int particlesPerTick;
+        private final int numIterations;
+        private final double radius;
+        private final Supplier<Location> location;
+        private final Particle.DustOptions particle;
+        private final double increment;
+        
+        private int iteration = 0;
+        
+        public SpinningParticle(Supplier<Location> location, int particlesPerTick, int numIterations, double radius, Particle.DustOptions particle) {
+            this.location = location;
+            this.particlesPerTick = particlesPerTick;
+            this.numIterations = numIterations;
+            this.radius = radius;
+            this.particle = particle;
+            
+            this.increment = (2 * Math.PI) / (particlesPerTick * numIterations);
+        }
+        
+        @Override
+        public void run() {
+            Location loc = location.get();
+            
+            for (int i = 0; i < particlesPerTick; i++) {
+                double angle = (iteration * particlesPerTick + i) * increment;
+                double x = (loc.getX()) + (radius * Math.cos(angle));
+                double z = (loc.getZ()) + (radius * Math.sin(angle));
+                
+                loc.getWorld().spawnParticle(Particle.REDSTONE, new Location(loc.getWorld(), x, loc.getY(), z), 1, particle);
+            }
+            
+            if (++iteration >= numIterations)
+                this.cancel();
         }
     }
 }
