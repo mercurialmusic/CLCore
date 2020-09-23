@@ -78,6 +78,19 @@ public class ItemBuilder {
         return this;
     }
     
+    public ItemBuilder addLore(String... lore) {
+        return addLore(Arrays.asList(lore));
+    }
+    
+    public ItemBuilder addLore(List<String> lore) {
+        if (!meta.hasLore())
+            meta.setLore(lore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList()));
+        else
+            meta.getLore().addAll(lore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList()));
+        
+        return this;
+    }
+    
     public ItemBuilder setCustomModelData(int customModelData) {
         meta.setCustomModelData(customModelData);
         
