@@ -32,8 +32,10 @@ public class CustomItemListCommand extends SubCommand {
             return "Page can't be negative!";
         
         sender.sendMessage("Page " + (page + 1));
-        BaseComponent base = new TextComponent(ChatColor.YELLOW + "Key - Item - Action" + ChatColor.RESET);
         
+        BaseComponent base = new TextComponent(ChatColor.YELLOW + "Key - Item - Action" + ChatColor.RESET);
+
+        sender.spigot().sendMessage(base);
         registry.getItems().entrySet().stream().skip(page * PAGE_ENTRY_COUNT).forEach(a -> {
             BaseComponent delete = new TextComponent("[Delete]");
             delete.setColor(ChatColor.RED);
@@ -46,11 +48,9 @@ public class CustomItemListCommand extends SubCommand {
             entry.addExtra(" | ");
             entry.addExtra(delete);
             
-            base.addExtra("\n");
-            base.addExtra(entry);
+            sender.spigot().sendMessage(entry);
         });
         
-        sender.spigot().sendMessage(base);
         return null;
     }
     
