@@ -89,8 +89,17 @@ public class GUIInventory implements InventoryHolder, Listener {
     public void onInteract(InventoryClickEvent event) {
         InventoryAction action = event.getAction();
         
-        if (event.getView().getTopInventory() == inventory && action == InventoryAction.COLLECT_TO_CURSOR)
-            event.setCancelled(true);
+        if (event.getView().getTopInventory() == inventory)
+            switch(action) {
+                case COLLECT_TO_CURSOR:
+                case MOVE_TO_OTHER_INVENTORY:
+                case HOTBAR_MOVE_AND_READD:
+                case HOTBAR_SWAP:
+                    event.setCancelled(true);
+                    break;
+                default: 
+                    break;
+            }
 
         if (event.getClickedInventory() != inventory)
             return;
