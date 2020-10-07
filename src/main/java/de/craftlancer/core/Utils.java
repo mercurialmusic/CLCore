@@ -138,7 +138,7 @@ public class Utils {
     }
     
     public static TextComponent getItemComponent(ItemStack item) {
-        String displayName = item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : item.getType().name();
+        String displayName = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : item.getType().name();
         
         TextComponent component = new TextComponent(displayName);
         component.setHoverEvent(new HoverEvent(Action.SHOW_ITEM, new BaseComponent[] { NMSUtils.getItemHoverComponent(item) }));
