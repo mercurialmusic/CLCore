@@ -1,5 +1,6 @@
 package de.craftlancer.core.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -85,9 +86,12 @@ public class ItemBuilder {
     public ItemBuilder addLore(List<String> lore) {
         if (!meta.hasLore())
             meta.setLore(lore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList()));
-        else
-            meta.getLore().addAll(lore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList()));
-        
+        else {
+            List<String> list = meta.getLore();
+            list.addAll(lore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList()));
+            meta.setLore(list);
+        }
+    
         return this;
     }
     
@@ -190,6 +194,23 @@ public class ItemBuilder {
         catch (NullPointerException e) {
             throw new IllegalArgumentException("Error while trying to remove NBT tag: The item does not contain such key '" + key + "'!");
         }
+        
+        return this;
+    }
+    
+    public ItemBuilder removeLore() {
+        meta.setLore(new ArrayList<>());
+        
+        return this;
+    }
+    
+    public ItemBuilder removeLastLoreLine() {
+        if (!meta.hasLore())
+            return this;
+        
+        List<String> lore = meta.getLore();
+        lore.remove(lore.size() - 1);
+        meta.setLore(lore);
         
         return this;
     }

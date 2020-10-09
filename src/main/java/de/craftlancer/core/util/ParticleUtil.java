@@ -138,4 +138,43 @@ public class ParticleUtil {
                 this.cancel();
         }
     }
+    
+    public static Color getColorFromString(String string) {
+        switch (string.toUpperCase()) {
+            case "BLACK":
+                return Color.BLACK;
+            case "BLUE":
+                return Color.BLUE;
+            case "PURPLE":
+                return Color.PURPLE;
+            case "AQUA":
+                return Color.AQUA;
+            case "FUCHSIA":
+                return Color.FUCHSIA;
+            case "GRAY":
+                return Color.GRAY;
+            case "GREEN":
+                return Color.GREEN;
+            case "LIME":
+                return Color.LIME;
+            case "MAROON":
+                return Color.MAROON;
+            case "NAVY":
+                return Color.NAVY;
+            case "OLIVE":
+                return Color.OLIVE;
+            case "ORANGE":
+                return Color.ORANGE;
+            case "RED":
+                return Color.RED;
+            case "SILVER":
+                return Color.SILVER;
+            case "TEAL":
+                return Color.TEAL;
+            case "YELLOW":
+                return Color.YELLOW;
+            default:
+                return Color.WHITE;
+        }
+    }
 }
