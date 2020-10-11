@@ -33,13 +33,16 @@ public class CustomItemGiveCommand extends SubCommand {
         
         Player player = Bukkit.getPlayer(args[1]);
         Optional<ItemStack> item = registry.getItem(args[2]);
+        int amount = args.length >= 4 ? Utils.parseIntegerOrDefault(args[3], 1) : 1;
         
         if(player == null)
             return "Player not found.";
         if(!item.isPresent())
             return "Item not found.";
         
-        player.getInventory().addItem(item.get());
+        ItemStack localItem = item.get();
+        localItem.setAmount(amount);
+        player.getInventory().addItem(localItem).forEach((a,b) -> player.getWorld().dropItem(player.getLocation(), b));
         return String.format("Item %s given to player %s.", args[2], player.getName());
     }
     
