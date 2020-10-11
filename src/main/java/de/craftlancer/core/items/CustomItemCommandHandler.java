@@ -12,6 +12,7 @@ public class CustomItemCommandHandler extends CommandHandler {
         registerSubCommand("remove", new CustomItemRemoveCommand(plugin, registry));
         registerSubCommand("list", new CustomItemListCommand(plugin, registry));
         registerSubCommand("give", new CustomItemGiveCommand(plugin, registry));
+        registerSubCommand("drop", new CustomItemGiveCommand(plugin, registry));
     }
     
 }
