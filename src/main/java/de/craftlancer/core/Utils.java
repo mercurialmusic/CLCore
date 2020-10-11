@@ -129,12 +129,12 @@ public class Utils {
         return String.format("%dh %02dmin %02ds", h, min, s);
     }
     
-    public static boolean isBetween(int locX, int x, int x2) {
-        return (x > x2 && locX >= x2 && locX <= x) || (x < x2 && locX <= x2 && locX >= x);
+    public static boolean isBetween(int value, int bound1, int bound2) {
+        return (bound1 > bound2 && value >= bound2 && value <= bound1) || (bound1 < bound2 && value <= bound2 && value >= bound1);
     }
     
-    public static boolean isBetween(double d, double x, double x2) {
-        return (x > x2 && d >= x2 && d <= x) || (x < x2 && d <= x2 && d >= x);
+    public static boolean isBetween(double value, double bound1, double bound2) {
+        return (bound1 > bound2 && value >= bound2 && value <= bound1) || (bound1 < bound2 && value <= bound2 && value >= bound1);
     }
     
     public static TextComponent getItemComponent(ItemStack item) {

@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandMap;
 import org.bukkit.craftbukkit.v1_16_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R2.entity.CraftEntity;
 import org.bukkit.entity.Entity;
@@ -91,6 +92,10 @@ public class NMSUtils {
             Bukkit.getLogger().warning(e.getMessage());
             return new double[] { 20D, 20D, 20D };
         }
+    }
+    
+    public static CommandMap getCommandMap() {
+        return ((CraftServer) Bukkit.getServer()).getCommandMap();
     }
 
     public static boolean isEntityActive(Entity e) {

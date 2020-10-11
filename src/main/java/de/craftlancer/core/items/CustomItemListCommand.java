@@ -1,5 +1,8 @@
 package de.craftlancer.core.items;
 
+import java.util.Comparator;
+import java.util.Map;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -36,7 +39,7 @@ public class CustomItemListCommand extends SubCommand {
         BaseComponent base = new TextComponent(ChatColor.YELLOW + "Key - Item - Action" + ChatColor.RESET);
 
         sender.spigot().sendMessage(base);
-        registry.getItems().entrySet().stream().skip(page * PAGE_ENTRY_COUNT).forEach(a -> {
+        registry.getItems().entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).skip(page * PAGE_ENTRY_COUNT).forEach(a -> {
             BaseComponent delete = new TextComponent("[Delete]");
             delete.setColor(ChatColor.RED);
             delete.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/registeritem remove " + a.getKey()));
