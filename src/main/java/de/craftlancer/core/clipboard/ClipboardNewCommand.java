@@ -28,12 +28,12 @@ public class ClipboardNewCommand extends SubCommand {
         
         Player player = (Player) sender;
         
-        if (manager.getClipboard(player) != null) {
+        if (manager.getClipboard(player.getUniqueId()) != null) {
             MessageUtil.sendMessage(plugin, sender, MessageLevel.INFO, "You already have a clipboard. Use §6/clipboard cancel §eto cancel.");
             return null;
         }
         
-        manager.addClipboard(player, new Clipboard(manager, player, player.getWorld()));
+        manager.addClipboard(new Clipboard(manager, player.getUniqueId(), player.getWorld()));
         MessageUtil.sendMessage(plugin, sender, MessageLevel.SUCCESS, "Successfully created a new clipboard.");
         return null;
     }

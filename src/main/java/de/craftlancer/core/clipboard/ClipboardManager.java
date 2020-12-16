@@ -18,13 +18,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class ClipboardManager implements Listener {
     private static ClipboardManager instance;
     private CLCore plugin;
     
-    private List<Player> cooldown = new ArrayList<>();
-    private Map<Player, Clipboard> clipboards = new HashMap<>();
+    private List<UUID> cooldown = new ArrayList<>();
+    private Map<UUID, Clipboard> clipboards = new HashMap<>();
     
     public ClipboardManager(CLCore plugin) {
         instance = this;
@@ -36,22 +37,22 @@ public class ClipboardManager implements Listener {
         return instance;
     }
     
-    public Clipboard getClipboard(Player player) {
-        return clipboards.get(player);
+    public Clipboard getClipboard(UUID uuid) {
+        return clipboards.get(uuid);
     }
     
-    public void removeClipboard(Player player) {
-        clipboards.get(player).remove();
-        clipboards.remove(player);
+    public void removeClipboard(UUID owner) {
+        clipboards.get(owner).remove();
+        clipboards.remove(owner);
     }
     
-    public void addClipboard(Player player, Clipboard clipboard) {
-        clipboards.put(player, clipboard);
+    public void addClipboard(Clipboard clipboard) {
+        clipboards.put(clipboard.getOwner(), clipboard);
     }
     
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) {
-        clipboards.remove(event.getPlayer());
+        removeClipboard(event.getPlayer().getUniqueId());
     }
     
     @EventHandler(ignoreCancelled = true)
@@ -62,17 +63,17 @@ public class ClipboardManager implements Listener {
         if (action != Action.RIGHT_CLICK_BLOCK && action != Action.LEFT_CLICK_BLOCK)
             return;
         
-        if (cooldown.contains(player))
+        if (cooldown.contains(player.getUniqueId()))
             return;
         else {
-            cooldown.add(player);
-            new LambdaRunnable(() -> cooldown.remove(player)).runTaskLater(plugin, 2);
+            cooldown.add(player.getUniqueId());
+            new LambdaRunnable(() -> cooldown.remove(player.getUniqueId())).runTaskLater(plugin, 2);
         }
         
-        if (!clipboards.containsKey(player))
+        if (!clipboards.containsKey(player.getUniqueId()))
             return;
         
-        Clipboard clipboard = clipboards.get(player);
+        Clipboard clipboard = clipboards.get(player.getUniqueId());
         Block block = event.getClickedBlock();
         
         if (!block.getWorld().equals(clipboard.getWorld())) {
@@ -99,7 +100,5 @@ public class ClipboardManager implements Listener {
             clipboard.setlocation2(block.getLocation());
         
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5F, 2F);
-        MessageUtil.sendMessage(plugin, player, MessageLevel.SUCCESS,
-                "Location " + (action == Action.LEFT_CLICK_BLOCK ? "1" : "2") + " set.");
     }
 }

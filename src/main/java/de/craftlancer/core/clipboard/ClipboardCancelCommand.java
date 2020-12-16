@@ -28,12 +28,12 @@ public class ClipboardCancelCommand extends SubCommand {
         
         Player player = (Player) sender;
         
-        if (manager.getClipboard(player) == null) {
+        if (manager.getClipboard(player.getUniqueId()) == null) {
             MessageUtil.sendMessage(plugin, sender, MessageLevel.INFO, "You do not have an active clipboard.");
             return null;
         }
         
-        manager.removeClipboard(player);
+        manager.removeClipboard(player.getUniqueId());
         MessageUtil.sendMessage(plugin, sender, MessageLevel.SUCCESS, "Successfully removed your active clipboard.");
         return null;
     }

@@ -7,21 +7,22 @@ import de.craftlancer.core.util.ParticleUtil;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 
+import java.util.UUID;
+
 public class Clipboard {
     
-    private Player owner;
+    private UUID owner;
     private Location location1;
     private Location location2;
     private World world;
     private BukkitTask runnable;
     private ClipboardManager manager;
     
-    public Clipboard(ClipboardManager manager, Player owner, World world) {
+    public Clipboard(ClipboardManager manager, UUID owner, World world) {
         this.owner = owner;
         this.manager = manager;
         this.world = world;
@@ -69,7 +70,7 @@ public class Clipboard {
                 location2.getX(), location2.getY(), location2.getZ());
     }
     
-    public Player getPlayer() {
+    public UUID getOwner() {
         return owner;
     }
     
