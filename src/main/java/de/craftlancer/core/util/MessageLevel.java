@@ -5,5 +5,6 @@ public enum MessageLevel {
     ERROR,
     INFO,
     WARNING,
-    DEBUG;
+    DEBUG,
+    SUCCESS
 }

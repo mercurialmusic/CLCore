@@ -10,3 +10,5 @@ commands:
     description: Commands to access the custom item registry
   newCommandTest:
     description: Test
+  clipboard:
+    description: Clipboard utility to select two points for use by other plugins
