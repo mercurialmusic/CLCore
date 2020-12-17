@@ -1,7 +1,6 @@
 package de.craftlancer.core.clipboard;
 
 import de.craftlancer.core.CLCore;
-import de.craftlancer.core.LambdaRunnable;
 import de.craftlancer.core.Utils;
 import de.craftlancer.core.util.ParticleUtil;
 import org.bukkit.Color;
@@ -20,14 +19,10 @@ public class Clipboard {
     private Location location2;
     private World world;
     private BukkitTask runnable;
-    private ClipboardManager manager;
     
-    public Clipboard(ClipboardManager manager, UUID owner, World world) {
+    public Clipboard(UUID owner, World world) {
         this.owner = owner;
-        this.manager = manager;
         this.world = world;
-        
-        new LambdaRunnable(() -> manager.removeClipboard(owner)).runTaskLater(CLCore.getInstance(), 6000);
     }
     
     public void remove() {
@@ -38,23 +33,23 @@ public class Clipboard {
     }
     
     
-    public void setlocation1(Location location1) {
+    public void setLocation1(Location location1) {
         this.location1 = location1;
         
         spawnParticles();
     }
     
-    public void setlocation2(Location location2) {
+    public void setLocation2(Location location2) {
         this.location2 = location2;
         
         spawnParticles();
     }
     
-    public Location getlocation1() {
+    public Location getLocation1() {
         return location1;
     }
     
-    public Location getlocation2() {
+    public Location getLocation2() {
         return location2;
     }
     

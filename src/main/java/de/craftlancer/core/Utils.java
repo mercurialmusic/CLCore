@@ -8,6 +8,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import me.ryanhamshire.GriefPrevention.Claim;
+import me.ryanhamshire.GriefPrevention.ClaimPermission;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -26,6 +27,7 @@ import org.bukkit.util.BoundingBox;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -214,7 +216,7 @@ public class Utils {
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionManager regions = container.get(BukkitAdapter.adapt(loc.getWorld()));
         
-        if (WorldGuard.getInstance() != null && regions != null && !player.isOp()) {
+        if (WorldGuard.getInstance() != null && regions != null) {
             BlockVector3 position = BlockVector3.at(loc.getX(), loc.getY(), loc.getZ());
             ApplicableRegionSet set = regions.getApplicableRegions(position);
             return set.size() != 0;
@@ -222,17 +224,14 @@ public class Utils {
         return false;
     }
     
-    public static boolean isTrusted(Player player, Location loc) {
+    public static boolean isTrusted(UUID uuid, Location loc, ClaimPermission permission) {
         if (!GriefPrevention.instance.isEnabled())
             return true;
         
-        Claim claim = null;
-        for (Claim c : GriefPrevention.instance.dataStore.getClaims())
-            if (c.contains(loc, true, false))
-                claim = c;
+        Claim claim = GriefPrevention.instance.dataStore.getClaimAt(loc, true, null);
         
         return claim == null
-                || claim.getOwnerName().equals(player.getName())
-                || claim.allowBuild(player, loc.getBlock().getType()) == null;
+                || uuid.equals(claim.ownerID)
+                || claim.hasExplicitPermission(uuid, permission);
     }
 }

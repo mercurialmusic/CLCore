@@ -62,7 +62,7 @@ public class CLCore extends JavaPlugin {
         
         BaseComponent prefix = new TextComponent(new ComponentBuilder("[").color(ChatColor.WHITE).append("Craft").color(ChatColor.DARK_RED).append("Citizen")
                 .color(ChatColor.WHITE).append("]").color(ChatColor.WHITE).create());
-        MessageUtil.registerPlugin(this, prefix, ChatColor.WHITE, ChatColor.YELLOW, ChatColor.RED, ChatColor.DARK_RED, ChatColor.DARK_AQUA, ChatColor.GREEN);
+        MessageUtil.register(this, prefix, ChatColor.WHITE, ChatColor.YELLOW, ChatColor.RED, ChatColor.DARK_RED, ChatColor.DARK_AQUA, ChatColor.GREEN);
         
         getCommand("convo").setExecutor(new ConvoCommand());
         

@@ -22,19 +22,19 @@ public class ClipboardCancelCommand extends SubCommand {
     protected String execute(CommandSender sender, Command cmd, String label, String[] args) {
         
         if (!checkSender(sender)) {
-            MessageUtil.sendMessage(plugin, sender, MessageLevel.INFO, "You do not have access to this command.");
+            MessageUtil.sendMessage(manager, sender, MessageLevel.INFO, "You do not have access to this command.");
             return null;
         }
         
         Player player = (Player) sender;
         
-        if (manager.getClipboard(player.getUniqueId()) == null) {
-            MessageUtil.sendMessage(plugin, sender, MessageLevel.INFO, "You do not have an active clipboard.");
+        if (!manager.getClipboard(player.getUniqueId()).isPresent()) {
+            MessageUtil.sendMessage(manager, sender, MessageLevel.INFO, "You do not have an active clipboard.");
             return null;
         }
         
         manager.removeClipboard(player.getUniqueId());
-        MessageUtil.sendMessage(plugin, sender, MessageLevel.SUCCESS, "Successfully removed your active clipboard.");
+        MessageUtil.sendMessage(manager, sender, MessageLevel.SUCCESS, "Successfully removed your active clipboard.");
         return null;
     }
     

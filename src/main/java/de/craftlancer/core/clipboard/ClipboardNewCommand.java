@@ -22,19 +22,20 @@ public class ClipboardNewCommand extends SubCommand {
     protected String execute(CommandSender sender, Command cmd, String label, String[] args) {
         
         if (!checkSender(sender)) {
-            MessageUtil.sendMessage(plugin, sender, MessageLevel.INFO, "You do not have access to this command.");
+            MessageUtil.sendMessage(manager, sender, MessageLevel.INFO, "You do not have access to this command.");
             return null;
         }
         
         Player player = (Player) sender;
         
-        if (manager.getClipboard(player.getUniqueId()) != null) {
-            MessageUtil.sendMessage(plugin, sender, MessageLevel.INFO, "You already have a clipboard. Use §6/clipboard cancel §eto cancel.");
+        if (manager.getClipboard(player.getUniqueId()).isPresent()) {
+            MessageUtil.sendMessage(manager, sender, MessageLevel.INFO, "You already have a clipboard. Use §6/clipboard cancel §eto cancel.");
             return null;
         }
         
-        manager.addClipboard(new Clipboard(manager, player.getUniqueId(), player.getWorld()));
-        MessageUtil.sendMessage(plugin, sender, MessageLevel.SUCCESS, "Successfully created a new clipboard.");
+        manager.addClipboard(new Clipboard(player.getUniqueId(), player.getWorld()));
+        
+        MessageUtil.sendMessage(manager, sender, MessageLevel.SUCCESS, "Successfully created a new clipboard.");
         return null;
     }
     
