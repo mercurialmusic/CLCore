@@ -1,5 +1,7 @@
 package de.craftlancer.core.conversation;
 
+import java.util.UUID;
+
 import org.bukkit.conversations.Conversable;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
@@ -45,5 +47,13 @@ public class FormattedConversable implements Conversable {
             p.spigot().sendMessage(ComponentSerializer.parse(message));
         else
             p.sendRawMessage(message);
+    }
+
+    @Override
+    public void sendRawMessage(UUID sender, String message) {
+        if(message.startsWith("[") || message.startsWith("{"))
+            p.spigot().sendMessage(ComponentSerializer.parse(message)); // FIXME 1.16.4, add sender
+        else
+            p.sendRawMessage(sender, message);
     }
 }

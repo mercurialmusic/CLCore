@@ -142,4 +142,9 @@ public class ClipboardManager implements Listener, MessageRegisterable {
         if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.GOLDEN_AXE)
             event.setCancelled(true);
     }
+
+    @Override
+    public String getMessageID() {
+        return "clcore.clipboard";
+    }
 }
