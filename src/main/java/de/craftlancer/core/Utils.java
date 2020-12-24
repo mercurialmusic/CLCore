@@ -1,29 +1,39 @@
 package de.craftlancer.core;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import me.ryanhamshire.GriefPrevention.Claim;
+import me.ryanhamshire.GriefPrevention.ClaimPermission;
+import me.ryanhamshire.GriefPrevention.GriefPrevention;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.HoverEvent.Action;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.BoundingBox;
 
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.HoverEvent.Action;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /*
  * ItemStack: <Material> <Amount> <Data> <Name> <Lore>
- * 
+ *
  * ItemStack:
  *   Material: material
  *   Data: Data
@@ -31,7 +41,7 @@ import net.md_5.bungee.api.chat.HoverEvent.Action;
  *   Name:
  *   Enchants:
  *   Lore:
- *   
+ *
  */
 public class Utils {
     
@@ -57,8 +67,7 @@ public class Utils {
     public static int parseIntegerOrDefault(String val, int defaultVal) {
         try {
             return Integer.parseInt(val);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return defaultVal;
         }
     }
@@ -66,8 +75,7 @@ public class Utils {
     public static double parseDoubleOrDefault(String val, double defaultVal) {
         try {
             return Double.parseDouble(val);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return defaultVal;
         }
     }
@@ -75,8 +83,7 @@ public class Utils {
     public static float parseFloatOrDefault(String val, float defaultVal) {
         try {
             return Float.parseFloat(val);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return defaultVal;
         }
     }
@@ -86,16 +93,15 @@ public class Utils {
             for (T ob : a)
                 if (ob.equals(o))
                     return true;
-                
+        
         return false;
     }
     
     /**
      * Get all values of a string Collection which start with a given, case insensitive, string.
-     * 
-     * 
+     *
      * @param value the given String
-     * @param list the Collection
+     * @param list  the Collection
      * @return a List of all matches
      */
     public static List<String> getMatches(String value, Collection<String> list) {
@@ -104,9 +110,9 @@ public class Utils {
     
     /**
      * Get all values of a string array which start with a given, case insensitive, string
-     * 
+     *
      * @param value the given String
-     * @param list the array
+     * @param list  the array
      * @return a List of all matches
      */
     public static List<String> getMatches(String value, String[] list) {
@@ -141,7 +147,7 @@ public class Utils {
         String displayName = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : item.getType().name();
         
         TextComponent component = new TextComponent(displayName);
-        component.setHoverEvent(new HoverEvent(Action.SHOW_ITEM, new BaseComponent[] { NMSUtils.getItemHoverComponent(item) }));
+        component.setHoverEvent(new HoverEvent(Action.SHOW_ITEM, new BaseComponent[]{NMSUtils.getItemHoverComponent(item)}));
         
         return component;
     }
@@ -201,5 +207,31 @@ public class Utils {
         
         item.setItemMeta(meta);
         return item;
+    }
+    
+    public static boolean isInAdminRegion(Player player, Location loc) {
+        if (!WorldGuardPlugin.inst().isEnabled())
+            return false;
+        
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionManager regions = container.get(BukkitAdapter.adapt(loc.getWorld()));
+        
+        if (WorldGuard.getInstance() != null && regions != null) {
+            BlockVector3 position = BlockVector3.at(loc.getX(), loc.getY(), loc.getZ());
+            ApplicableRegionSet set = regions.getApplicableRegions(position);
+            return set.size() != 0;
+        }
+        return false;
+    }
+    
+    public static boolean isTrusted(UUID uuid, Location loc, ClaimPermission permission) {
+        if (!GriefPrevention.instance.isEnabled())
+            return true;
+        
+        Claim claim = GriefPrevention.instance.dataStore.getClaimAt(loc, true, null);
+        
+        return claim == null
+                || uuid.equals(claim.ownerID)
+                || claim.hasExplicitPermission(uuid, permission);
     }
 }
