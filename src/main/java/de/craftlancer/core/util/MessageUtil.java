@@ -12,8 +12,7 @@ import java.util.Map;
 
 public class MessageUtil {
     private static final MessageSettings NULL_SETTINGS = new MessageSettings();
-    private static final Map<String, MessageSettings> pluginSettings = new HashMap<>();
-    private static final Map<MessageRegisterable, MessageSettings> messageRegisterableSettings = new HashMap<>();
+    private static final Map<String, MessageSettings> settings = new HashMap<>();
     
     private MessageUtil() {
     }
@@ -21,33 +20,33 @@ public class MessageUtil {
     @Deprecated
     public static void registerPlugin(Plugin plugin, BaseComponent prefix, ChatColor normalColor, ChatColor infoColor, ChatColor warningColor,
                                       ChatColor errorColor, ChatColor debugColor) {
-        pluginSettings.put(plugin.getName(), new MessageSettings(prefix, normalColor, infoColor, warningColor, errorColor, debugColor));
+        settings.put(plugin.getName(), new MessageSettings(prefix, normalColor, infoColor, warningColor, errorColor, debugColor));
     }
     
     public static void register(Plugin plugin, BaseComponent prefix, ChatColor normalColor, ChatColor infoColor, ChatColor warningColor,
                                 ChatColor errorColor, ChatColor debugColor, ChatColor successColor) {
-        pluginSettings.put(plugin.getName(), new MessageSettings(prefix, normalColor, infoColor, warningColor, errorColor, debugColor, successColor));
+        settings.put(plugin.getName(), new MessageSettings(prefix, normalColor, infoColor, warningColor, errorColor, debugColor, successColor));
     }
     
     public static void register(MessageRegisterable registerable, BaseComponent prefix, ChatColor normalColor, ChatColor infoColor, ChatColor warningColor,
                                 ChatColor errorColor, ChatColor debugColor, ChatColor successColor) {
-        messageRegisterableSettings.put(registerable, new MessageSettings(prefix, normalColor, infoColor, warningColor, errorColor, debugColor, successColor));
+        settings.put(registerable.getMessageID(), new MessageSettings(prefix, normalColor, infoColor, warningColor, errorColor, debugColor, successColor));
     }
     
     public static void sendMessage(Plugin plugin, CommandSender sender, MessageLevel level, String message) {
-        sender.spigot().sendMessage(pluginSettings.getOrDefault(plugin != null ? plugin.getName() : "", NULL_SETTINGS).formatMessage(level, message));
+        sender.spigot().sendMessage(settings.getOrDefault(plugin != null ? plugin.getName() : "", NULL_SETTINGS).formatMessage(level, message));
     }
     
     public static void sendMessage(Plugin plugin, CommandSender sender, MessageLevel level, BaseComponent message) {
-        sender.spigot().sendMessage(pluginSettings.getOrDefault(plugin != null ? plugin.getName() : "", NULL_SETTINGS).formatMessage(level, message));
+        sender.spigot().sendMessage(settings.getOrDefault(plugin != null ? plugin.getName() : "", NULL_SETTINGS).formatMessage(level, message));
     }
     
     public static void sendMessage(MessageRegisterable registerable, CommandSender sender, MessageLevel level, String message) {
-        sender.spigot().sendMessage(messageRegisterableSettings.getOrDefault(registerable, NULL_SETTINGS).formatMessage(level, message));
+        sender.spigot().sendMessage(settings.getOrDefault(registerable.getMessageID(), NULL_SETTINGS).formatMessage(level, message));
     }
     
     public static void sendMessage(MessageRegisterable registerable, CommandSender sender, MessageLevel level, BaseComponent message) {
-        sender.spigot().sendMessage(messageRegisterableSettings.getOrDefault(registerable, NULL_SETTINGS).formatMessage(level, message));
+        sender.spigot().sendMessage(settings.getOrDefault(registerable.getMessageID(), NULL_SETTINGS).formatMessage(level, message));
     }
     
     private static class MessageSettings {
