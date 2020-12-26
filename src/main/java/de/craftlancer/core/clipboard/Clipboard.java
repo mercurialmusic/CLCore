@@ -113,4 +113,36 @@ public class Clipboard {
             }
         }.runTaskTimer(CLCore.getInstance(), 1, 20);
     }
+    
+    /**
+     * @return true if both locations are not null.
+     */
+    public boolean hasTwoPoints() {
+        return location1 != null && location2 != null;
+    }
+    
+    public double getVolume() {
+        return getHeight() * getLength() * getWidth();
+    }
+    
+    /**
+     * Gets the height in the Y direction
+     */
+    public double getHeight() {
+        return Math.abs(location1.getY() - location2.getY());
+    }
+    
+    /**
+     * Gets the length in the X direction
+     */
+    public double getLength() {
+        return Math.abs(location1.getX() - location2.getX());
+    }
+    
+    /**
+     * Gets the width in the Z direction
+     */
+    public double getWidth() {
+        return Math.abs(location1.getZ() - location2.getZ());
+    }
 }
