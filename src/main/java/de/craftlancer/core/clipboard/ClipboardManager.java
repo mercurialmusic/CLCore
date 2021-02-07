@@ -12,6 +12,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -64,7 +65,7 @@ public class ClipboardManager implements Listener, MessageRegisterable {
     }
     
     public void addClipboard(Clipboard clipboard) {
-        System.out.println(clipboard.getOwner().toString());
+        
         clipboards.put(clipboard.getOwner(), clipboard);
         new LambdaRunnable(() -> {
             removeClipboard(clipboard.getOwner());
@@ -94,8 +95,10 @@ public class ClipboardManager implements Listener, MessageRegisterable {
             return;
         else {
             cooldown.add(player.getUniqueId());
-            new LambdaRunnable(() -> cooldown.remove(player.getUniqueId())).runTaskLater(plugin, 2);
+            new LambdaRunnable(() -> cooldown.remove(player.getUniqueId())).runTaskLater(plugin, 5);
         }
+        
+        Block block = event.getClickedBlock();
         
         if (!clipboards.containsKey(player.getUniqueId()))
             if (player.getInventory().getItemInMainHand().getType() == Material.GOLDEN_AXE) {
@@ -104,28 +107,27 @@ public class ClipboardManager implements Listener, MessageRegisterable {
             } else
                 return;
         
+        if (!player.isOp() && !Utils.isTrusted(player.getUniqueId(), block.getLocation(), ClaimPermission.Build)) {
+            MessageUtil.sendMessage(this, player, MessageLevel.WARNING,
+                    "You must be trusted in this claim to set your clipboard here.");
+            return;
+        }
+        
+        if (!player.isOp() && Utils.isInAdminRegion(block.getLocation())) {
+            MessageUtil.sendMessage(this, player, MessageLevel.WARNING,
+                    "You cannot set your clipboard in an admin claim.");
+            return;
+        }
+        
         Optional<Clipboard> optional = getClipboard(player.getUniqueId());
         if (!optional.isPresent())
             return;
         
         Clipboard clipboard = optional.get();
-        Block block = event.getClickedBlock();
         
         if (!block.getWorld().equals(clipboard.getWorld())) {
             MessageUtil.sendMessage(this, player, MessageLevel.ERROR,
                     "You must select a block in the same world you created the clipboard in.");
-            return;
-        }
-        
-        if (!player.isOp() && !Utils.isTrusted(player.getUniqueId(), block.getLocation(), ClaimPermission.Build)) {
-            MessageUtil.sendMessage(this, player, MessageLevel.ERROR,
-                    "You must be trusted in this claim to set your clipboard here.");
-            return;
-        }
-        
-        if (!player.isOp() && !Utils.isInAdminRegion(block.getLocation())) {
-            MessageUtil.sendMessage(this, player, MessageLevel.ERROR,
-                    "You cannot set your clipboard in an admin claim.");
             return;
         }
         
@@ -139,10 +141,12 @@ public class ClipboardManager implements Listener, MessageRegisterable {
     
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        if (!event.getPlayer().isOp() || !clipboards.containsKey(event.getPlayer().getUniqueId()))
+        Player player = event.getPlayer();
+        
+        if (player.getInventory().getItemInMainHand().getType() != Material.AIR && player.getInventory().getItemInMainHand().getType() != Material.GOLDEN_AXE)
             return;
         
-        if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.GOLDEN_AXE)
+        if (player.getGameMode() == GameMode.CREATIVE && clipboards.containsKey(player.getUniqueId()))
             event.setCancelled(true);
     }
     
