@@ -64,6 +64,7 @@ public class ClipboardManager implements Listener, MessageRegisterable {
     }
     
     public void addClipboard(Clipboard clipboard) {
+        System.out.println(clipboard.getOwner().toString());
         clipboards.put(clipboard.getOwner(), clipboard);
         new LambdaRunnable(() -> {
             removeClipboard(clipboard.getOwner());
@@ -86,6 +87,9 @@ public class ClipboardManager implements Listener, MessageRegisterable {
         if (action != Action.RIGHT_CLICK_BLOCK && action != Action.LEFT_CLICK_BLOCK)
             return;
         
+        if (player.getInventory().getItemInMainHand().getType() != Material.AIR && player.getInventory().getItemInMainHand().getType() != Material.GOLDEN_AXE)
+            return;
+        
         if (cooldown.contains(player.getUniqueId()))
             return;
         else {
@@ -96,10 +100,9 @@ public class ClipboardManager implements Listener, MessageRegisterable {
         if (!clipboards.containsKey(player.getUniqueId()))
             if (player.getInventory().getItemInMainHand().getType() == Material.GOLDEN_AXE) {
                 addClipboard(new Clipboard(player.getUniqueId(), player.getWorld()));
-                MessageUtil.sendMessage(this, player, MessageLevel.SUCCESS, "Clipboard created.");
+                MessageUtil.sendMessage(this, player, MessageLevel.SUCCESS, "Successfully created a new clipboard.");
             } else
                 return;
-        
         
         Optional<Clipboard> optional = getClipboard(player.getUniqueId());
         if (!optional.isPresent())
@@ -120,7 +123,7 @@ public class ClipboardManager implements Listener, MessageRegisterable {
             return;
         }
         
-        if (!player.isOp() && !Utils.isInAdminRegion(player, block.getLocation())) {
+        if (!player.isOp() && !Utils.isInAdminRegion(block.getLocation())) {
             MessageUtil.sendMessage(this, player, MessageLevel.ERROR,
                     "You cannot set your clipboard in an admin claim.");
             return;
@@ -136,10 +139,15 @@ public class ClipboardManager implements Listener, MessageRegisterable {
     
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        if (!event.getPlayer().isOp() || !getClipboard(event.getPlayer().getUniqueId()).isPresent())
+        if (!event.getPlayer().isOp() || !clipboards.containsKey(event.getPlayer().getUniqueId()))
             return;
         
         if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.GOLDEN_AXE)
             event.setCancelled(true);
+    }
+    
+    @Override
+    public String getMessageID() {
+        return "Clipboard";
     }
 }
