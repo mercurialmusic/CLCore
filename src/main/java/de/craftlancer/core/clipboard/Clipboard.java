@@ -1,8 +1,9 @@
 package de.craftlancer.core.clipboard;
 
-import de.craftlancer.core.CLCore;
-import de.craftlancer.core.Utils;
-import de.craftlancer.core.util.ParticleUtil;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -14,6 +15,9 @@ import org.bukkit.util.BoundingBox;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import de.craftlancer.core.CLCore;
+import de.craftlancer.core.Utils;
+import de.craftlancer.core.util.ParticleUtil;
 
 public class Clipboard {
     
@@ -162,5 +166,52 @@ public class Clipboard {
                 ParticleUtil.spawnParticleRect(minLocation, maxLocation, Color.WHITE);
             }
         }.runTaskTimer(CLCore.getInstance(), 1, 20);
+    }
+    
+    /**
+     * @return true if both locations are not null.
+     */
+    public boolean hasTwoPoints() {
+        return location1 != null && location2 != null;
+    }
+    
+    public double getVolume() {
+        return getHeight() * getLength() * getWidth();
+    }
+    
+    /**
+     * Gets the height in the Y direction
+     */
+    public double getHeight() {
+        return Math.abs(location1.getY() - location2.getY());
+    }
+    
+    /**
+     * Gets the length in the X direction
+     */
+    public double getLength() {
+        return Math.abs(location1.getX() - location2.getX());
+    }
+    
+    /**
+     * Gets the width in the Z direction
+     */
+    public double getWidth() {
+        return Math.abs(location1.getZ() - location2.getZ());
+    }
+    
+    /**
+     * Gets a list of all blocks in the clipboard.
+     */
+    public List<Block> toBlockList() {
+        List<Block> blocks = new ArrayList<>();
+        BoundingBox box = toBoundingBox();
+        
+        for (int x = (int) box.getMinX(); x <= (int) box.getMaxX(); x++)
+            for (int y = (int) box.getMinY(); y <= (int) box.getMaxY(); y++)
+                for (int z = (int) box.getMinZ(); z <= (int) box.getMaxZ(); z++)
+                    blocks.add(world.getBlockAt(x, y, z));
+        
+        return blocks;
     }
 }
