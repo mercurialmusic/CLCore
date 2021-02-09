@@ -38,6 +38,7 @@ public class CLCore extends JavaPlugin {
     
     private CustomItemRegistry itemRegistry;
     private LastSeenCache lastSeenCache;
+    private PlayerTaskScheduler playerTaskScheduler;
     
     /* MockBukkit start */
     public CLCore() {
@@ -72,6 +73,7 @@ public class CLCore extends JavaPlugin {
         
         itemRegistry = new CustomItemRegistry(this);
         lastSeenCache = new LastSeenCache(this);
+        playerTaskScheduler = new PlayerTaskScheduler(this);
         
         setupChat();
         setupEconomy();
@@ -134,6 +136,10 @@ public class CLCore extends JavaPlugin {
     
     public LastSeenCache getLastSeenCache() {
         return lastSeenCache;
+    }
+    
+    public PlayerTaskScheduler getPlayerTaskScheduler() {
+        return playerTaskScheduler;
     }
     
     public static CLCore getInstance() {
