@@ -149,9 +149,9 @@ public class ClipboardManager implements Listener, MessageRegisterable {
         if (player.getGameMode() == GameMode.CREATIVE && clipboards.containsKey(player.getUniqueId()))
             event.setCancelled(true);
     }
-    
+
     @Override
     public String getMessageID() {
-        return "Clipboard";
+        return "clcore.clipboard";
     }
 }
