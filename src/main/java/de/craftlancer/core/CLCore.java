@@ -5,6 +5,7 @@ import de.craftlancer.core.clipboard.ClipboardManager;
 import de.craftlancer.core.conversation.ConvoCommand;
 import de.craftlancer.core.items.CustomItemRegistry;
 import de.craftlancer.core.legacy.MassChestInventory;
+import de.craftlancer.core.resourcepack.ResourcePackManager;
 import de.craftlancer.core.structure.BlockStructure;
 import de.craftlancer.core.structure.CuboidArea;
 import de.craftlancer.core.structure.Point2D;
@@ -74,6 +75,8 @@ public class CLCore extends JavaPlugin {
         itemRegistry = new CustomItemRegistry(this);
         lastSeenCache = new LastSeenCache(this);
         playerTaskScheduler = new PlayerTaskScheduler(this);
+        
+        Bukkit.getPluginManager().registerEvents(new ResourcePackManager(this), this);
         
         setupChat();
         setupEconomy();
