@@ -1,22 +1,24 @@
 package de.craftlancer.core.gui;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import de.craftlancer.core.Utils;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-import de.craftlancer.core.Utils;
-import net.md_5.bungee.api.ChatColor;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
+@Deprecated
+/**
+ * Deprecated. Use de.craftlancer.core.menu.PagedMenu
+ */
 public class PagedListGUIInventory {
     private List<PageItem> pageItems;
     private List<NavigationItem> navigationItems = new ArrayList<>();
@@ -49,16 +51,16 @@ public class PagedListGUIInventory {
     
     /**
      * Creates a traversable GUI with the ability to go back in forth between pages.
-     * 
-     * @param plugin the owning plugin
-     * @param title the title of the inventory
+     *
+     * @param plugin     the owning plugin
+     * @param title      the title of the inventory
      * @param useBorders whether to have a 1 block border around the list area
-     * @param rows the number of rows in the inventory, between 1 (2 with borders) and 6 (inclusive)
-     * @param pageItems list of items to display, can be modified later
+     * @param rows       the number of rows in the inventory, between 1 (2 with borders) and 6 (inclusive)
+     * @param pageItems  list of items to display, can be modified later
      * @param playSounds whether to play sounds on certain actions
      */
     public PagedListGUIInventory(@Nonnull Plugin plugin, @Nullable String title, boolean useBorders, int rows, @Nonnull List<PageItem> pageItems,
-            boolean playSounds) {
+                                 boolean playSounds) {
         this.plugin = plugin;
         this.title = title;
         this.useBorders = useBorders;
@@ -78,11 +80,11 @@ public class PagedListGUIInventory {
     
     /**
      * Creates a traversable GUI with the ability to go back in forth between pages.
-     * 
-     * @param plugin the owning plugin
+     *
+     * @param plugin     the owning plugin
      * @param useBorders whether to have a 1 block border around the list area
-     * @param rows the number of rows in the inventory, between 1 (2 with borders) and 6 (inclusive)
-     * @param pageItems list of items to display, can be modified later
+     * @param rows       the number of rows in the inventory, between 1 (2 with borders) and 6 (inclusive)
+     * @param pageItems  list of items to display, can be modified later
      * @param playSounds whether to play sounds on certain actions
      */
     public PagedListGUIInventory(Plugin plugin, boolean useBorders, int rows, List<PageItem> pageItems, boolean playSounds) {
@@ -130,15 +132,15 @@ public class PagedListGUIInventory {
     
     /**
      * Sets a page.
-     * 
+     *
      * @param inventory the inventory to modify
-     * @param page the page to set
+     * @param page      the page to set
      */
     private void setPageItems(GUIInventory inventory, int page) {
         int slot = getFirstSlot();
         // Looping through all the items to set the item in inventory and apply runnables
         List<PageItem> localItems = pageItems.stream().filter(a -> a.getItem().getType() != Material.AIR).skip((long) (page) * itemsPerPage).limit(itemsPerPage)
-                                             .collect(Collectors.toList());
+                .collect(Collectors.toList());
         
         for (PageItem pageItem : localItems) {
             int finalSlot = slot;
@@ -150,8 +152,7 @@ public class PagedListGUIInventory {
                     break;
                 else
                     slot += 3;
-            }
-            else
+            } else
                 slot++;
         }
     }
@@ -173,7 +174,7 @@ public class PagedListGUIInventory {
     
     /**
      * Opens page 0 for given player
-     * 
+     *
      * @param player the player to open the inventory for
      */
     public void display(@Nonnull Player player) {
@@ -182,7 +183,7 @@ public class PagedListGUIInventory {
     
     /**
      * Opens a given page for a given player
-     * 
+     *
      * @param player
      * @param page
      */
@@ -223,7 +224,7 @@ public class PagedListGUIInventory {
     /**
      * Sets the inventory title
      * Reloads the inventory
-     * 
+     *
      * @param title the new title
      */
     public void setTitle(@Nullable String title) {
@@ -233,7 +234,7 @@ public class PagedListGUIInventory {
     
     /**
      * Get a <b>mutable</b> list of page items.
-     * 
+     *
      * @return a list of all page items
      */
     public List<PageItem> getPageItems() {
@@ -270,7 +271,7 @@ public class PagedListGUIInventory {
     /**
      * Add a navigation item
      * Reloads the inventory if changes occurred
-     * 
+     *
      * @param navigationItem
      */
     public void addNavigationItem(@Nonnull NavigationItem navigationItem) {
@@ -284,7 +285,7 @@ public class PagedListGUIInventory {
     /**
      * Removes a navigation item
      * Reloads the inventory if changes occurred
-     * 
+     *
      * @param navigationItem
      */
     public void removeNavigationItem(@Nonnull NavigationItem navigationItem) {
@@ -312,7 +313,7 @@ public class PagedListGUIInventory {
     /**
      * Sets the info item
      * Reloads the inventory
-     * 
+     *
      * @param infoItem
      */
     public void setInfoItem(@Nonnull ItemStack infoItem) {

@@ -5,6 +5,7 @@ import de.craftlancer.core.clipboard.ClipboardManager;
 import de.craftlancer.core.conversation.ConvoCommand;
 import de.craftlancer.core.items.CustomItemRegistry;
 import de.craftlancer.core.legacy.MassChestInventory;
+import de.craftlancer.core.resourcepack.ResourcePackCommandHandler;
 import de.craftlancer.core.resourcepack.ResourcePackManager;
 import de.craftlancer.core.structure.BlockStructure;
 import de.craftlancer.core.structure.CuboidArea;
@@ -40,6 +41,7 @@ public class CLCore extends JavaPlugin {
     private CustomItemRegistry itemRegistry;
     private LastSeenCache lastSeenCache;
     private PlayerTaskScheduler playerTaskScheduler;
+    private ResourcePackManager resourcePackManager;
     
     /* MockBukkit start */
     public CLCore() {
@@ -76,7 +78,10 @@ public class CLCore extends JavaPlugin {
         lastSeenCache = new LastSeenCache(this);
         playerTaskScheduler = new PlayerTaskScheduler(this);
         
-        Bukkit.getPluginManager().registerEvents(new ResourcePackManager(this), this);
+        resourcePackManager = new ResourcePackManager(this);
+        Bukkit.getPluginManager().registerEvents(resourcePackManager, this);
+        getCommand("resourcepack").setExecutor(new ResourcePackCommandHandler(this, resourcePackManager));
+        
         
         setupChat();
         setupEconomy();
@@ -95,6 +100,7 @@ public class CLCore extends JavaPlugin {
     private void autosave() {
         itemRegistry.save();
         lastSeenCache.save();
+        resourcePackManager.save();
     }
     
     private boolean setupEconomy() {

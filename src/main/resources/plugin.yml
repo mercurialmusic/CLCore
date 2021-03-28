@@ -12,3 +12,8 @@ commands:
     description: Test
   clipboard:
     description: Clipboard utility to select two points for use by other plugins
+  resourcepack:
+    description: Commands for resource pack modification
+permissions:
+  clcore.admin:
+    description: Admin permission for CLCore commands

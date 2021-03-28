@@ -1,12 +1,5 @@
 package de.craftlancer.core.gui;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
-
-import javax.annotation.Nonnull;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,6 +13,16 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
+
+@Deprecated
+/**
+ * Deprecated. Use de.craftlancer.core.menu.Menu
+ */
 public class GUIInventory implements InventoryHolder, Listener {
     
     private final Inventory inventory;
@@ -90,25 +93,26 @@ public class GUIInventory implements InventoryHolder, Listener {
         InventoryAction action = event.getAction();
         
         if (event.getView().getTopInventory() == inventory)
-            switch(action) {
+            switch (action) {
                 case COLLECT_TO_CURSOR:
                 case MOVE_TO_OTHER_INVENTORY:
                 case HOTBAR_MOVE_AND_READD:
                 case HOTBAR_SWAP:
                     event.setCancelled(true);
                     break;
-                default: 
+                default:
                     break;
             }
-
+        
         if (event.getClickedInventory() != inventory)
             return;
         
         event.setCancelled(true);
         Map<ClickType, Consumer<Player>> map = clickActions.getOrDefault(event.getSlot(), Collections.emptyMap());
-        map.getOrDefault(event.getClick(), map.getOrDefault(null, a -> {})).accept((Player) event.getWhoClicked());
+        map.getOrDefault(event.getClick(), map.getOrDefault(null, a -> {
+        })).accept((Player) event.getWhoClicked());
     }
-
+    
     @EventHandler
     public void onDrag(InventoryDragEvent event) {
         if (event.getView().getTopInventory() == inventory || event.getInventory() == inventory)

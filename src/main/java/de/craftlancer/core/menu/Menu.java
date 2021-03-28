@@ -1,4 +1,4 @@
-package de.craftlancer.core.newgui;
+package de.craftlancer.core.menu;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -20,6 +20,9 @@ import java.util.Map;
 
 public class Menu implements InventoryHolder, Listener {
     
+    //Used only in association with ConditionalMenu
+    private String menuKey = "default";
+    private final MenuItem AIR = new MenuItem(new ItemStack(Material.AIR));
     private final Map<Integer, MenuItem> items = new HashMap<>();
     private final Inventory inventory;
     
@@ -30,18 +33,22 @@ public class Menu implements InventoryHolder, Listener {
         this.inventory = Bukkit.createInventory(this, rows * 9, title);
         Bukkit.getPluginManager().registerEvents(this, plugin);
         
-        fill(new MenuItem(new ItemStack(Material.AIR)), false);
+        fill(AIR, false);
     }
     
     public Menu(Plugin plugin, String title, InventoryType type) {
         this.inventory = Bukkit.createInventory(this, type, title);
         Bukkit.getPluginManager().registerEvents(this, plugin);
         
-        fill(new MenuItem(new ItemStack(Material.AIR)), false);
+        fill(AIR, false);
     }
     
     public Menu(Plugin plugin, String title) {
         this(plugin, title, 6);
+    }
+    
+    protected void setMenuKey(String key) {
+        this.menuKey = key;
     }
     
     public Menu(Plugin plugin, int rows) {
@@ -51,7 +58,7 @@ public class Menu implements InventoryHolder, Listener {
         this.inventory = Bukkit.createInventory(this, rows * 9);
         Bukkit.getPluginManager().registerEvents(this, plugin);
         
-        fill(new MenuItem(new ItemStack(Material.AIR)), false);
+        fill(AIR, false);
     }
     
     public Menu(Plugin plugin, InventoryType type) {
@@ -59,18 +66,16 @@ public class Menu implements InventoryHolder, Listener {
         this.inventory = Bukkit.createInventory(this, type);
         Bukkit.getPluginManager().registerEvents(this, plugin);
         
-        fill(new MenuItem(new ItemStack(Material.AIR)), false);
+        fill(AIR, false);
     }
     
     public Menu(Plugin plugin) {
         this(plugin, 6);
     }
     
-    public void add(int slot, MenuItem item) {
-        if (item.getMenuType() == MenuType.ALL || item.getMenuType() == this.getMenuType()) {
-            items.put(slot, item);
-            inventory.setItem(slot, item.getItem());
-        }
+    public void set(int slot, MenuItem item) {
+        items.put(slot, item);
+        inventory.setItem(slot, item.getItem());
     }
     
     /**
@@ -79,12 +84,22 @@ public class Menu implements InventoryHolder, Listener {
      * @param replace whether or not to replace current items inside.
      */
     public void fill(MenuItem item, boolean replace) {
-        if (item.getMenuType() == MenuType.ALL || item.getMenuType() == this.getMenuType())
-            for (int i = 0; i < inventory.getSize(); i++)
-                if (replace || items.get(i).getItem().getType().isAir()) {
-                    items.put(i, item);
-                    inventory.setItem(i, item.getItem());
-                }
+        for (int i = 0; i < inventory.getSize(); i++)
+            if (replace || (!items.containsKey(i) || items.get(i).getItem().getType().isAir())) {
+                items.put(i, item);
+                inventory.setItem(i, item.getItem());
+            }
+    }
+    
+    public void fillBorders(MenuItem item, boolean replace) {
+        for (int i = 0; i < inventory.getSize(); i++)
+            if (i < 9 || i >= (inventory.getSize() - 1) * 9 || i % 9 == 0)
+                if (replace || items.get(i).getItem().getType().isAir())
+                    set(i, item);
+    }
+    
+    public void remove(int slot) {
+        items.put(slot, new MenuItem(new ItemStack(Material.AIR)));
     }
     
     @Override
@@ -114,17 +129,19 @@ public class Menu implements InventoryHolder, Listener {
     public void onInventoryInteract(InventoryClickEvent event) {
         
         InventoryAction action = event.getAction();
-        MenuItem item = getItem(event.getSlot(), event.getView().getTopInventory());
+        MenuItem item = items.get(event.getSlot());
         
         if (isInventoryEqual(event.getView().getTopInventory()))
-            event.setCancelled(validateAction(event.getSlot(), item, action));
-        
-        if (isInventoryEqual(event.getClickedInventory()))
+            if (validateAction(event.getSlot(), item, action))
+                event.setCancelled(true);
+        if (!isInventoryEqual(event.getClickedInventory()))
             return;
         
+        event.setCancelled(true);
+        
         item.getClickActions().getOrDefault(event.getClick(),
-                item.getClickActions().getOrDefault(null, (p, m) -> {
-                })).accept((Player) event.getWhoClicked(), event.getAction());
+                item.getClickActions().getOrDefault(null, click -> {
+                })).accept(new MenuClick((Player) event.getWhoClicked(), event.getAction(), menuKey));
     }
     
     /**
@@ -142,13 +159,5 @@ public class Menu implements InventoryHolder, Listener {
         }
         
         return false;
-    }
-    
-    public MenuType getMenuType() {
-        return MenuType.DEFAULT;
-    }
-    
-    protected MenuItem getItem(int slot, Inventory inventory) {
-        return items.get(slot);
     }
 }
