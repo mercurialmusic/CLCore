@@ -1,9 +1,8 @@
 package de.craftlancer.core.clipboard;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
+import de.craftlancer.core.CLCore;
+import de.craftlancer.core.Utils;
+import de.craftlancer.core.util.ParticleUtil;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -12,9 +11,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 
-import de.craftlancer.core.CLCore;
-import de.craftlancer.core.Utils;
-import de.craftlancer.core.util.ParticleUtil;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class Clipboard {
     

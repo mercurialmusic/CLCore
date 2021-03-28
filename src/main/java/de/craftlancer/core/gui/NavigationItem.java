@@ -1,16 +1,20 @@
 package de.craftlancer.core.gui;
 
-import javax.annotation.Nonnull;
-
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+
+@Deprecated
+/**
+ * Deprecated. Use de.craftlancer.core.menu.MenuItem
+ */
 public class NavigationItem extends PageItem {
     
     private int slot;
     
     /**
      * @param slot the slot you want it to be at, to use it with variable rows, use -1 for the last slot, or -5 for the
-     *        middle slot of the last row, etc.
+     *             middle slot of the last row, etc.
      */
     public NavigationItem(@Nonnull ItemStack item, int slot) {
         super(item);

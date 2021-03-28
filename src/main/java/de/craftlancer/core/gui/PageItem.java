@@ -1,16 +1,19 @@
 package de.craftlancer.core.gui;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
+
+@Deprecated
+/**
+ * Deprecated. Use de.craftlancer.core.menu.MenuItem
+ */
 public class PageItem {
     
     private ItemStack item;
@@ -73,14 +76,12 @@ public class PageItem {
         if (clickActions == null) {
             if (other.clickActions != null)
                 return false;
-        }
-        else if (!clickActions.equals(other.clickActions))
+        } else if (!clickActions.equals(other.clickActions))
             return false;
         if (item == null) {
             if (other.item != null)
                 return false;
-        }
-        else if (!item.equals(other.item))
+        } else if (!item.equals(other.item))
             return false;
         return true;
     }
