@@ -163,5 +163,4 @@ public class Clipboard {
             }
         }.runTaskTimer(CLCore.getInstance(), 1, 20);
     }
-    
 }
