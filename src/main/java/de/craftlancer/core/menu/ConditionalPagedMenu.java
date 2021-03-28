@@ -12,7 +12,7 @@ import java.util.List;
 public class ConditionalPagedMenu extends AbstractPagedMenu {
     
     private List<ConditionalMenu> inventories;
-    private Tuple<String, String>[] menus;
+    private List<Tuple<String, String>> menus;
     
     /**
      * Creates a traversable GUI with the ability to go back in forth between pages.
@@ -25,7 +25,7 @@ public class ConditionalPagedMenu extends AbstractPagedMenu {
      * @param menus      Tuples should be inventory key -> inventory title. Inventory title is nullable.
      */
     public ConditionalPagedMenu(@Nonnull Plugin plugin, int rows, @Nonnull List<MenuItem> pageItems, boolean useBorders,
-                                boolean playSounds, Tuple<String, String>... menus) {
+                                boolean playSounds, List<Tuple<String, String>> menus) {
         super(plugin, rows, pageItems, useBorders, playSounds);
         
         this.menus = menus;
