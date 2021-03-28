@@ -5,6 +5,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,8 +17,8 @@ public class ConditionalMenu {
     
     private final Map<String, Menu> menus = new HashMap<>();
     
-    public ConditionalMenu(Tuple<String, Menu>... menus) {
-        if (menus.length == 0)
+    public ConditionalMenu(List<Tuple<String, Menu>> menus) {
+        if (menus.size() == 0)
             throw new IllegalArgumentException("ConditionalMenu must be satisfied with at least one menu upon initialization.");
         for (Tuple<String, Menu> tuple : menus)
             this.menus.put(tuple.getKey(), tuple.getValue());
@@ -25,8 +26,8 @@ public class ConditionalMenu {
         setKeys();
     }
     
-    public ConditionalMenu(Plugin plugin, int rows, Tuple<String, String>... menus) {
-        if (menus.length == 0)
+    public ConditionalMenu(Plugin plugin, int rows, List<Tuple<String, String>> menus) {
+        if (menus.size() == 0)
             throw new IllegalArgumentException("ConditionalMenu must be satisfied with at least one menu upon initialization.");
         for (Tuple<String, String> menu : menus)
             if (menu.getValue() == null)
@@ -37,8 +38,8 @@ public class ConditionalMenu {
         setKeys();
     }
     
-    public ConditionalMenu(Plugin plugin, InventoryType type, Tuple<String, String>... menus) {
-        if (menus.length == 0)
+    public ConditionalMenu(Plugin plugin, InventoryType type, List<Tuple<String, String>> menus) {
+        if (menus.size() == 0)
             throw new IllegalArgumentException("ConditionalMenu must be satisfied with at least one menu upon initialization.");
         for (Tuple<String, String> menu : menus)
             if (menu.getValue() == null)
