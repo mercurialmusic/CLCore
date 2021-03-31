@@ -91,6 +91,14 @@ public class ResourcePackManager implements Listener {
         return getStatus(player.getUniqueId());
     }
     
+    public boolean isFullyAccepted(Player player) {
+        return isFullyAccepted(player.getUniqueId());
+    }
+    
+    public boolean isFullyAccepted(UUID uuid) {
+        return getStatus(uuid) == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED;
+    }
+    
     public static ResourcePackManager getInstance() {
         return instance;
     }

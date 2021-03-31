@@ -1,25 +1,33 @@
 package de.craftlancer.core.command;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.apache.commons.lang.Validate;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 // TODO implement usage of HelpMap and HelpTopic via HelpMapFactory
 // TODO externalize common code between CommandHandler and SubCommandHandler
 public abstract class CommandHandler implements TabExecutor {
     private Map<String, SubCommand> commands = new HashMap<>();
     private Plugin plugin;
+    private BaseComponent prefix;
     
     public CommandHandler(Plugin plugin) {
         this.plugin = plugin;
+    }
+    
+    public CommandHandler(Plugin plugin, BaseComponent prefix) {
+        this.plugin = plugin;
+        this.prefix = prefix;
     }
     
     @Override
@@ -33,12 +41,16 @@ public abstract class CommandHandler implements TabExecutor {
                 message = commands.get("help").execute(sender, cmd, label, args);
             else
                 return false;
-        }
-        else
+        } else
             message = commands.get(args[0]).execute(sender, cmd, label, args);
         
         if (message != null)
-            sender.sendMessage(message);
+            if (prefix == null)
+                sender.sendMessage(message);
+            else
+                sender.spigot().sendMessage(new ComponentBuilder(prefix)
+                        .append(" ", ComponentBuilder.FormatRetention.NONE)
+                        .append(message, ComponentBuilder.FormatRetention.NONE).create());
         
         return true;
     }
@@ -50,7 +62,7 @@ public abstract class CommandHandler implements TabExecutor {
                 return Collections.emptyList();
             case 1:
                 return commands.keySet().stream().filter(a -> a.startsWith(args[0])).filter(a -> commands.get(a).getPermission().isEmpty() || sender.hasPermission(commands.get(a).getPermission()))
-                               .collect(Collectors.toList());
+                        .collect(Collectors.toList());
             default:
                 if (!commands.containsKey(args[0]))
                     return Collections.emptyList();

@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PagedMenu extends AbstractPagedMenu {
+public class PagedMenu extends AbstractPagedMenu<Menu> {
     
     private List<Menu> inventories;
     private String title;
@@ -67,7 +67,11 @@ public class PagedMenu extends AbstractPagedMenu {
             
             inventory.set(getInfoSlot(), getInfoItem());
             fillPageItems(inventory, page);
-            getToolbarItems().forEach((slot, menuItem) -> inventory.set(getRows() * 9 + slot, menuItem));
+            getToolbarItems().forEach((slot, menuItem) -> inventory.set((getRows() - 1) * 9 + slot, menuItem));
+            
+            if (getInventoryUpdateHandler() != null)
+                getInventoryUpdateHandler().accept(inventory);
+            
             inventories.add(inventory);
         }
     }

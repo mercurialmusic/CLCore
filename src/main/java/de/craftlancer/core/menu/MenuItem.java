@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 public class MenuItem {
     
     private final Map<ClickType, Consumer<MenuClick>> clickActions = new HashMap<>();
-    private final ItemStack item;
+    private ItemStack item;
     
     public MenuItem(ItemStack item) {
         this.item = item.clone();
@@ -18,6 +18,10 @@ public class MenuItem {
     
     public ItemStack getItem() {
         return item;
+    }
+    
+    public void setItem(ItemStack item) {
+        this.item = item.clone();
     }
     
     public MenuItem addClickAction(Consumer<MenuClick> runnable, ClickType clickType) {
