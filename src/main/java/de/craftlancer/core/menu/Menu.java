@@ -98,7 +98,7 @@ public class Menu implements InventoryHolder, Listener {
     
     public void fillBorders(MenuItem item, boolean replace) {
         for (int i = 0; i < inventory.getSize(); i++)
-            if (i < 9 || i >= (inventory.getSize() - 1) * 9 || i % 9 == 0)
+            if (i < 9 || i >= (inventory.getSize() - 9) || i % 9 == 0 || (i + 1) % 9 == 0)
                 if (replace || items.get(i).getItem().getType().isAir())
                     set(i, item);
     }
