@@ -11,9 +11,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public abstract class AbstractPagedMenu {
+public abstract class AbstractPagedMenu<T> {
+    
+    private Consumer<T> inventoryUpdateHandler;
     private List<MenuItem> pageItems;
     private Map<Integer, MenuItem> toolbarItems = new HashMap<>();
     
@@ -67,6 +70,19 @@ public abstract class AbstractPagedMenu {
     }
     
     protected abstract void updateInventories();
+    
+    /**
+     * Given consumer will be called upon inventory update.
+     *
+     * @param inventoryUpdateHandler Actions to be taken on a Menu or ConditionalMenu upon inventory update.
+     */
+    public void setInventoryUpdateHandler(Consumer<T> inventoryUpdateHandler) {
+        this.inventoryUpdateHandler = inventoryUpdateHandler;
+    }
+    
+    protected Consumer<T> getInventoryUpdateHandler() {
+        return inventoryUpdateHandler;
+    }
     
     /**
      * Sets a page.

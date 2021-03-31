@@ -78,6 +78,11 @@ public class Menu implements InventoryHolder, Listener {
         inventory.setItem(slot, item.getItem());
     }
     
+    public void replace(int slot, ItemStack item) {
+        items.get(slot).setItem(item);
+        inventory.setItem(slot, item);
+    }
+    
     /**
      * Fills the inventory with a given menu item.
      *
@@ -141,7 +146,7 @@ public class Menu implements InventoryHolder, Listener {
         
         item.getClickActions().getOrDefault(event.getClick(),
                 item.getClickActions().getOrDefault(null, click -> {
-                })).accept(new MenuClick((Player) event.getWhoClicked(), event.getAction(), menuKey));
+                })).accept(new MenuClick((Player) event.getWhoClicked(), event.getAction(), menuKey, item, event.getCursor()));
     }
     
     /**
@@ -159,5 +164,13 @@ public class Menu implements InventoryHolder, Listener {
         }
         
         return false;
+    }
+    
+    public MenuItem getMenuItem(int slot) {
+        return items.get(slot);
+    }
+    
+    public String getMenuKey() {
+        return menuKey;
     }
 }

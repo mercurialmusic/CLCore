@@ -101,7 +101,7 @@ public class ClipboardManager implements Listener, MessageRegisterable {
         Block block = event.getClickedBlock();
         
         if (!clipboards.containsKey(player.getUniqueId()))
-            if (player.getInventory().getItemInMainHand().getType() == Material.GOLDEN_AXE) {
+            if (player.getInventory().getItemInMainHand().getType() == Material.GOLDEN_AXE && player.getInventory().getItemInMainHand().getEnchantments().size() == 0) {
                 addClipboard(new Clipboard(player.getUniqueId(), player.getWorld()));
                 MessageUtil.sendMessage(this, player, MessageLevel.SUCCESS, "Successfully created a new clipboard.");
             } else
@@ -149,7 +149,7 @@ public class ClipboardManager implements Listener, MessageRegisterable {
         if (player.getGameMode() == GameMode.CREATIVE && clipboards.containsKey(player.getUniqueId()))
             event.setCancelled(true);
     }
-
+    
     @Override
     public String getMessageID() {
         return "clcore.clipboard";

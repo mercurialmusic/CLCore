@@ -2,6 +2,7 @@ package de.craftlancer.core.menu;
 
 import de.craftlancer.core.util.Tuple;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
@@ -82,6 +83,15 @@ public class ConditionalMenu {
                 menus.get(key).set(slot, item);
     }
     
+    public void replace(int slot, ItemStack item, String... keys) {
+        if (keys.length == 0)
+            menus.forEach((key, menu) -> menu.replace(slot, item));
+        
+        for (String key : keys)
+            if (menus.containsKey(key))
+                menus.get(key).replace(slot, item);
+    }
+    
     public void remove(int slot, String... keys) {
         if (keys.length == 0)
             menus.forEach((key, menu) -> menu.remove(slot));
@@ -93,6 +103,18 @@ public class ConditionalMenu {
     
     public Menu getMenu(String key) {
         return menus.get(key);
+    }
+    
+    
+    /**
+     * @return A map if menu key -> menu item for the item at the given slot
+     */
+    public Map<String, MenuItem> getMenuItem(int slot) {
+        Map<String, MenuItem> map = new HashMap<>();
+        
+        menus.forEach((key, menu) -> map.put(key, menu.getMenuItem(slot)));
+        
+        return map;
     }
     
     public Map<String, Menu> getMenus() {

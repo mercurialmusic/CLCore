@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConditionalPagedMenu extends AbstractPagedMenu {
+public class ConditionalPagedMenu extends AbstractPagedMenu<ConditionalMenu> {
     
     private List<ConditionalMenu> inventories;
     private List<Tuple<String, String>> menus;
@@ -52,19 +52,13 @@ public class ConditionalPagedMenu extends AbstractPagedMenu {
             for (Menu menu : inventory.getMenus().values())
                 fillPageItems(menu, page);
             
-            getToolbarItems().forEach((slot, menuItem) -> inventory.set(getRows() * 9 + slot, menuItem));
+            getToolbarItems().forEach((slot, menuItem) -> inventory.set((getRows() - 1) * 9 + slot, menuItem));
             
-            onMenuUpdate(inventory);
+            if (getInventoryUpdateHandler() != null)
+                getInventoryUpdateHandler().accept(inventory);
             
             inventories.add(inventory);
         }
-    }
-    
-    /**
-     * Intended to be overridden. Called when the paged menu itself is reloaded and all inventories are being remade.
-     */
-    public void onMenuUpdate(ConditionalMenu menu) {
-        
     }
     
     /**
