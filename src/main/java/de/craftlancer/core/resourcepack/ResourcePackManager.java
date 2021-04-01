@@ -24,6 +24,7 @@ public class ResourcePackManager implements Listener {
     private Map<UUID, PlayerResourcePackStatusEvent.Status> playerStatuses = new HashMap<>();
     private String url;
     private boolean usingResourcePack;
+    private boolean forceResourcePack;
     
     public ResourcePackManager(CLCore plugin) {
         instance = this;
@@ -36,8 +37,9 @@ public class ResourcePackManager implements Listener {
         
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         
-        this.usingResourcePack = config.getBoolean("useResourcePack", true);
+        this.usingResourcePack = config.getBoolean("useResourcePack", false);
         this.url = config.getString("resourcePackURL", "");
+        this.forceResourcePack = config.getBoolean("forceResourcePack", false);
     }
     
     public void save() {
@@ -51,6 +53,7 @@ public class ResourcePackManager implements Listener {
         LambdaRunnable saveTask = new LambdaRunnable(() -> {
             config.set("useResourcePack", usingResourcePack);
             config.set("resourcePackURL", url);
+            config.set("forceResourcePack", forceResourcePack);
             
             try {
                 config.save(file);
@@ -75,6 +78,21 @@ public class ResourcePackManager implements Listener {
     
     @EventHandler(ignoreCancelled = true)
     public void onResourcePackInteract(PlayerResourcePackStatusEvent event) {
+        if (forceResourcePack && (event.getStatus() != PlayerResourcePackStatusEvent.Status.ACCEPTED &&
+                event.getStatus() != PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED)) {
+            new LambdaRunnable(() -> event.getPlayer().kickPlayer("§f[§4Craft§fCitizen]" + "\n\n" +
+                    "§e§oYou are not in trouble!\n\n" +
+                    "§7We use a very rich resource pack\n" +
+                    "§7that significantly enhances the\n" +
+                    "§7gameplay experience, and you must\n" +
+                    "§7accept the resource pack to play!\n\n" +
+                    "§c§nIt is possible resource packs are disabled for this server...\n\n" +
+                    "§7To fix this, go to your server list,\n" +
+                    "§7select this server, click §d\"Edit\"§7,\n" +
+                    "§7and set §d\"Server Resource Packs: Enabled\"§7.")).runTaskLater(plugin, 1);
+            return;
+        }
+        
         playerStatuses.put(event.getPlayer().getUniqueId(), event.getStatus());
     }
     
@@ -97,6 +115,10 @@ public class ResourcePackManager implements Listener {
     
     public boolean isFullyAccepted(UUID uuid) {
         return getStatus(uuid) == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED;
+    }
+    
+    public void setForceResourcePack(boolean forceResourcePack) {
+        this.forceResourcePack = forceResourcePack;
     }
     
     public static ResourcePackManager getInstance() {
