@@ -89,7 +89,7 @@ public class ResourcePackManager implements Listener {
                     "§c§nIt is possible resource packs are disabled for this server...\n\n" +
                     "§7To fix this, go to your server list,\n" +
                     "§7select this server, click §d\"Edit\"§7,\n" +
-                    "§7and set §d\"Server Resource Packs: Enabled\"§7.")).runTaskLater(plugin, 1);
+                    "§7and set §d\"Server Resource Packs: Enabled\"§7.")).runTaskLater(plugin, 20);
             return;
         }
         
