@@ -18,7 +18,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Rotation;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.BoundingBox;
@@ -232,5 +234,67 @@ public class Utils {
         return claim == null
                 || uuid.equals(claim.ownerID)
                 || claim.hasExplicitPermission(uuid, permission);
+    }
+    
+    public static Rotation getRotationFromYaw(float yaw) {
+        double rotation = (yaw + 180) % 360.0F;
+        if (rotation < 0.0D) {
+            rotation += 360.0D;
+        }
+        if ((0.0D <= rotation) && (rotation < 22.5D)) {
+            return Rotation.NONE;
+        }
+        if ((22.5D <= rotation) && (rotation < 67.5D)) {
+            return Rotation.CLOCKWISE_45;
+        }
+        if ((67.5D <= rotation) && (rotation < 112.5D)) {
+            return Rotation.CLOCKWISE;
+        }
+        if ((112.5D <= rotation) && (rotation < 157.5D)) {
+            return Rotation.CLOCKWISE_135;
+        }
+        if ((157.5D <= rotation) && (rotation < 202.5D)) {
+            return Rotation.FLIPPED;
+        }
+        if ((202.5D <= rotation) && (rotation < 247.5D)) {
+            return Rotation.FLIPPED_45;
+        }
+        if ((247.5D <= rotation) && (rotation < 292.5D)) {
+            return Rotation.COUNTER_CLOCKWISE;
+        }
+        if ((292.5D <= rotation) && (rotation < 337.5D)) {
+            return Rotation.COUNTER_CLOCKWISE_45;
+        }
+        if ((337.5D <= rotation) && (rotation < 360.0D)) {
+            return Rotation.NONE;
+        }
+        return Rotation.NONE;
+    }
+    
+    public static Rotation getRotationFromBlockFace(BlockFace face) {
+        switch (face) {
+            case SOUTH:
+            case SOUTH_SOUTH_EAST:
+            case SOUTH_SOUTH_WEST:
+                return Rotation.FLIPPED;
+            case EAST:
+            case EAST_NORTH_EAST:
+            case EAST_SOUTH_EAST:
+                return Rotation.CLOCKWISE;
+            case WEST:
+            case WEST_NORTH_WEST:
+            case WEST_SOUTH_WEST:
+                return Rotation.COUNTER_CLOCKWISE;
+            case SOUTH_WEST:
+                return Rotation.FLIPPED_45;
+            case NORTH_EAST:
+                return Rotation.CLOCKWISE_45;
+            case NORTH_WEST:
+                return Rotation.COUNTER_CLOCKWISE_45;
+            case SOUTH_EAST:
+                return Rotation.CLOCKWISE_135;
+            default:
+                return Rotation.NONE;
+        }
     }
 }
