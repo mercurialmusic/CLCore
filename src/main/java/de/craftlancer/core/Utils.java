@@ -20,6 +20,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Rotation;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.BoundingBox;
@@ -268,5 +269,32 @@ public class Utils {
             return Rotation.NONE;
         }
         return Rotation.NONE;
+    }
+    
+    public static Rotation getRotationFromBlockFace(BlockFace face) {
+        switch (face) {
+            case SOUTH:
+            case SOUTH_SOUTH_EAST:
+            case SOUTH_SOUTH_WEST:
+                return Rotation.FLIPPED;
+            case EAST:
+            case EAST_NORTH_EAST:
+            case EAST_SOUTH_EAST:
+                return Rotation.CLOCKWISE;
+            case WEST:
+            case WEST_NORTH_WEST:
+            case WEST_SOUTH_WEST:
+                return Rotation.COUNTER_CLOCKWISE;
+            case SOUTH_WEST:
+                return Rotation.FLIPPED_45;
+            case NORTH_EAST:
+                return Rotation.CLOCKWISE_45;
+            case NORTH_WEST:
+                return Rotation.COUNTER_CLOCKWISE_45;
+            case SOUTH_EAST:
+                return Rotation.CLOCKWISE_135;
+            default:
+                return Rotation.NONE;
+        }
     }
 }
