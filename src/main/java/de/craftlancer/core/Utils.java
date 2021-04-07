@@ -16,6 +16,7 @@ import net.md_5.bungee.api.chat.HoverEvent.Action;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Rotation;
@@ -295,6 +296,43 @@ public class Utils {
                 return Rotation.CLOCKWISE_135;
             default:
                 return Rotation.NONE;
+        }
+    }
+    
+    private Material getInstrumentMaterial(Instrument instrument) {
+        switch (instrument) {
+            case BANJO:
+                return Material.HAY_BLOCK;
+            case BASS_DRUM:
+                return Material.GRAY_CONCRETE;
+            case BASS_GUITAR:
+                return Material.OAK_LOG;
+            case BELL:
+                return Material.GOLD_BLOCK;
+            case BIT:
+                return Material.EMERALD_BLOCK;
+            case CHIME:
+                return Material.PACKED_ICE;
+            case COW_BELL:
+                return Material.SOUL_SAND;
+            case DIDGERIDOO:
+                return Material.PUMPKIN;
+            case FLUTE:
+                return Material.BLUE_TERRACOTTA;
+            case GUITAR:
+                return Material.WHITE_WOOL;
+            case IRON_XYLOPHONE:
+                return Material.IRON_BLOCK;
+            case PLING:
+                return Material.GLOWSTONE;
+            case SNARE_DRUM:
+                return Material.SAND;
+            case STICKS:
+                return Material.GLASS;
+            case XYLOPHONE:
+                return Material.BONE_BLOCK;
+            default:
+                return Material.BARRIER;
         }
     }
 }
