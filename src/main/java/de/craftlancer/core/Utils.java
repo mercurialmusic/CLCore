@@ -299,7 +299,7 @@ public class Utils {
         }
     }
     
-    private Material getInstrumentMaterial(Instrument instrument) {
+    private static Material getInstrumentMaterial(Instrument instrument) {
         switch (instrument) {
             case BANJO:
                 return Material.HAY_BLOCK;
