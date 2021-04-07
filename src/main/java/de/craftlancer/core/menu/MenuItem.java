@@ -1,8 +1,10 @@
 package de.craftlancer.core.menu;
 
+import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -12,8 +14,8 @@ public class MenuItem {
     private final Map<ClickType, Consumer<MenuClick>> clickActions = new HashMap<>();
     private ItemStack item;
     
-    public MenuItem(ItemStack item) {
-        this.item = item.clone();
+    public MenuItem(@Nullable ItemStack item) {
+        this.item = item == null ? new ItemStack(Material.AIR) : item.clone();
     }
     
     public ItemStack getItem() {
