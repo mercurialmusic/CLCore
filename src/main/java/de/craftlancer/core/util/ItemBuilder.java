@@ -1,13 +1,7 @@
 package de.craftlancer.core.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -16,10 +10,16 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 
-import net.md_5.bungee.api.ChatColor;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ItemBuilder {
     
@@ -91,7 +91,7 @@ public class ItemBuilder {
             list.addAll(lore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList()));
             meta.setLore(list);
         }
-    
+        
         return this;
     }
     
@@ -131,6 +131,13 @@ public class ItemBuilder {
         return this;
     }
     
+    public ItemBuilder dye(Color color) {
+        if (meta instanceof LeatherArmorMeta)
+            ((LeatherArmorMeta) meta).setColor(color);
+        
+        return this;
+    }
+    
     public ItemBuilder addAttributeModifier(@Nonnull Attribute attribute, @Nonnull AttributeModifier attributeModifier) {
         meta.addAttributeModifier(attribute, attributeModifier);
         
@@ -153,15 +160,14 @@ public class ItemBuilder {
      * Makes the item glow - should only be used on creative items not meant for player use (or items not meant to be
      * enchanted), but can be used
      * on enchantable items.
-     *
+     * <p>
      * When used to remove glow, all enchantments will be removed.
      */
     public ItemBuilder setEnchantmentGlow(boolean shouldGlow) {
         if (shouldGlow) {
             meta.addEnchant(Enchantment.DURABILITY, 1, true);
             addItemFlag(ItemFlag.HIDE_ENCHANTS);
-        }
-        else {
+        } else {
             meta.getEnchants().forEach((enchant, level) -> meta.removeEnchant(enchant));
         }
         
@@ -170,7 +176,7 @@ public class ItemBuilder {
     
     /**
      * Adds a NBT Tag to the item. Use item.getPersistentDataContainer().get(key) to get the value back.
-     * 
+     *
      * @param key The key to set the tag by. Will replace any current key with the same name.
      */
     public ItemBuilder addPersistentData(@Nonnull Plugin plugin, @Nonnull String key, @Nonnull String value) {
@@ -182,16 +188,15 @@ public class ItemBuilder {
     
     /**
      * Removes the NBT Tag by the given key (if applicable)
-     * 
+     *
      * @throws IllegalArgumentException If there isn't a key by this name, check if the key exists before using this
-     *         method.
+     *                                  method.
      */
     public ItemBuilder removePersistentData(@Nonnull Plugin plugin, @Nonnull String key) {
         NamespacedKey k = new NamespacedKey(plugin, key);
         try {
             meta.getPersistentDataContainer().remove(k);
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             throw new IllegalArgumentException("Error while trying to remove NBT tag: The item does not contain such key '" + key + "'!");
         }
         
