@@ -28,9 +28,17 @@ public class MessageUtil {
         settings.put(plugin.getName(), new MessageSettings(prefix, normalColor, infoColor, warningColor, errorColor, debugColor, successColor));
     }
     
-    public static void register(MessageRegisterable registerable, BaseComponent prefix, ChatColor normalColor, ChatColor infoColor, ChatColor warningColor,
+    public static void register(MessageRegisterable registrable, BaseComponent prefix, ChatColor normalColor, ChatColor infoColor, ChatColor warningColor,
                                 ChatColor errorColor, ChatColor debugColor, ChatColor successColor) {
-        settings.put(registerable.getMessageID(), new MessageSettings(prefix, normalColor, infoColor, warningColor, errorColor, debugColor, successColor));
+        settings.put(registrable.getMessageID(), new MessageSettings(prefix, normalColor, infoColor, warningColor, errorColor, debugColor, successColor));
+    }
+    
+    public static void register(MessageRegisterable registrable, BaseComponent prefix) {
+        register(registrable, prefix, ChatColor.WHITE, ChatColor.YELLOW, ChatColor.RED, ChatColor.DARK_RED, ChatColor.DARK_AQUA, ChatColor.GREEN);
+    }
+    
+    public static void register(Plugin plugin, BaseComponent prefix) {
+        register(plugin, prefix, ChatColor.WHITE, ChatColor.YELLOW, ChatColor.RED, ChatColor.DARK_RED, ChatColor.DARK_AQUA, ChatColor.GREEN);
     }
     
     public static void sendMessage(Plugin plugin, CommandSender sender, MessageLevel level, String message) {
