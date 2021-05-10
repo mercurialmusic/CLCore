@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -38,29 +37,17 @@ public class LastSeenCache implements Listener {
     }
     
     public long getLastSeen(UUID uuid) {
-        Player p = Bukkit.getPlayer(uuid);
-        if (p != null)
+        if (Bukkit.getPlayer(uuid) != null)
             return System.currentTimeMillis();
         
-        Long lastSeen = lastSeenMap.get(uuid);
-        
-        if (lastSeen != null)
-            return lastSeen;
-        
-        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-        return lastSeenMap.computeIfAbsent(player.getUniqueId(), a -> player.getLastPlayed());
+        return lastSeenMap.getOrDefault(uuid, 0L);
     }
     
     public long getLastSeen(OfflinePlayer player) {
         if (player.isOnline())
             return System.currentTimeMillis();
         
-        Long lastSeen = lastSeenMap.get(player.getUniqueId());
-        
-        if (lastSeen != null)
-            return lastSeen;
-        
-        return lastSeenMap.computeIfAbsent(player.getUniqueId(), a -> player.getLastPlayed());
+        return lastSeenMap.getOrDefault(player.getUniqueId(), 0L);
     }
     
     @EventHandler
