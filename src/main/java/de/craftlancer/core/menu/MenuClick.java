@@ -12,13 +12,19 @@ public class MenuClick {
     private InventoryAction clickAction;
     private ItemStack cursor;
     private MenuItem item;
+    private int slot;
     
-    public MenuClick(Player player, InventoryAction action, @Nullable String menuKey, MenuItem item, ItemStack cursor) {
+    public MenuClick(Player player, InventoryAction action, @Nullable String menuKey, MenuItem item, ItemStack cursor, int slot) {
         this.player = player;
         this.clickAction = action;
         this.menuKey = menuKey == null ? "default" : menuKey;
         this.item = item.clone();
         this.cursor = cursor;
+        this.slot = slot;
+    }
+    
+    public int getSlot() {
+        return slot;
     }
     
     public Player getPlayer() {

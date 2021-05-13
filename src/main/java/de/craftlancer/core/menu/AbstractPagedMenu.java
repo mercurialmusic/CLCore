@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractPagedMenu<T> {
     
     private Consumer<T> inventoryUpdateHandler;
+    private Consumer<List<T>> inventoryCompleteUpdateHandler;
     private List<MenuItem> pageItems;
     private Map<Integer, MenuItem> toolbarItems = new HashMap<>();
     
@@ -82,6 +83,14 @@ public abstract class AbstractPagedMenu<T> {
     
     protected Consumer<T> getInventoryUpdateHandler() {
         return inventoryUpdateHandler;
+    }
+    
+    public void setInventoryCompleteUpdateHandler(Consumer<List<T>> inventoryCompleteUpdateHandler) {
+        this.inventoryCompleteUpdateHandler = inventoryCompleteUpdateHandler;
+    }
+    
+    public Consumer<List<T>> getInventoryCompleteUpdateHandler() {
+        return inventoryCompleteUpdateHandler;
     }
     
     /**

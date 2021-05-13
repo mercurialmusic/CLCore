@@ -22,7 +22,6 @@ public class Menu implements InventoryHolder, Listener {
     
     //Used only in association with ConditionalMenu
     private String menuKey = "default";
-    private final MenuItem AIR = new MenuItem(new ItemStack(Material.AIR));
     private final Map<Integer, MenuItem> items = new HashMap<>();
     private final Inventory inventory;
     
@@ -33,14 +32,14 @@ public class Menu implements InventoryHolder, Listener {
         this.inventory = Bukkit.createInventory(this, rows * 9, title);
         Bukkit.getPluginManager().registerEvents(this, plugin);
         
-        fill(AIR, false);
+        fill(new MenuItem(new ItemStack(Material.AIR)), false);
     }
     
     public Menu(Plugin plugin, String title, InventoryType type) {
         this.inventory = Bukkit.createInventory(this, type, title);
         Bukkit.getPluginManager().registerEvents(this, plugin);
         
-        fill(AIR, false);
+        fill(new MenuItem(new ItemStack(Material.AIR)), false);
     }
     
     public Menu(Plugin plugin, String title) {
@@ -58,7 +57,7 @@ public class Menu implements InventoryHolder, Listener {
         this.inventory = Bukkit.createInventory(this, rows * 9);
         Bukkit.getPluginManager().registerEvents(this, plugin);
         
-        fill(AIR, false);
+        fill(new MenuItem(new ItemStack(Material.AIR)), false);
     }
     
     public Menu(Plugin plugin, InventoryType type) {
@@ -66,7 +65,7 @@ public class Menu implements InventoryHolder, Listener {
         this.inventory = Bukkit.createInventory(this, type);
         Bukkit.getPluginManager().registerEvents(this, plugin);
         
-        fill(AIR, false);
+        fill(new MenuItem(new ItemStack(Material.AIR)), false);
     }
     
     public Menu(Plugin plugin) {
@@ -146,7 +145,7 @@ public class Menu implements InventoryHolder, Listener {
         
         item.getClickActions().getOrDefault(event.getClick(),
                 item.getClickActions().getOrDefault(null, click -> {
-                })).accept(new MenuClick((Player) event.getWhoClicked(), event.getAction(), menuKey, item, event.getCursor()));
+                })).accept(new MenuClick((Player) event.getWhoClicked(), event.getAction(), menuKey, item, event.getCursor(), event.getSlot()));
     }
     
     /**

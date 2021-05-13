@@ -74,6 +74,9 @@ public class PagedMenu extends AbstractPagedMenu<Menu> {
             
             inventories.add(inventory);
         }
+        
+        if (getInventoryCompleteUpdateHandler() != null)
+            getInventoryCompleteUpdateHandler().accept(inventories);
     }
     
     /**

@@ -3,6 +3,7 @@ package de.craftlancer.core.resourcepack;
 import de.craftlancer.core.CLCore;
 import de.craftlancer.core.LambdaRunnable;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,9 +13,12 @@ import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ResourcePackManager implements Listener {
     
@@ -26,9 +30,13 @@ public class ResourcePackManager implements Listener {
     private boolean usingResourcePack;
     private boolean forceResourcePack;
     
+    private Map<UUID, ResourcePackConfiguration> configurations;
+    
     public ResourcePackManager(CLCore plugin) {
         instance = this;
         this.plugin = plugin;
+        
+        ConfigurationSerialization.registerClass(ResourcePackConfiguration.class);
         
         File file = new File(plugin.getDataFolder(), "resourcePack.yml");
         
@@ -40,6 +48,8 @@ public class ResourcePackManager implements Listener {
         this.usingResourcePack = config.getBoolean("useResourcePack", false);
         this.url = config.getString("resourcePackURL", "");
         this.forceResourcePack = config.getBoolean("forceResourcePack", false);
+        this.configurations = ((List<ResourcePackConfiguration>) config.getList("configurations", new ArrayList<>()))
+                .stream().collect(Collectors.toMap(ResourcePackConfiguration::getOwner, c -> c));
     }
     
     public void save() {
@@ -54,6 +64,7 @@ public class ResourcePackManager implements Listener {
             config.set("useResourcePack", usingResourcePack);
             config.set("resourcePackURL", url);
             config.set("forceResourcePack", forceResourcePack);
+            config.set("configurations", new ArrayList<>(configurations.values()));
             
             try {
                 config.save(file);
@@ -72,8 +83,13 @@ public class ResourcePackManager implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         
-        if (usingResourcePack && !url.isEmpty())
-            player.setResourcePack(url);
+        ResourcePackConfiguration configuration = configurations.getOrDefault(player.getUniqueId(), new ResourcePackConfiguration(player.getUniqueId()));
+        
+        if (configuration.isEnabled())
+            if (configuration.getDelay() == 0)
+                sendResourcePack(player);
+            else
+                new LambdaRunnable(() -> sendResourcePack(player)).runTaskLater(plugin, configuration.getDelay());
     }
     
     @EventHandler(ignoreCancelled = true)
@@ -94,6 +110,13 @@ public class ResourcePackManager implements Listener {
         }
         
         playerStatuses.put(event.getPlayer().getUniqueId(), event.getStatus());
+    }
+    
+    public void sendResourcePack(Player player) {
+        if (!player.isOnline())
+            return;
+        if (usingResourcePack && !url.isEmpty())
+            player.setResourcePack(url);
     }
     
     @EventHandler
@@ -131,5 +154,9 @@ public class ResourcePackManager implements Listener {
     
     public void setUsingResourcePack(boolean usingResourcePack) {
         this.usingResourcePack = usingResourcePack;
+    }
+    
+    public Map<UUID, ResourcePackConfiguration> getConfigurations() {
+        return configurations;
     }
 }
