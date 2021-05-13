@@ -20,7 +20,7 @@ public class ResourcePackConfiguration implements ConfigurationSerializable {
     public ResourcePackConfiguration(Map<String, Object> map) {
         this.owner = UUID.fromString((String) map.get("owner"));
         this.enabled = (boolean) map.get("enabled");
-        this.delay = (long) map.get("delay");
+        this.delay = Long.parseLong((String) map.get("delay"));
     }
     
     @Override
@@ -30,7 +30,7 @@ public class ResourcePackConfiguration implements ConfigurationSerializable {
         
         map.put("owner", owner.toString());
         map.put("enabled", enabled);
-        map.put("delay", delay);
+        map.put("delay", String.valueOf(delay));
         
         return map;
     }
