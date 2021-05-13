@@ -59,6 +59,9 @@ public class ConditionalPagedMenu extends AbstractPagedMenu<ConditionalMenu> {
             
             inventories.add(inventory);
         }
+        
+        if (getInventoryCompleteUpdateHandler() != null)
+            getInventoryCompleteUpdateHandler().accept(inventories);
     }
     
     /**
@@ -83,5 +86,12 @@ public class ConditionalPagedMenu extends AbstractPagedMenu<ConditionalMenu> {
         if (isPlaySounds())
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5F, 2F);
         player.openInventory(inventories.get(page).getMenu(key).getInventory());
+    }
+    
+    /**
+     * @return The current version of all inventories, which is bound to be cleared and changed upon updates
+     */
+    public List<ConditionalMenu> getInventories() {
+        return inventories;
     }
 }

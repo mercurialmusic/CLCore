@@ -10,5 +10,8 @@ public class ResourcePackCommandHandler extends CommandHandler {
         registerSubCommand("setURL", new ResourcePackSetURLCommand(plugin, manager));
         registerSubCommand("setUsingResourcePack", new ResourcePackSetUsingResourcePackCommand(plugin, manager));
         registerSubCommand("setForceResourcePack", new ResourcePackSetForceResourcePackCommand(plugin, manager));
+        registerSubCommand("reload", new ResourcePackReloadCommand(plugin, manager));
+        registerSubCommand("toggle", new ResourcePackToggleCommand(plugin, manager));
+        registerSubCommand("setDelay", new ResourcePackSetDelayCommand(plugin, manager));
     }
 }
