@@ -2,7 +2,7 @@ name: CLCore
 main: de.craftlancer.core.CLCore
 version: ${project.version}
 api-version: 1.15
-depend: [Vault, WorldGuard]
+depend: [ Vault, WorldGuard ]
 commands:
   convo:
     description: Used for conversations to prevent input spam.
@@ -16,8 +16,6 @@ commands:
     description: Commands for resource pack modification
   motd:
     description: Commands for live motd manipulation
-  navigation:
-    description: Navigation api for players and plugins
 permissions:
   clcore.admin:
     description: Admin permission for CLCore commands

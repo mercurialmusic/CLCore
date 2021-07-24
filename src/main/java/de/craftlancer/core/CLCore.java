@@ -1,13 +1,12 @@
 package de.craftlancer.core;
 
-import com.sk89q.worldguard.WorldGuard;
 import de.craftlancer.core.clipboard.ClipboardCommandHandler;
 import de.craftlancer.core.clipboard.ClipboardManager;
 import de.craftlancer.core.conversation.ConvoCommand;
 import de.craftlancer.core.items.CustomItemRegistry;
 import de.craftlancer.core.legacy.MassChestInventory;
 import de.craftlancer.core.motd.MOTDManager;
-import de.craftlancer.core.navigation.NavigationManager;
+import de.craftlancer.core.navigation.NavigationUtil;
 import de.craftlancer.core.resourcepack.ResourcePackCommandHandler;
 import de.craftlancer.core.resourcepack.ResourcePackManager;
 import de.craftlancer.core.structure.BlockStructure;
@@ -16,7 +15,6 @@ import de.craftlancer.core.structure.Point2D;
 import de.craftlancer.core.structure.Point3D;
 import de.craftlancer.core.structure.RectangleArea;
 import de.craftlancer.core.util.MessageUtil;
-import de.craftlancer.core.worldguard.events.Entry;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -47,7 +45,7 @@ public class CLCore extends JavaPlugin {
     private PlayerTaskScheduler playerTaskScheduler;
     private ResourcePackManager resourcePackManager;
     private MOTDManager motdManager;
-    private NavigationManager navigationManager;
+    private NavigationUtil navigationManager;
     
     /* MockBukkit start */
     public CLCore() {
@@ -90,9 +88,6 @@ public class CLCore extends JavaPlugin {
         
         motdManager = new MOTDManager(this);
         
-        navigationManager = new NavigationManager(this);
-        WorldGuard.getInstance().getPlatform().getSessionManager().registerHandler(Entry.factory, null);
-        
         setupChat();
         setupEconomy();
         setupPermissions();
@@ -107,7 +102,7 @@ public class CLCore extends JavaPlugin {
         autosave();
     }
     
-    public NavigationManager getNavigationManager() {
+    public NavigationUtil getNavigationManager() {
         return navigationManager;
     }
     
@@ -116,7 +111,6 @@ public class CLCore extends JavaPlugin {
         lastSeenCache.save();
         resourcePackManager.save();
         motdManager.save();
-        navigationManager.save();
     }
     
     private boolean setupEconomy() {
