@@ -3,12 +3,26 @@ package de.craftlancer.core.tests;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import be.seeseemelk.mockbukkit.MockBukkit;
+import be.seeseemelk.mockbukkit.ServerMock;
 import de.craftlancer.core.Utils;
 
 public class UtilsTests
 {
+    @Before
+    public void setUp() {
+        MockBukkit.mock();
+    }
+
+    @After
+    public void tearDown() {
+        MockBukkit.unmock();
+    }
+    
     @Test
     public void testArrayContains()
     {
