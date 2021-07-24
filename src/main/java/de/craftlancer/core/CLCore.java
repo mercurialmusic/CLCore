@@ -6,6 +6,7 @@ import de.craftlancer.core.conversation.ConvoCommand;
 import de.craftlancer.core.items.CustomItemRegistry;
 import de.craftlancer.core.legacy.MassChestInventory;
 import de.craftlancer.core.motd.MOTDManager;
+import de.craftlancer.core.navigation.NavigationManager;
 import de.craftlancer.core.resourcepack.ResourcePackCommandHandler;
 import de.craftlancer.core.resourcepack.ResourcePackManager;
 import de.craftlancer.core.structure.BlockStructure;
@@ -44,6 +45,7 @@ public class CLCore extends JavaPlugin {
     private PlayerTaskScheduler playerTaskScheduler;
     private ResourcePackManager resourcePackManager;
     private MOTDManager motdManager;
+    private NavigationManager navigationManager;
     
     /* MockBukkit start */
     public CLCore() {
@@ -65,6 +67,7 @@ public class CLCore extends JavaPlugin {
         ConfigurationSerialization.registerClass(Point3D.class);
         ConfigurationSerialization.registerClass(MassChestInventory.class);
         ConfigurationSerialization.registerClass(BlockStructure.class);
+        ConfigurationSerialization.registerClass(NavigationManager.NavigationGoal.class);
         
         BaseComponent prefix = new TextComponent(new ComponentBuilder("[").color(ChatColor.WHITE).append("Craft").color(ChatColor.DARK_RED).append("Citizen")
                 .color(ChatColor.WHITE).append("]").color(ChatColor.WHITE).create());
@@ -86,6 +89,7 @@ public class CLCore extends JavaPlugin {
         
         motdManager = new MOTDManager(this);
         
+        navigationManager = new NavigationManager(this);
         
         setupChat();
         setupEconomy();
@@ -101,11 +105,16 @@ public class CLCore extends JavaPlugin {
         autosave();
     }
     
+    public NavigationManager getNavigationManager() {
+        return navigationManager;
+    }
+    
     private void autosave() {
         itemRegistry.save();
         lastSeenCache.save();
         resourcePackManager.save();
         motdManager.save();
+        navigationManager.save();
     }
     
     private boolean setupEconomy() {

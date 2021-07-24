@@ -1,5 +1,6 @@
 package de.craftlancer.core.menu;
 
+import de.craftlancer.core.LambdaRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -24,6 +25,7 @@ public class Menu implements InventoryHolder, Listener {
     private String menuKey = "default";
     private final Map<Integer, MenuItem> items = new HashMap<>();
     private final Inventory inventory;
+    private Plugin plugin;
     
     public Menu(Plugin plugin, String title, int rows) {
         if (rows < 0 || rows > 6)
@@ -31,6 +33,7 @@ public class Menu implements InventoryHolder, Listener {
         
         this.inventory = Bukkit.createInventory(this, rows * 9, title);
         Bukkit.getPluginManager().registerEvents(this, plugin);
+        this.plugin = plugin;
         
         fill(new MenuItem(new ItemStack(Material.AIR)), false);
     }
@@ -38,6 +41,7 @@ public class Menu implements InventoryHolder, Listener {
     public Menu(Plugin plugin, String title, InventoryType type) {
         this.inventory = Bukkit.createInventory(this, type, title);
         Bukkit.getPluginManager().registerEvents(this, plugin);
+        this.plugin = plugin;
         
         fill(new MenuItem(new ItemStack(Material.AIR)), false);
     }
@@ -143,9 +147,11 @@ public class Menu implements InventoryHolder, Listener {
         
         event.setCancelled(true);
         
-        item.getClickActions().getOrDefault(event.getClick(),
-                item.getClickActions().getOrDefault(null, click -> {
-                })).accept(new MenuClick((Player) event.getWhoClicked(), event.getAction(), menuKey, item, event.getCursor(), event.getSlot()));
+        new LambdaRunnable(() -> {
+            item.getClickActions().getOrDefault(event.getClick(),
+                    item.getClickActions().getOrDefault(null, click -> {
+                    })).accept(new MenuClick((Player) event.getWhoClicked(), event.getAction(), menuKey, item, event.getCursor(), event.getSlot()));
+        }).runTaskLater(plugin, 1);
     }
     
     /**
