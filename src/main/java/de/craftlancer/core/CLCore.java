@@ -4,7 +4,6 @@ import de.craftlancer.core.clipboard.ClipboardCommandHandler;
 import de.craftlancer.core.clipboard.ClipboardManager;
 import de.craftlancer.core.conversation.ConvoCommand;
 import de.craftlancer.core.items.CustomItemRegistry;
-import de.craftlancer.core.legacy.MassChestInventory;
 import de.craftlancer.core.motd.MOTDManager;
 import de.craftlancer.core.navigation.NavigationManager;
 import de.craftlancer.core.resourcepack.ResourcePackCommandHandler;
@@ -15,6 +14,9 @@ import de.craftlancer.core.structure.Point2D;
 import de.craftlancer.core.structure.Point3D;
 import de.craftlancer.core.structure.RectangleArea;
 import de.craftlancer.core.util.MessageUtil;
+import de.craftlancer.core.vault.DefaultChat;
+import de.craftlancer.core.vault.DefaultEconomy;
+import de.craftlancer.core.vault.DefaultPermission;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -65,12 +67,11 @@ public class CLCore extends JavaPlugin {
         ConfigurationSerialization.registerClass(CuboidArea.class);
         ConfigurationSerialization.registerClass(Point2D.class);
         ConfigurationSerialization.registerClass(Point3D.class);
-        ConfigurationSerialization.registerClass(MassChestInventory.class);
         ConfigurationSerialization.registerClass(BlockStructure.class);
         ConfigurationSerialization.registerClass(NavigationManager.NavigationGoal.class);
         
         BaseComponent prefix = new TextComponent(new ComponentBuilder("[").color(ChatColor.WHITE).append("Craft").color(ChatColor.DARK_RED).append("Citizen")
-                .color(ChatColor.WHITE).append("]").color(ChatColor.WHITE).create());
+                                                                          .color(ChatColor.WHITE).append("]").color(ChatColor.WHITE).create());
         MessageUtil.register(this, prefix, ChatColor.WHITE, ChatColor.YELLOW, ChatColor.RED, ChatColor.DARK_RED, ChatColor.DARK_AQUA, ChatColor.GREEN);
         
         getCommand("convo").setExecutor(new ConvoCommand());
@@ -91,11 +92,11 @@ public class CLCore extends JavaPlugin {
         
         navigationManager = new NavigationManager(this);
         
+        setupPermissions();
         setupChat();
         setupEconomy();
-        setupPermissions();
         
-        //getCommand("newCommandTest").setExecutor(new NewCommandTestHandler(this));
+        // getCommand("newCommandTest").setExecutor(new NewCommandTestHandler(this));
         
         new LambdaRunnable(this::autosave).runTaskTimer(this, 18000L, 18000L);
     }
@@ -117,28 +118,43 @@ public class CLCore extends JavaPlugin {
         navigationManager.save();
     }
     
-    private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
-        }
+    private void setupEconomy() {
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        
         if (rsp == null) {
-            return false;
+            getLogger().severe("Failed to find economy plugin, falling back to null-implementation!");
+            this.econ = new DefaultEconomy();
         }
-        econ = rsp.getProvider();
-        return econ != null;
+        else {
+            econ = rsp.getProvider();
+            getLogger().info(() -> String.format("Loaded economy plugin %s", econ.getName()));
+        }
     }
     
-    private boolean setupChat() {
+    private void setupChat() {
         RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
-        chat = rsp.getProvider();
-        return chat != null;
+        
+        if (rsp == null) {
+            getLogger().severe("Failed to find chat plugin, falling back to null-implementation!");
+            this.chat = new DefaultChat(getPermissions());
+        }
+        else {
+            chat = rsp.getProvider();
+            getLogger().info(() -> String.format("Loaded chat plugin %s", chat.getName()));
+        }
     }
     
-    private boolean setupPermissions() {
+    private void setupPermissions() {
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        perms = rsp.getProvider();
-        return perms != null;
+        
+        if (rsp == null) {
+            getLogger().severe("Failed to find permission plugin, falling back to null-implementation!");
+            this.perms = new DefaultPermission();
+        }
+        else {
+            perms = rsp.getProvider();
+            getLogger().info(() -> String.format("Loaded permission plugin %s", perms.getName()));
+        }
     }
     
     public CustomItemRegistry getItemRegistry() {

@@ -12,7 +12,7 @@ import net.md_5.bungee.chat.ComponentSerializer;
 public abstract class ClickableBooleanPrompt extends BooleanPrompt {
     protected final BaseComponent promptText;
     
-    public ClickableBooleanPrompt(String text) {
+    protected ClickableBooleanPrompt(String text) {
         BaseComponent yesComp = new TextComponent("[Yes]");
         yesComp.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/convo yes"));
         yesComp.setColor(ChatColor.GREEN);
