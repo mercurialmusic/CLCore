@@ -39,10 +39,10 @@ public abstract class AbstractPagedMenu<T> {
     
     private final Plugin plugin;
     
+    private final MenuItem emptyItem = new MenuItem(Utils.buildItemStack(Material.BLACK_STAINED_GLASS_PANE, "", Collections.emptyList()));
     private MenuItem nextPageItem = new MenuItem(Utils.buildItemStack(Material.ARROW, ChatColor.GOLD + "Forwards", Collections.emptyList()));
     private MenuItem prevPageItem = new MenuItem(Utils.buildItemStack(Material.ARROW, ChatColor.GOLD + "Backwards", Collections.emptyList()));
-    private MenuItem emptyItem = new MenuItem(Utils.buildItemStack(Material.BLACK_STAINED_GLASS_PANE, "", Collections.emptyList()));
-    private MenuItem infoItem = new MenuItem(new ItemStack(Material.AIR));
+    private MenuItem infoItem;
     
     /**
      * Creates a traversable GUI with the ability to go back in forth between pages.
@@ -68,6 +68,7 @@ public abstract class AbstractPagedMenu<T> {
         this.nextPageSlot = (rows * 9) - 4;
         this.infoSlot = (rows * 9) - 5;
         this.prevPageSlot = (rows * 9) - 6;
+        this.infoItem = useBorders ? emptyItem : new MenuItem(new ItemStack(Material.AIR));
     }
     
     protected abstract void updateInventories();
