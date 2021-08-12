@@ -28,6 +28,7 @@ import org.bukkit.util.BoundingBox;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -155,6 +156,9 @@ public class Utils {
     }
     
     public static <T> List<T> paginate(Stream<T> values, long page) {
+        if(page < 0)
+            return Collections.emptyList();
+        
         return values.skip(page * Utils.ELEMENTS_PER_PAGE).limit(Utils.ELEMENTS_PER_PAGE).collect(Collectors.toList());
     }
     
