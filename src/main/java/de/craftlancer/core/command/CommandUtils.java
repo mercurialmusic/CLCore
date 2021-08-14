@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CommandUtils {
-
+    
     public static String[] parseArgumentStrings(String[] args) {
         List<String> tmp = new ArrayList<>();
         
@@ -41,12 +41,16 @@ public class CommandUtils {
                 
                 if (count <= 0) {
                     String joined = String.join(" ", Arrays.copyOfRange(args, stringPtr, j + 1));
-                    tmp.add(joined.substring(1, joined.length() - 1));
+                    
+                    if (joined.length() < 2)
+                        tmp.add("");
+                    else
+                        tmp.add(joined.substring(1, joined.length() - 1));
                     stringPtr = j; // we dealt with those strings already
                     break;
                 }
             }
-
+            
             // If the count never reaches <= 0, leave the current input string as it is.
             if (count > 0)
                 tmp.add(args[stringPtr]);
