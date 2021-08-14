@@ -22,6 +22,16 @@ import java.util.stream.Collectors;
 
 public class ResourcePackManager implements Listener {
     
+    private final String kickMessage = "§f[§4Craft§fCitizen]" + "\n\n" +
+            "§e§oYou are not in trouble!\n\n" +
+            "§7We use a very rich resource pack\n" +
+            "§7that significantly enhances the\n" +
+            "§7gameplay experience, and you must\n" +
+            "§7accept the resource pack to play!\n\n" +
+            "§c§nIt is possible resource packs are disabled for this server...\n\n" +
+            "§7To fix this, go to your server list,\n" +
+            "§7select this server, click §d\"Edit\"§7,\n" +
+            "§7and set §d\"Server Resource Packs: Enabled\"§7.";
     private static ResourcePackManager instance;
     
     private CLCore plugin;
@@ -85,6 +95,11 @@ public class ResourcePackManager implements Listener {
         
         ResourcePackConfiguration configuration = configurations.getOrDefault(player.getUniqueId(), new ResourcePackConfiguration(player.getUniqueId()));
         
+        if (forceResourcePack && playerStatuses.get(player.getUniqueId()) != PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED) {
+            new LambdaRunnable(() -> event.getPlayer().kickPlayer(kickMessage)).runTaskLater(plugin, 14);
+            return;
+        }
+        
         if (configuration.isEnabled())
             if (configuration.getDelay() == 0)
                 sendResourcePack(player);
@@ -94,21 +109,6 @@ public class ResourcePackManager implements Listener {
     
     @EventHandler(ignoreCancelled = true)
     public void onResourcePackInteract(PlayerResourcePackStatusEvent event) {
-        if (forceResourcePack && (event.getStatus() != PlayerResourcePackStatusEvent.Status.ACCEPTED &&
-                event.getStatus() != PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED)) {
-            new LambdaRunnable(() -> event.getPlayer().kickPlayer("§f[§4Craft§fCitizen]" + "\n\n" +
-                    "§e§oYou are not in trouble!\n\n" +
-                    "§7We use a very rich resource pack\n" +
-                    "§7that significantly enhances the\n" +
-                    "§7gameplay experience, and you must\n" +
-                    "§7accept the resource pack to play!\n\n" +
-                    "§c§nIt is possible resource packs are disabled for this server...\n\n" +
-                    "§7To fix this, go to your server list,\n" +
-                    "§7select this server, click §d\"Edit\"§7,\n" +
-                    "§7and set §d\"Server Resource Packs: Enabled\"§7.")).runTaskLater(plugin, 20);
-            return;
-        }
-        
         playerStatuses.put(event.getPlayer().getUniqueId(), event.getStatus());
     }
     

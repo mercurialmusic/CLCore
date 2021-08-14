@@ -1,6 +1,6 @@
 package de.craftlancer.core.util;
 
-import net.md_5.bungee.api.ChatColor;
+import de.craftlancer.core.Utils;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -42,7 +42,7 @@ public class ItemBuilder {
     }
     
     public ItemBuilder setDisplayName(@Nullable String name) {
-        meta.setDisplayName(name == null ? null : ChatColor.translateAlternateColorCodes('&', name));
+        meta.setDisplayName(name == null ? null : Utils.translateColorCodes(name));
         
         return this;
     }
@@ -74,7 +74,7 @@ public class ItemBuilder {
     }
     
     public ItemBuilder setLore(List<String> lore) {
-        meta.setLore(lore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList()));
+        meta.setLore(lore.stream().map(Utils::translateColorCodes).collect(Collectors.toList()));
         
         return this;
     }
@@ -85,10 +85,10 @@ public class ItemBuilder {
     
     public ItemBuilder addLore(List<String> lore) {
         if (!meta.hasLore())
-            meta.setLore(lore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList()));
+            meta.setLore(lore.stream().map(Utils::translateColorCodes).collect(Collectors.toList()));
         else {
             List<String> list = meta.getLore();
-            list.addAll(lore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList()));
+            list.addAll(lore.stream().map(Utils::translateColorCodes).collect(Collectors.toList()));
             meta.setLore(list);
         }
         
