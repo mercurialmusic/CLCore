@@ -91,8 +91,10 @@ public class MessageUtil {
             BaseComponent base = new TextComponent();
             if (levelColor != null)
                 base.setColor(levelColor);
-            base.addExtra(prefix);
-            base.addExtra(" ");
+            if(prefix != null) {
+                base.addExtra(prefix);
+                base.addExtra(" ");
+            }
             base.addExtra(message);
             
             return base;
