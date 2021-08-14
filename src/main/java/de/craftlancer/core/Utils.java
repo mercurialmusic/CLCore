@@ -10,12 +10,12 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.HoverEvent.Action;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,6 +31,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -53,6 +55,8 @@ public class Utils {
     public static final ChatColor TEXT_COLOR_UNIMPORTANT = ChatColor.GRAY;
     public static final ChatColor TEXT_COLOR_IMPORTANT = ChatColor.WHITE;
     public static final String INDENTATION = "  ";
+    
+    private static final Pattern pattern = Pattern.compile("(?<!\\\\)(#[a-fA-F0-9]{6})");
     
     public static final int MS_PER_MINUTE = 60 * 1000;
     public static final int MS_PER_HOUR = 60 * MS_PER_MINUTE;
@@ -156,7 +160,7 @@ public class Utils {
     }
     
     public static <T> List<T> paginate(Stream<T> values, long page) {
-        if(page < 0)
+        if (page < 0)
             return Collections.emptyList();
         
         return values.skip(page * Utils.ELEMENTS_PER_PAGE).limit(Utils.ELEMENTS_PER_PAGE).collect(Collectors.toList());
@@ -338,5 +342,16 @@ public class Utils {
             default:
                 return Material.BARRIER;
         }
+    }
+    
+    public static String translateColorCodes(String message) {
+        Matcher matcher = pattern.matcher(message);
+        
+        while (matcher.find()) {
+            String color = message.substring(matcher.start(), matcher.end());
+            message = message.replace(color, "" + ChatColor.of(color));
+        }
+        
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 }
