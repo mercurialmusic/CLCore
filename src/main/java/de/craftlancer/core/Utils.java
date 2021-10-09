@@ -345,6 +345,7 @@ public class Utils {
     }
     
     public static String translateColorCodes(String message) {
+        message = ChatColor.translateAlternateColorCodes('&', message);
         Matcher matcher = pattern.matcher(message);
         
         while (matcher.find()) {
@@ -352,6 +353,6 @@ public class Utils {
             message = message.replace(color, "" + ChatColor.of(color));
         }
         
-        return ChatColor.translateAlternateColorCodes('&', message);
+        return message;
     }
 }

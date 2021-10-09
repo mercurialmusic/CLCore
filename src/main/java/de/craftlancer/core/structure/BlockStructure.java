@@ -1,5 +1,12 @@
 package de.craftlancer.core.structure;
 
+import de.craftlancer.clapi.clcore.structure.AbstractBlockStructure;
+import de.craftlancer.core.Utils;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.util.BoundingBox;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,14 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.util.BoundingBox;
-
-import de.craftlancer.core.Utils;
-
-public class BlockStructure implements ConfigurationSerializable, Iterable<Location> {
+public class BlockStructure implements ConfigurationSerializable, AbstractBlockStructure {
     private Set<Location> blocks = new HashSet<>();
     private BoundingBox boundingBox;
     
@@ -40,21 +40,25 @@ public class BlockStructure implements ConfigurationSerializable, Iterable<Locat
         this.boundingBox = Utils.calculateBoundingBoxLocation(blocks).expand(0.5D);
     }
     
+    @Override
     public void addBlock(Block block) {
         addBlock(block.getLocation());
     }
     
+    @Override
     public void addBlock(Location block) {
         blocks.add(block);
         recalculateBoundingBox();
     }
     
+    @Override
     public boolean containsBlock(Block block) {
         return blocks.contains(block.getLocation());
     }
     
+    @Override
     public boolean containsBlock(Location block) {
-        if(block == null)
+        if (block == null)
             return false;
         
         Location loc = block.clone();
@@ -64,10 +68,12 @@ public class BlockStructure implements ConfigurationSerializable, Iterable<Locat
         return blocks.contains(loc);
     }
     
+    @Override
     public boolean containsBoundingBox(BoundingBox box) {
         return this.boundingBox.overlaps(box);
     }
     
+    @Override
     public boolean containsAnyBlock(Collection<Block> otherBlocks) {
         return otherBlocks.stream().anyMatch(this::containsBlock);
     }
@@ -76,12 +82,11 @@ public class BlockStructure implements ConfigurationSerializable, Iterable<Locat
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
         
-        map.put("blocks", new ArrayList<Location>(blocks));
+        map.put("blocks", new ArrayList<>(blocks));
         
         return map;
     }
     
-    @SuppressWarnings("unchecked")
     public static BlockStructure deserialize(Map<String, Object> map) {
         return new BlockStructure((List<Location>) map.get("blocks"));
     }
@@ -91,6 +96,7 @@ public class BlockStructure implements ConfigurationSerializable, Iterable<Locat
         return blocks.iterator();
     }
     
+    @Override
     public Set<Location> getBlocks() {
         return Collections.unmodifiableSet(blocks);
     }
