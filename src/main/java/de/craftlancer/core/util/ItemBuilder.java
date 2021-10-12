@@ -180,8 +180,46 @@ public class ItemBuilder {
      * @param key The key to set the tag by. Will replace any current key with the same name.
      */
     public ItemBuilder addPersistentData(@Nonnull Plugin plugin, @Nonnull String key, @Nonnull String value) {
-        NamespacedKey k = new NamespacedKey(plugin, key);
-        meta.getPersistentDataContainer().set(k, PersistentDataType.STRING, value);
+        return addPersistentData(plugin, key, PersistentDataType.STRING, value);
+    }
+    
+    /**
+     * Adds a NBT Tag to the item. Use item.getPersistentDataContainer().get(key) to get the value back.
+     *
+     * @param key The key to set the tag by. Will replace any current key with the same name.
+     */
+    public <T, Z> ItemBuilder addPersistentData(@Nonnull Plugin plugin, @Nonnull String key, @Nonnull PersistentDataType<T, Z> type, @Nonnull Z object) {
+        NamespacedKey k = NamespacedKey.fromString(key, plugin);
+        
+        if (k == null)
+            k = new NamespacedKey(plugin, key);
+        
+        return addPersistentData(k, type, object);
+    }
+    
+    /**
+     * Adds a NBT Tag to the item. Use item.getPersistentDataContainer().get(key) to get the value back.
+     *
+     * @param key The key to set the tag by. Will replace any current key with the same name.
+     */
+    public <T, Z> ItemBuilder addPersistentData(NamespacedKey key, PersistentDataType<T, Z> type, Z object) {
+        meta.getPersistentDataContainer().set(key, type, object);
+        
+        return this;
+    }
+    
+    /**
+     * Removes the NBT Tag by the given key (if applicable)
+     *
+     * @throws IllegalArgumentException If there isn't a key by this name, check if the key exists before using this
+     *                                  method.
+     */
+    public ItemBuilder removePersistentData(NamespacedKey key) {
+        try {
+            meta.getPersistentDataContainer().remove(key);
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("Error while trying to remove NBT tag: The item does not contain such key '" + key + "'!");
+        }
         
         return this;
     }
@@ -193,14 +231,12 @@ public class ItemBuilder {
      *                                  method.
      */
     public ItemBuilder removePersistentData(@Nonnull Plugin plugin, @Nonnull String key) {
-        NamespacedKey k = new NamespacedKey(plugin, key);
-        try {
-            meta.getPersistentDataContainer().remove(k);
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException("Error while trying to remove NBT tag: The item does not contain such key '" + key + "'!");
-        }
+        NamespacedKey k = NamespacedKey.fromString(key, plugin);
         
-        return this;
+        if (k == null)
+            k = new NamespacedKey(plugin, key);
+        
+        return removePersistentData(k);
     }
     
     public ItemBuilder removeLore() {
