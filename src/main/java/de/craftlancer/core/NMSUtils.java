@@ -5,6 +5,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLib;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
@@ -26,6 +31,7 @@ public class NMSUtils {
     private static Class<?> nmsItemStackClass;
     private static Method asNMSCopy;
     private static Method save;
+    private static ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
     
     static {
         try {
@@ -100,5 +106,23 @@ public class NMSUtils {
 
     public static boolean isEntityActive(Entity e) {
         return ActivationRange.checkIfActive(((CraftEntity) e).getHandle());
+    }
+
+    /**
+     * Sends an entity destroy packet to specified player.
+     *
+     * This is clientside and does not affect the server, but it can have
+     * unintended side effects, like passengers not displaying correctly,
+     * to the player.
+     */
+    public static void destroyEntity(Player to, int... entityIDs) {
+        PacketContainer destroyContainer = protocolManager.createPacket(PacketType.Play.Server.ENTITY_DESTROY);
+        destroyContainer.getIntegerArrays().write(0, entityIDs);
+
+        try {
+            protocolManager.sendServerPacket(to, destroyContainer);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 }
