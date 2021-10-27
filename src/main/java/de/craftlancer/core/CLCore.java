@@ -48,6 +48,7 @@ public class CLCore extends JavaPlugin {
     private ResourcePackManager resourcePackManager;
     private MOTDManager motdManager;
     private NavigationManager navigationManager;
+    private WorldManager worldManager;
     
     /* MockBukkit start */
     public CLCore() {
@@ -69,6 +70,8 @@ public class CLCore extends JavaPlugin {
         ConfigurationSerialization.registerClass(Point3D.class);
         ConfigurationSerialization.registerClass(BlockStructure.class);
         ConfigurationSerialization.registerClass(NavigationManager.NavigationGoal.class);
+        
+        this.worldManager = new WorldManager(this);
         
         BaseComponent prefix = new TextComponent(new ComponentBuilder("[").color(ChatColor.WHITE).append("Craft").color(ChatColor.DARK_RED).append("Citizen")
                                                                           .color(ChatColor.WHITE).append("]").color(ChatColor.WHITE).create());
