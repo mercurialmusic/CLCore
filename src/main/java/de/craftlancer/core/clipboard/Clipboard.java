@@ -1,12 +1,17 @@
 package de.craftlancer.core.clipboard;
 
+import de.craftlancer.clapi.clcore.clipboard.AbstractClipboard;
 import de.craftlancer.core.CLCore;
 import de.craftlancer.core.Utils;
+import de.craftlancer.core.util.MessageLevel;
+import de.craftlancer.core.util.MessageUtil;
 import de.craftlancer.core.util.ParticleUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
@@ -15,47 +20,61 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Clipboard {
+public class Clipboard implements AbstractClipboard {
+    
+    private static final long TIMEOUT = 1 * 60 * 1000;
     
     private UUID owner;
     private Location location1;
     private Location location2;
     private World world;
-    private BukkitTask runnable;
+    private BukkitTask particleTask;
+    private long lastEdit;
+    private Runnable remove;
     
-    public Clipboard(UUID owner, World world) {
+    public Clipboard(UUID owner, World world, Runnable remove) {
         this.owner = owner;
         this.world = world;
+        this.lastEdit = System.currentTimeMillis();
+        this.remove = remove;
     }
     
+    @Override
     public void remove() {
-        if (runnable == null || runnable.isCancelled())
+        if (particleTask == null || particleTask.isCancelled())
             return;
         
-        runnable.cancel();
+        particleTask.cancel();
     }
     
     
+    @Override
     public void setLocation1(Location location1) {
-        this.location1 = location1;
+        this.location1 = location1.clone();
+        this.lastEdit = System.currentTimeMillis();
         
         spawnParticles();
     }
     
+    @Override
     public void setLocation2(Location location2) {
-        this.location2 = location2;
+        this.location2 = location2.clone();
+        this.lastEdit = System.currentTimeMillis();
         
         spawnParticles();
     }
     
+    @Override
     public Location getLocation1() {
-        return location1;
+        return location1.clone();
     }
     
+    @Override
     public Location getLocation2() {
-        return location2;
+        return location2.clone();
     }
     
+    @Override
     public World getWorld() {
         return world;
     }
@@ -63,10 +82,12 @@ public class Clipboard {
     /**
      * @return true if both locations are not null.
      */
+    @Override
     public boolean hasTwoPoints() {
         return location1 != null && location2 != null;
     }
     
+    @Override
     public double getVolume() {
         return getHeight() * getLength() * getWidth();
     }
@@ -74,6 +95,7 @@ public class Clipboard {
     /**
      * Gets the height in the Y direction
      */
+    @Override
     public double getHeight() {
         return Math.abs(location1.getY() - location2.getY());
     }
@@ -81,6 +103,7 @@ public class Clipboard {
     /**
      * Gets the length in the X direction
      */
+    @Override
     public double getLength() {
         return Math.abs(location1.getX() - location2.getX());
     }
@@ -88,6 +111,7 @@ public class Clipboard {
     /**
      * Gets the width in the Z direction
      */
+    @Override
     public double getWidth() {
         return Math.abs(location1.getZ() - location2.getZ());
     }
@@ -95,6 +119,7 @@ public class Clipboard {
     /**
      * Gets a list of all blocks in the clipboard.
      */
+    @Override
     public List<Block> toBlockList() {
         List<Block> blocks = new ArrayList<>();
         BoundingBox box = toBoundingBox();
@@ -107,6 +132,7 @@ public class Clipboard {
         return blocks;
     }
     
+    @Override
     public BoundingBox toBoundingBox() {
         if (location1 == null || location2 == null)
             return null;
@@ -115,13 +141,23 @@ public class Clipboard {
                 location2.getX(), location2.getY(), location2.getZ());
     }
     
+    @Override
     public UUID getOwner() {
         return owner;
     }
     
+    private void messagePlayer() {
+        Player player = Bukkit.getPlayer(owner);
+        if (player != null)
+            MessageUtil.sendMessage(ClipboardManager.getInstance(),
+                    player,
+                    MessageLevel.INFO,
+                    "Your clipboard has not been edited for " + TIMEOUT / (60 * 1000) + " minutes, and has expired.");
+    }
+    
     private void spawnParticles() {
-        if (runnable != null)
-            runnable.cancel();
+        if (particleTask != null)
+            particleTask.cancel();
         
         Location pos1, pos2;
         
@@ -142,7 +178,7 @@ public class Clipboard {
         if (pos1.getWorld() != pos2.getWorld())
             return;
         
-        this.runnable = new BukkitRunnable() {
+        this.particleTask = new BukkitRunnable() {
             
             private double minX = Math.min(pos1.getX(), pos2.getX());
             private double minY = Math.min(pos1.getY(), pos2.getY());
@@ -156,6 +192,12 @@ public class Clipboard {
             
             @Override
             public void run() {
+                if (System.currentTimeMillis() - lastEdit >= TIMEOUT) {
+                    remove.run();
+                    messagePlayer();
+                    cancel();
+                }
+                
                 if (!Utils.isChunkLoaded(pos1) || !Utils.isChunkLoaded(pos2))
                     return;
                 

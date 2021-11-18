@@ -3,3 +3,5 @@ useResourcePack: true
 
 # The path for the server to use to send a resource pack to a player.
 resourcePackURL: ""
+
+forceResourcePack: false

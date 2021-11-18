@@ -6,6 +6,7 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -51,6 +52,67 @@ public class ParticleUtil {
             double z = (startingLocation.getZ() + 0.5) + (radius * Math.sin(angle));
             world.spawnParticle(Particle.REDSTONE, new Location(world, x, startingLocation.getY(), z), 1, particle);
         }
+    }
+
+    /**
+     * @throws IllegalArgumentException if facing is not NORTH, SOUTH, EAST, or WEST
+     */
+    public static void spawnParticleEllipse(Location startingLocation, ParticleOrientation orientation, BlockFace facing,
+                                            double width, double height,
+                                            Color color) {
+
+        if (!facing.isCartesian())
+            throw new IllegalArgumentException("BlockFace 'facing' must be NORTH, SOUTH, EAST, or, WEST.");
+
+        boolean useX = false, useY;
+
+        useY = orientation == ParticleOrientation.VERTICAL;
+
+        if (orientation == ParticleOrientation.HORIZONTAL)
+            useX = true;
+        else
+            if (facing == BlockFace.NORTH || facing == BlockFace.SOUTH)
+                useX = true;
+
+
+        World world = startingLocation.getWorld();
+        Particle.DustOptions particle = new Particle.DustOptions(color, 1F);
+
+        double increment = (2 * Math.PI) / 150;
+        for (int i = 0; i < 150; i++) {
+            double angle = i * increment;
+            double w = (width * Math.cos(angle));
+            double h = (height * Math.sin(angle));
+            world.spawnParticle(Particle.REDSTONE,
+                    getEllipseLocation(startingLocation, useX, useY,w, h),
+                    1, particle);
+        }
+    }
+
+    private static Location getEllipseLocation(Location startingLocation,
+                                    boolean useX, boolean useY,
+                                    double width, double height) {
+        double x = startingLocation.getX();
+        double y = startingLocation.getY();
+        double z = startingLocation.getZ();
+
+        if (useY) {
+            y += height;
+            if (useX)
+                x += width;
+            else
+                z += width;
+        } else {
+            if (useX) {
+                x += width;
+                z += height;
+            } else {
+                z += width;
+                x += height;
+            }
+        }
+
+        return new Location(startingLocation.getWorld(), x, y, z);
     }
     
     public static void spawnParticleRect(Location start, Location end) {
@@ -175,5 +237,10 @@ public class ParticleUtil {
             default:
                 return Color.WHITE;
         }
+    }
+
+    public enum ParticleOrientation {
+        VERTICAL,
+        HORIZONTAL
     }
 }

@@ -1,5 +1,7 @@
 package de.craftlancer.core.clipboard;
 
+import de.craftlancer.clapi.clcore.clipboard.AbstractClipboard;
+import de.craftlancer.clapi.clcore.clipboard.AbstractClipboardManager;
 import de.craftlancer.core.CLCore;
 import de.craftlancer.core.LambdaRunnable;
 import de.craftlancer.core.Utils;
@@ -11,10 +13,10 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,12 +33,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-public class ClipboardManager implements Listener, MessageRegisterable {
+public class ClipboardManager implements Listener, MessageRegisterable, AbstractClipboardManager {
     private static ClipboardManager instance;
     private CLCore plugin;
     
     private List<UUID> cooldown = new ArrayList<>();
-    private Map<UUID, Clipboard> clipboards = new HashMap<>();
+    private Map<UUID, AbstractClipboard> clipboards = new HashMap<>();
     
     public ClipboardManager(CLCore plugin) {
         instance = this;
@@ -55,24 +57,20 @@ public class ClipboardManager implements Listener, MessageRegisterable {
         return instance;
     }
     
-    public Optional<Clipboard> getClipboard(UUID uuid) {
-        return clipboards.values().stream().filter(c -> c.getOwner().equals(uuid)).findFirst();
+    @Override
+    public Optional<AbstractClipboard> getClipboard(UUID uuid) {
+        return Optional.ofNullable(clipboards.get(uuid));
     }
     
+    @Override
     public void removeClipboard(UUID owner) {
-        getClipboard(owner).ifPresent(Clipboard::remove);
+        getClipboard(owner).ifPresent(AbstractClipboard::remove);
         clipboards.remove(owner);
     }
     
-    public void addClipboard(Clipboard clipboard) {
-        
-        clipboards.put(clipboard.getOwner(), clipboard);
-        new LambdaRunnable(() -> {
-            removeClipboard(clipboard.getOwner());
-            Player player = Bukkit.getPlayer(clipboard.getOwner());
-            if (player != null)
-                MessageUtil.sendMessage(this, player, MessageLevel.INFO, "Clipboard expired.");
-        }).runTaskLater(plugin, 6000);
+    @Override
+    public void addClipboard(UUID owner, World world) {
+        clipboards.put(owner, new Clipboard(owner, world, () -> removeClipboard(owner)));
     }
     
     @EventHandler
@@ -102,7 +100,7 @@ public class ClipboardManager implements Listener, MessageRegisterable {
         
         if (!clipboards.containsKey(player.getUniqueId()))
             if (player.getInventory().getItemInMainHand().getType() == Material.GOLDEN_AXE && player.getInventory().getItemInMainHand().getEnchantments().size() == 0) {
-                addClipboard(new Clipboard(player.getUniqueId(), player.getWorld()));
+                addClipboard(player.getUniqueId(), player.getWorld());
                 MessageUtil.sendMessage(this, player, MessageLevel.SUCCESS, "Successfully created a new clipboard.");
             } else
                 return;
@@ -119,11 +117,11 @@ public class ClipboardManager implements Listener, MessageRegisterable {
             return;
         }
         
-        Optional<Clipboard> optional = getClipboard(player.getUniqueId());
+        Optional<AbstractClipboard> optional = getClipboard(player.getUniqueId());
         if (!optional.isPresent())
             return;
         
-        Clipboard clipboard = optional.get();
+        AbstractClipboard clipboard = optional.get();
         
         if (!block.getWorld().equals(clipboard.getWorld())) {
             MessageUtil.sendMessage(this, player, MessageLevel.ERROR,

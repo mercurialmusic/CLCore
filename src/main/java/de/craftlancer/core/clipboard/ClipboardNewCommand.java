@@ -33,7 +33,7 @@ public class ClipboardNewCommand extends SubCommand {
             return null;
         }
         
-        manager.addClipboard(new Clipboard(player.getUniqueId(), player.getWorld()));
+        manager.addClipboard(player.getUniqueId(), player.getWorld());
         
         MessageUtil.sendMessage(manager, sender, MessageLevel.SUCCESS, "Successfully created a new clipboard.");
         return null;
