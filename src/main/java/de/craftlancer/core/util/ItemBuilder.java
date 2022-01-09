@@ -79,6 +79,23 @@ public class ItemBuilder {
         return this;
     }
     
+    public ItemBuilder setLore(int line, String message) {
+        List<String> lore = meta.getLore();
+        
+        lore.set(line, message);
+        
+        return setLore(lore);
+    }
+    
+    public ItemBuilder insertLore(int line, String message) {
+        List<String> lore = meta.getLore();
+        
+        lore.add(line, message);
+        
+        return setLore(lore);
+    }
+    
+    
     public ItemBuilder addLore(String... lore) {
         return addLore(Arrays.asList(lore));
     }
