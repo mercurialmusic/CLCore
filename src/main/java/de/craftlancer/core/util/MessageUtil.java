@@ -1,18 +1,32 @@
 package de.craftlancer.core.util;
 
+import de.craftlancer.core.CLCore;
+import de.craftlancer.core.LambdaRunnable;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
+import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class MessageUtil {
     private static final MessageSettings NULL_SETTINGS = new MessageSettings();
     private static final Map<String, MessageSettings> settings = new HashMap<>();
+    private static final Map<UUID, List<BossBarMessage>> bossBars = new HashMap<>();
     
     private MessageUtil() {
     }
@@ -57,6 +71,57 @@ public class MessageUtil {
         sender.spigot().sendMessage(settings.getOrDefault(registerable.getMessageID(), NULL_SETTINGS).formatMessage(level, message));
     }
     
+    /**
+     * Sends a message in the form of a boss bar to a player using a green
+     * boss bar, which is invisible in the texture pack.
+     * @param player The player in which the message is sent
+     * @param registrable The implementing class the boss bar is being sent from
+     */
+    public static void sendBossBarMessage(BossBarMessageRegistrable registrable, Player player, String message) {
+        List<BossBarMessage> messageList = bossBars.compute(player.getUniqueId(),
+                (uuid, list) -> list == null ? new ArrayList<>() : list);
+        
+        BossBarMessage bossBarMessage = messageList.stream().filter(b -> b.getRegistrable().equals(registrable))
+                .findFirst()
+                .orElseGet(() -> {
+                    BossBarMessage barMessage = new BossBarMessage(registrable, player);
+                    messageList.add(barMessage);
+                    return barMessage;
+                });
+        
+        bossBarMessage.setMessage(message);
+    }
+    
+    /**
+     * Sends a message in the form of a boss bar to a player using a green
+     * boss bar, which is invisible in the texture pack.
+     * @param player The player in which the message is sent
+     * @param registrable The implementing class the boss bar is being sent from
+     * @param ticks The amount of ticks to stay on the screen
+     */
+    public static void sendBossBarMessage(BossBarMessageRegistrable registrable, Player player, String message, int ticks) {
+        sendBossBarMessage(registrable, player, message);
+        
+        new LambdaRunnable(() -> clearBossBarMessage(player.getUniqueId(), registrable)).runTaskLater(CLCore.getInstance(), ticks);
+    }
+    
+    public static void clearBossBarMessage(UUID uuid, BossBarMessageRegistrable registrable) {
+        Optional.ofNullable(bossBars.get(uuid)).ifPresent(l -> l.removeIf(b -> {
+            if (!b.getRegistrable().equals(registrable))
+                return false;
+            
+            b.clear();
+            return true;
+        }));
+    }
+    
+    public static void clearAllBossBarMessages(UUID uuid) {
+        Optional.ofNullable(bossBars.get(uuid)).ifPresent(list -> {
+            list.forEach(BossBarMessage::clear);
+            list.clear();
+        });
+    }
+    
     private static class MessageSettings {
         private BaseComponent prefix;
         private Map<MessageLevel, ChatColor> levelColors = new EnumMap<>(MessageLevel.class);
@@ -98,6 +163,36 @@ public class MessageUtil {
             base.addExtra(message);
             
             return base;
+        }
+    }
+    
+    private static class BossBarMessage {
+        
+        private final BossBarMessageRegistrable registrable;
+        private final BossBar bossBar;
+        private UUID owner;
+        
+        private BossBarMessage(BossBarMessageRegistrable registrable, Player player) {
+            this.registrable = registrable;
+            this.bossBar = Bukkit.getServer().createBossBar(registrable.getBossBarId(),BarColor.GREEN,BarStyle.SOLID);
+            this.bossBar.addPlayer(player);
+            this.owner = player.getUniqueId();
+        }
+        
+        private void setMessage(String message) {
+            bossBar.setTitle(message);
+        }
+    
+        private BossBar getBossBar() {
+            return bossBar;
+        }
+    
+        private BossBarMessageRegistrable getRegistrable() {
+            return registrable;
+        }
+        
+        private void clear() {
+            Optional.ofNullable(Bukkit.getPlayer(owner)).ifPresent(bossBar::removePlayer);
         }
     }
 }
