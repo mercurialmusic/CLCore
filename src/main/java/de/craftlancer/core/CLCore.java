@@ -63,6 +63,8 @@ public class CLCore extends JavaPlugin {
     public void onEnable() {
         instance = this;
         
+        new MessageUtil(this);
+        
         ConfigurationSerialization.registerClass(RectangleArea.class);
         ConfigurationSerialization.registerClass(CuboidArea.class);
         ConfigurationSerialization.registerClass(Point2D.class);
@@ -71,7 +73,7 @@ public class CLCore extends JavaPlugin {
         ConfigurationSerialization.registerClass(NavigationManager.NavigationGoal.class);
         
         BaseComponent prefix = new TextComponent(new ComponentBuilder("[").color(ChatColor.WHITE).append("Craft").color(ChatColor.DARK_RED).append("Citizen")
-                                                                          .color(ChatColor.WHITE).append("]").color(ChatColor.WHITE).create());
+                .color(ChatColor.WHITE).append("]").color(ChatColor.WHITE).create());
         MessageUtil.register(this, prefix, ChatColor.WHITE, ChatColor.YELLOW, ChatColor.RED, ChatColor.DARK_RED, ChatColor.DARK_AQUA, ChatColor.GREEN);
         
         getCommand("convo").setExecutor(new ConvoCommand());
@@ -124,8 +126,7 @@ public class CLCore extends JavaPlugin {
         if (rsp == null) {
             getLogger().severe("Failed to find economy plugin, falling back to null-implementation!");
             this.econ = new DefaultEconomy();
-        }
-        else {
+        } else {
             econ = rsp.getProvider();
             getLogger().info(() -> String.format("Loaded economy plugin %s", econ.getName()));
         }
@@ -137,8 +138,7 @@ public class CLCore extends JavaPlugin {
         if (rsp == null) {
             getLogger().severe("Failed to find chat plugin, falling back to null-implementation!");
             this.chat = new DefaultChat(getPermissions());
-        }
-        else {
+        } else {
             chat = rsp.getProvider();
             getLogger().info(() -> String.format("Loaded chat plugin %s", chat.getName()));
         }
@@ -150,8 +150,7 @@ public class CLCore extends JavaPlugin {
         if (rsp == null) {
             getLogger().severe("Failed to find permission plugin, falling back to null-implementation!");
             this.perms = new DefaultPermission();
-        }
-        else {
+        } else {
             perms = rsp.getProvider();
             getLogger().info(() -> String.format("Loaded permission plugin %s", perms.getName()));
         }

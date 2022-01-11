@@ -7,6 +7,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
+import de.craftlancer.core.resourcepack.TranslateSpaceFont;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
@@ -56,7 +57,8 @@ public class Utils {
     public static final ChatColor TEXT_COLOR_IMPORTANT = ChatColor.WHITE;
     public static final String INDENTATION = "  ";
     
-    private static final Pattern pattern = Pattern.compile("(?<!\\\\)(#[a-fA-F0-9]{6})");
+    private static final Pattern hexPattern = Pattern.compile("(?<!\\\\)(#[a-fA-F0-9]{6})");
+    private static final Pattern spacingPattern = Pattern.compile("(!\\{(-?)([0-9]+)\\})");
     
     public static final int MS_PER_MINUTE = 60 * 1000;
     public static final int MS_PER_HOUR = 60 * MS_PER_MINUTE;
@@ -244,13 +246,13 @@ public class Utils {
                 || uuid.equals(claim.ownerID)
                 || claim.hasExplicitPermission(uuid, permission);
     }
-
-
+    
+    
     public static BlockFace getCardinalDirection(float yaw) {
         double rotation = (yaw - 180) % 360;
         if (rotation < 0)
             rotation += 360.0;
-
+        
         if (0 <= rotation && rotation < 45)
             return BlockFace.NORTH;
         else if (45 <= rotation && rotation < 135)
@@ -364,13 +366,23 @@ public class Utils {
     
     public static String translateColorCodes(String message) {
         message = ChatColor.translateAlternateColorCodes('&', message);
-        Matcher matcher = pattern.matcher(message);
+        String messageOut = message;
         
+        Matcher matcher = hexPattern.matcher(message);
         while (matcher.find()) {
             String color = message.substring(matcher.start(), matcher.end());
-            message = message.replace(color, "" + ChatColor.of(color));
+            
+            messageOut = messageOut.replace(color, "" + ChatColor.of(color));
         }
         
-        return message;
+        Matcher spaceMatcher = spacingPattern.matcher(message);
+        while (spaceMatcher.find()) {
+            String spacer = message.substring(spaceMatcher.start(), spaceMatcher.end());
+            int space = Integer.parseInt(spacer.substring(2, spacer.length() - 1));
+            
+            messageOut = messageOut.replace(spacer, TranslateSpaceFont.getSpecificAmount(space));
+        }
+        
+        return messageOut;
     }
 }
