@@ -8,6 +8,7 @@ import de.craftlancer.core.motd.MOTDManager;
 import de.craftlancer.core.navigation.NavigationManager;
 import de.craftlancer.core.resourcepack.ResourcePackCommandHandler;
 import de.craftlancer.core.resourcepack.ResourcePackManager;
+import de.craftlancer.core.resourcepack.emoji.EmojiFontRegistry;
 import de.craftlancer.core.structure.BlockStructure;
 import de.craftlancer.core.structure.CuboidArea;
 import de.craftlancer.core.structure.Point2D;
@@ -48,6 +49,7 @@ public class CLCore extends JavaPlugin {
     private ResourcePackManager resourcePackManager;
     private MOTDManager motdManager;
     private NavigationManager navigationManager;
+    private EmojiFontRegistry emojiFontRegistry;
     
     /* MockBukkit start */
     public CLCore() {
@@ -71,6 +73,7 @@ public class CLCore extends JavaPlugin {
         ConfigurationSerialization.registerClass(Point3D.class);
         ConfigurationSerialization.registerClass(BlockStructure.class);
         ConfigurationSerialization.registerClass(NavigationManager.NavigationGoal.class);
+        ConfigurationSerialization.registerClass(EmojiFontRegistry.Emoji.class);
         
         BaseComponent prefix = new TextComponent(new ComponentBuilder("[").color(ChatColor.WHITE).append("Craft").color(ChatColor.DARK_RED).append("Citizen")
                 .color(ChatColor.WHITE).append("]").color(ChatColor.WHITE).create());
@@ -85,6 +88,7 @@ public class CLCore extends JavaPlugin {
         itemRegistry = new CustomItemRegistry(this);
         lastSeenCache = new LastSeenCache(this);
         playerTaskScheduler = new PlayerTaskScheduler(this);
+        emojiFontRegistry = new EmojiFontRegistry(this);
         
         resourcePackManager = new ResourcePackManager(this);
         Bukkit.getPluginManager().registerEvents(resourcePackManager, this);
@@ -118,6 +122,7 @@ public class CLCore extends JavaPlugin {
         resourcePackManager.save();
         motdManager.save();
         navigationManager.save();
+        emojiFontRegistry.save();
     }
     
     private void setupEconomy() {

@@ -36,7 +36,6 @@ public class MessageUtil implements Listener {
     //Resend boss bars on login
     @EventHandler(ignoreCancelled = true)
     public void onPlayerLogin(PlayerJoinEvent event) {
-        System.out.println("hi");
         Optional.ofNullable(bossBars.get(event.getPlayer().getUniqueId())).ifPresent(l -> l.forEach(b -> b.initialize(event.getPlayer())));
     }
     
@@ -182,10 +181,12 @@ public class MessageUtil implements Listener {
         private final BossBarMessageRegistrable registrable;
         private final UUID owner;
         private BossBar bossBar;
+        private String message;
         
         private BossBarMessage(BossBarMessageRegistrable registrable, Player player) {
             this.registrable = registrable;
             this.owner = player.getUniqueId();
+            this.message = "";
             
             initialize(player);
         }
@@ -193,9 +194,13 @@ public class MessageUtil implements Listener {
         private void initialize(Player player) {
             this.bossBar = Bukkit.getServer().createBossBar(registrable.getBossBarId(), BarColor.GREEN, BarStyle.SOLID);
             this.bossBar.addPlayer(player);
+            
+            setMessage(message);
         }
         
         private void setMessage(String message) {
+            this.message = message;
+            
             bossBar.setTitle(message);
         }
         

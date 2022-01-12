@@ -16,6 +16,8 @@ commands:
     description: Commands for resource pack modification
   motd:
     description: Commands for live motd manipulation
+  emojiregistry:
+    description: Commands for emoji registry
 permissions:
   clcore.admin:
     description: Admin permission for CLCore commands
