@@ -50,6 +50,7 @@ public class CLCore extends JavaPlugin {
     private MOTDManager motdManager;
     private NavigationManager navigationManager;
     private EmojiFontRegistry emojiFontRegistry;
+    private WorldManager worldManager;
     
     /* MockBukkit start */
     public CLCore() {
@@ -74,6 +75,8 @@ public class CLCore extends JavaPlugin {
         ConfigurationSerialization.registerClass(BlockStructure.class);
         ConfigurationSerialization.registerClass(NavigationManager.NavigationGoal.class);
         ConfigurationSerialization.registerClass(EmojiFontRegistry.Emoji.class);
+        
+        this.worldManager = new WorldManager(this);
         
         BaseComponent prefix = new TextComponent(new ComponentBuilder("[").color(ChatColor.WHITE).append("Craft").color(ChatColor.DARK_RED).append("Citizen")
                 .color(ChatColor.WHITE).append("]").color(ChatColor.WHITE).create());
