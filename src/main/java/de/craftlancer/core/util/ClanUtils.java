@@ -7,6 +7,7 @@ import de.craftlancer.clapi.clclans.PluginCLChat;
 import de.craftlancer.clapi.clclans.PluginClans;
 import de.craftlancer.core.CLCore;
 import de.craftlancer.core.Utils;
+import de.craftlancer.core.resourcepack.emoji.EmojiFontRegistry;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ClickEvent.Action;
@@ -205,6 +206,13 @@ public class ClanUtils {
         BaseComponent player = getPlayerNameComponent(sender, clan, !useRankColor, true);
         if (useRankColor && clan != null)
             player.setColor(clan.getMember(sender).getRank().getColor());
+        
+        if (!sender.hasPermission("clcore.bypassunicodeblock"))
+            message = message.replaceAll("\\p{C}", "");
+        message = EmojiFontRegistry.getInstance().replace(message);
+        
+        if (message.isEmpty())
+            message = "§r";
         
         BaseComponent base = new TextComponent();
         if (messageColor != null)
