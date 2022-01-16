@@ -1,12 +1,14 @@
 package de.craftlancer.core.resourcepack.emoji;
 
 import de.craftlancer.core.CLCore;
+import de.craftlancer.core.Utils;
 import de.craftlancer.core.command.SubCommand;
 import de.craftlancer.core.util.MessageLevel;
 import de.craftlancer.core.util.MessageUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,8 +36,9 @@ public class EmojiAddCommand extends SubCommand {
         
         String name = args[1];
         String unicode = args[2];
+        boolean endOfList = args.length > 3 && Boolean.parseBoolean(args[3]);
         
-        if (registry.addEmoji(name, unicode))
+        if (registry.addEmoji(name.toLowerCase(), unicode, endOfList))
             MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.SUCCESS, "Successfully added emoji.");
         else
             MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.INFO, "An emoji with this name already exists.");
@@ -50,6 +53,9 @@ public class EmojiAddCommand extends SubCommand {
         
         if (args.length == 3)
             return Collections.singletonList("<unicode");
+        
+        if (args.length == 4)
+            return Utils.getMatches(args[3], Arrays.asList("true", "false"));
         
         return Collections.emptyList();
     }

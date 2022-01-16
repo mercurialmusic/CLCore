@@ -9,5 +9,6 @@ public class EmojiCommandHandler extends CommandHandler {
         
         registerSubCommand("add", new EmojiAddCommand(plugin, registry));
         registerSubCommand("remove", new EmojiRemoveCommand(plugin, registry));
+        registerSubCommand("list", new EmojiListCommand(plugin, registry));
     }
 }

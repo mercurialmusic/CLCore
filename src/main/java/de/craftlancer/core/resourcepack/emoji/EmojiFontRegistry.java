@@ -7,19 +7,20 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class EmojiFontRegistry {
     
-    private static final Pattern emojiPattern = Pattern.compile("(:([a-zA-Z]+):)");
+    private static final Pattern emojiPattern = Pattern.compile("(:([a-zA-Z_$?!.]+):)");
     private static EmojiFontRegistry instance;
     
-    private Map<String, Emoji> emojis;
+    private List<Emoji> emojis;
     private CLCore plugin;
     
     public EmojiFontRegistry(CLCore plugin) {
@@ -40,8 +41,7 @@ public class EmojiFontRegistry {
             
             YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
             
-            List<Emoji> list = ((List<Emoji>) config.getList("emojis", new ArrayList<>()));
-            emojis = list.stream().collect(Collectors.toMap(Emoji::getName, l -> l));
+            emojis = ((List<Emoji>) config.getList("emojis", new ArrayList<>()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,7 +56,7 @@ public class EmojiFontRegistry {
             
             YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
             
-            config.set("emojis", new ArrayList<>(emojis.values()));
+            config.set("emojis", emojis);
             
             config.save(file);
         } catch (IOException e) {
@@ -64,21 +64,33 @@ public class EmojiFontRegistry {
         }
     }
     
-    public boolean addEmoji(String name, String unicode) {
-        if (emojis.containsKey(name))
+    public boolean addEmoji(String name, String unicode, boolean endOfList) {
+        if (emojis.stream().anyMatch(e -> e.match(name)))
             return false;
         
-        emojis.put(name, new Emoji(name, unicode));
+        Optional<Emoji> optional = emojis.stream().filter(e -> e.getUnicode().equals(unicode)).findFirst();
+        
+        if (!optional.isPresent())
+            emojis.add(new Emoji(new ArrayList<>(Collections.singletonList(name)), unicode, endOfList));
+        else
+            optional.get().getAliases().add(name);
         
         return true;
     }
     
     public boolean removeEmoji(String name) {
-        return emojis.remove(name) != null;
+        boolean removed = false;
+        for (Emoji emoji : emojis)
+            if (emoji.getAliases().removeIf(n -> n.equals(name)))
+                removed = true;
+        
+        emojis.removeIf(e -> e.getAliases().isEmpty());
+        
+        return removed;
     }
     
-    public Emoji getEmoji(String name) {
-        return emojis.get(name);
+    public Optional<Emoji> getEmoji(String name) {
+        return emojis.stream().filter(e -> e.match(name)).findFirst();
     }
     
     public String replace(String message) {
@@ -99,12 +111,22 @@ public class EmojiFontRegistry {
             return match;
         
         String emojiWord = match.substring(1, match.length() - 1);
-        Emoji emoji = getEmoji(emojiWord);
+        Optional<Emoji> emoji = getEmoji(emojiWord);
         
-        if (emoji == null)
-            return match;
+        return emoji.map(value -> match.replace(match, value.getUnicode())).orElse(match);
+    }
+    
+    List<Emoji> getEmojis() {
+        return emojis;
+    }
+    
+    List<String> getAllAliases() {
+        List<String> aliases = new ArrayList<>();
         
-        return match.replace(match, emoji.getUnicode());
+        for (Emoji emoji : emojis)
+            aliases.addAll(emoji.getAliases());
+        
+        return aliases;
     }
     
     public static EmojiFontRegistry getInstance() {
@@ -113,35 +135,49 @@ public class EmojiFontRegistry {
     
     public static class Emoji implements ConfigurationSerializable {
         
-        private String name;
+        private List<String> aliases;
         private String unicode;
+        private boolean endOfList;
         
-        public Emoji(String name, String unicode) {
-            this.name = name;
+        public Emoji(List<String> aliases, String unicode, boolean endOfList) {
+            this.aliases = aliases;
             this.unicode = unicode;
+            this.endOfList = endOfList;
         }
         
         public Emoji(Map<String, Object> map) {
-            this.name = (String) map.get("name");
+            this.aliases = (List<String>) map.getOrDefault("aliases", map.containsKey("name")
+                    ? new ArrayList<>(Collections.singletonList(map.get("name").toString()))
+                    : new ArrayList<>());
             this.unicode = (String) map.get("unicode");
+            this.endOfList = (boolean) map.getOrDefault("endOfList", false);
         }
         
         @Override
         public Map<String, Object> serialize() {
             Map<String, Object> map = new HashMap<>();
             
-            map.put("name", name);
+            map.put("aliases", aliases);
             map.put("unicode", unicode);
+            map.put("endOfList", endOfList);
             
             return map;
         }
         
-        public String getName() {
-            return name;
+        public List<String> getAliases() {
+            return aliases;
         }
         
         public String getUnicode() {
             return unicode;
+        }
+        
+        public boolean match(String s) {
+            return aliases.contains(s);
+        }
+        
+        public boolean isEndOfList() {
+            return endOfList;
         }
     }
 }

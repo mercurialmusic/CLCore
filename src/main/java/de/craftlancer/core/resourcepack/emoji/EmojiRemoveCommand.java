@@ -1,6 +1,7 @@
 package de.craftlancer.core.resourcepack.emoji;
 
 import de.craftlancer.core.CLCore;
+import de.craftlancer.core.Utils;
 import de.craftlancer.core.command.SubCommand;
 import de.craftlancer.core.util.MessageLevel;
 import de.craftlancer.core.util.MessageUtil;
@@ -45,7 +46,7 @@ public class EmojiRemoveCommand extends SubCommand {
     @Override
     protected List<String> onTabComplete(CommandSender sender, String[] args) {
         if (args.length == 2)
-            return Collections.singletonList("<name>");
+            return Utils.getMatches(args[1], registry.getAllAliases());
         
         return Collections.emptyList();
     }
