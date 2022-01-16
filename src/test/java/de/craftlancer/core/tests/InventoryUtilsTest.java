@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +22,7 @@ import de.craftlancer.core.util.ItemBuilder;
 public class InventoryUtilsTest {
     private ServerMock server;
     private Inventory inv;
+    private PlayerInventory playerInv;
     
     @Before
     public void setUp() {
@@ -37,11 +39,26 @@ public class InventoryUtilsTest {
         inv.setItem(7, new ItemStack(Material.DIAMOND, 14));
         inv.setItem(8, new ItemStack(Material.IRON_ORE, 34));
         inv.setItem(9, new ItemBuilder(Material.IRON_INGOT).setAmount(32).setCustomModelData(1).setDisplayName("Test").build());
+        
+        playerInv = server.addPlayer("MockPlayer").getInventory();
+        playerInv.setItemInMainHand(new ItemStack(Material.DIAMOND, 63));
+        playerInv.setItemInOffHand(new ItemStack(Material.IRON_INGOT, 63));
     }
     
     @After
     public void tearDown() {
         MockBukkit.unmock();
+    }
+    
+    @Test
+    public void testOffhand() {
+        /*
+         * Bukkit removeItem/getStorageContent doesn't include the offhand slot.
+         */
+        assertTrue(InventoryUtils.containsAtLeast(playerInv, new ItemStack(Material.DIAMOND, 32)));
+        assertFalse(InventoryUtils.containsAtLeast(playerInv, new ItemStack(Material.DIAMOND, 64)));
+        assertFalse(InventoryUtils.containsAtLeast(playerInv, new ItemStack(Material.IRON_INGOT, 32)));
+        
     }
     
     @Test

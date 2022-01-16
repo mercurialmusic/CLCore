@@ -24,7 +24,7 @@ public class InventoryUtils {
     public static boolean containsAtLeast(@Nonnull Inventory inv, @Nonnull ItemStack... itemStacks) {
         ItemStack[] leftover = deepCopyItemStacks(itemStacks);
         
-        for (ItemStack item : inv) {
+        for (ItemStack item : inv.getStorageContents()) {
             if (item == null)
                 continue;
             
