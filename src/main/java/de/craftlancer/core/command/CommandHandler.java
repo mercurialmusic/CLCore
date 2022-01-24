@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 // TODO externalize common code between CommandHandler and SubCommandHandler
 public abstract class CommandHandler implements TabExecutor {
     private Map<String, SubCommand> commands = new HashMap<>();
+    private SubCommand noArgCommand;
     private Plugin plugin;
     private BaseComponent prefix;
     
@@ -30,6 +31,10 @@ public abstract class CommandHandler implements TabExecutor {
         this.prefix = prefix;
     }
     
+    public void setNoArgCommand(SubCommand noArgCommand) {
+        this.noArgCommand = noArgCommand;
+    }
+    
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         args = CommandUtils.parseArgumentStrings(args);
@@ -37,7 +42,9 @@ public abstract class CommandHandler implements TabExecutor {
         String message;
         
         if (args.length == 0 || !commands.containsKey(args[0])) {
-            if (commands.containsKey("help"))
+            if (noArgCommand != null)
+                message = noArgCommand.execute(sender, cmd, label, args);
+            else if (commands.containsKey("help"))
                 message = commands.get("help").execute(sender, cmd, label, args);
             else
                 return false;

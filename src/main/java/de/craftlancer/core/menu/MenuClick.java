@@ -2,25 +2,29 @@ package de.craftlancer.core.menu;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
 
 public class MenuClick {
-    private Player player;
-    private String menuKey;
-    private InventoryAction clickAction;
+    private final Player player;
+    private final String menuKey;
+    private final InventoryAction clickAction;
     private ItemStack cursor;
-    private MenuItem item;
-    private int slot;
+    private final MenuItem item;
+    private final int slot;
+    private final Inventory inventory;
     
-    public MenuClick(Player player, InventoryAction action, @Nullable String menuKey, MenuItem item, ItemStack cursor, int slot) {
+    public MenuClick(Player player, InventoryAction action, @Nullable String menuKey,
+                     MenuItem item, ItemStack cursor, int slot, Inventory inventory) {
         this.player = player;
         this.clickAction = action;
         this.menuKey = menuKey == null ? "default" : menuKey;
         this.item = item.clone();
         this.cursor = cursor;
         this.slot = slot;
+        this.inventory = inventory;
     }
     
     public int getSlot() {
@@ -54,6 +58,13 @@ public class MenuClick {
      */
     public void setCursor(ItemStack cursor) {
         this.cursor = cursor;
+    }
+    
+    /**
+     * Replaces the item in the inventory at the given slot
+     */
+    public void replaceItem(ItemStack item) {
+        inventory.setItem(slot, item.clone());
     }
     
     /**

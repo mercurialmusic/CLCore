@@ -16,8 +16,10 @@ commands:
     description: Commands for resource pack modification
   motd:
     description: Commands for live motd manipulation
-  emojiregistry:
+  emojis:
     description: Commands for emoji registry
+  menutester:
+    description: Test command for menus
 permissions:
   clcore.admin:
     description: Admin permission for CLCore commands
