@@ -26,7 +26,7 @@ public class EmojiFontRegistry {
     public EmojiFontRegistry(CLCore plugin) {
         instance = this;
         
-        plugin.getCommand("emojiregistry").setExecutor(new EmojiCommandHandler(plugin, this));
+        plugin.getCommand("emojis").setExecutor(new EmojiCommandHandler(plugin, this));
         
         this.plugin = plugin;
         load();

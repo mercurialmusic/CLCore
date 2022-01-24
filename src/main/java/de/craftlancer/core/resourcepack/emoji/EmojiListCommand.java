@@ -34,11 +34,15 @@ public class EmojiListCommand extends SubCommand {
             return null;
         }
         
-        Player player = (Player) sender;
+        sendPlayerEmojiList((Player) sender);
         
+        return null;
+    }
+    
+    protected void sendPlayerEmojiList(Player player) {
         Collection<EmojiFontRegistry.Emoji> emojis = registry.getEmojis();
         
-        MessageUtil.sendMessage(getPlugin(), sender, MessageLevel.SUCCESS, "Now showing all emojis...");
+        MessageUtil.sendMessage(getPlugin(), player, MessageLevel.SUCCESS, "Now showing all emojis...");
         
         ComponentBuilder builder = new ComponentBuilder();
         
@@ -60,8 +64,6 @@ public class EmojiListCommand extends SubCommand {
         }
         
         player.spigot().sendMessage(builder.create());
-        
-        return null;
     }
     
     private void append(EmojiFontRegistry.Emoji emoji, ComponentBuilder builder) {

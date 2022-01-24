@@ -1,5 +1,8 @@
 package de.craftlancer.core.resourcepack;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum EconomyFont {
     
     ZERO("\uEE00"),
@@ -12,7 +15,10 @@ public enum EconomyFont {
     SEVEN("\uEE07"),
     EIGHT("\uEE08"),
     NINE("\uEE09"),
-    AETHER("\uEE10");
+    AETHER("\uEE10"),
+    COMMA("\uEE11");
+    
+    private static final Map<Integer, String> balanceCache = new HashMap<>();
     
     private final String unicode;
     
@@ -30,13 +36,26 @@ public enum EconomyFont {
     }
     
     public static String getBalance(int bal) {
+        if (balanceCache.containsKey(bal))
+            return balanceCache.get(bal);
+        
         StringBuilder ret = new StringBuilder();
         String s = String.valueOf(bal);
         
-        for (int i = 0; i < s.length(); i++) {
-            int v = Integer.parseInt(s.substring(i, i + 1));
-            ret.append(EconomyFont.values()[v]);
+        int commaCount = 0;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            if (commaCount != 0 && commaCount % 3 == 0)
+                ret.insert(0, COMMA + "" + TranslateSpaceFont.TRANSLATE_NEGATIVE_1);
+            
+            int v = Integer.parseInt(String.valueOf(s.charAt(i)));
+            ret.insert(0, EconomyFont.values()[v] + "" + TranslateSpaceFont.TRANSLATE_NEGATIVE_1);
+            
+            commaCount++;
         }
+        
+        ret.append(TranslateSpaceFont.TRANSLATE_POSITIVE_1);
+        
+        balanceCache.put(bal, ret.toString());
         
         return ret.toString();
     }
