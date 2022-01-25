@@ -7,10 +7,12 @@ public class ResourcePackCommandHandler extends CommandHandler {
     public ResourcePackCommandHandler(CLCore plugin, ResourcePackManager manager) {
         super(plugin);
         
-        registerSubCommand("url", new ResourcePackSetURLCommand(plugin, manager));
+        registerSubCommand("setUrl", new ResourcePackSetURLCommand(plugin, manager));
         registerSubCommand("usePack", new ResourcePackSetUsingResourcePackCommand(plugin, manager));
         registerSubCommand("forcePack", new ResourcePackSetForceResourcePackCommand(plugin, manager));
         registerSubCommand("reload", new ResourcePackReloadCommand(plugin, manager));
         registerSubCommand("reloadAll", new ResourcePackReloadAllCommand(plugin, manager));
+        registerSubCommand("createHash", new ResourcePackCreateHashCommand(plugin, manager));
+        registerSubCommand("setHash", new ResourcePackSetHashCommand(plugin, manager));
     }
 }
