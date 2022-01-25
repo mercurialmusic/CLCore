@@ -35,6 +35,8 @@ public class ResourcePackManager implements Listener {
     private String url;
     private boolean usingResourcePack;
     private boolean forceResourcePack;
+    private String hash;
+    private byte[] hashCache; // it rhymes :D
     
     public ResourcePackManager(CLCore plugin) {
         instance = this;
@@ -50,6 +52,7 @@ public class ResourcePackManager implements Listener {
         this.usingResourcePack = config.getBoolean("useResourcePack", false);
         this.url = config.getString("resourcePackURL", "");
         this.forceResourcePack = config.getBoolean("forceResourcePack", false);
+        setHash(config.getString("hash", ""));
     }
     
     public void save() {
@@ -64,6 +67,7 @@ public class ResourcePackManager implements Listener {
             config.set("useResourcePack", usingResourcePack);
             config.set("resourcePackURL", url);
             config.set("forceResourcePack", forceResourcePack);
+            config.set("hash", hash);
             
             try {
                 config.save(file);
@@ -93,7 +97,7 @@ public class ResourcePackManager implements Listener {
                     && status != PlayerResourcePackStatusEvent.Status.ACCEPTED)
                 event.getPlayer().kickPlayer(kickMessage);
             
-        }).runTaskLater(plugin, 50);
+        }).runTaskLater(plugin, 100);
     }
     
     @EventHandler(ignoreCancelled = true)
@@ -104,8 +108,21 @@ public class ResourcePackManager implements Listener {
     public void sendResourcePack(Player player) {
         if (!player.isOnline())
             return;
-        if (usingResourcePack && !url.isEmpty())
+        if (!usingResourcePack || url.isEmpty())
+            return;
+        
+        if (hashCache != null)
+            player.setResourcePack(url, hashCache);
+        else
             player.setResourcePack(url);
+    }
+    
+    protected void setHash(String hash) {
+        this.hash = hash;
+        if (!hash.isEmpty())
+            this.hashCache = javax.xml.bind.DatatypeConverter.parseHexBinary(hash);
+        else
+            this.hashCache = null;
     }
     
     @EventHandler
