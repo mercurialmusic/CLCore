@@ -395,6 +395,10 @@ public class Utils {
         return meta == null || !meta.hasDisplayName() ? def : meta.getDisplayName();
     }
     
+    //
+    // Copied from OpenJDK-8 Infobip fork
+    // https://github.com/infobip/infobip-open-jdk-8/blob/4e5ebf728f882dd9db3ae5e12363560224213376/jaxws/src/share/jaxws_classes/javax/xml/bind/DatatypeConverterImpl.java#L437-L471
+    //
     public static byte[] parseHexBinary(String s) {
         final int len = s.length();
         
@@ -418,6 +422,10 @@ public class Utils {
         return out;
     }
     
+    //
+    // Copied from OpenJDK-8 Infobip fork
+    // https://github.com/infobip/infobip-open-jdk-8/blob/4e5ebf728f882dd9db3ae5e12363560224213376/jaxws/src/share/jaxws_classes/javax/xml/bind/DatatypeConverterImpl.java#L437-L471
+    //
     private static int hexToBin(char ch) {
         if ('0' <= ch && ch <= '9') {
             return ch - '0';
