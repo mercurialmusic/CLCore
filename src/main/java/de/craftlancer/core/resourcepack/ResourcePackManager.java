@@ -2,6 +2,7 @@ package de.craftlancer.core.resourcepack;
 
 import de.craftlancer.core.CLCore;
 import de.craftlancer.core.LambdaRunnable;
+import de.craftlancer.core.Utils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -120,7 +121,7 @@ public class ResourcePackManager implements Listener {
     protected void setHash(String hash) {
         this.hash = hash;
         if (!hash.isEmpty())
-            this.hashCache = javax.xml.bind.DatatypeConverter.parseHexBinary(hash);
+            this.hashCache = Utils.parseHexBinary(hash);
         else
             this.hashCache = null;
     }
