@@ -396,8 +396,8 @@ public class Utils {
     }
     
     //
-    // Copied from OpenJDK-8 Infobip fork
-    // https://github.com/infobip/infobip-open-jdk-8/blob/4e5ebf728f882dd9db3ae5e12363560224213376/jaxws/src/share/jaxws_classes/javax/xml/bind/DatatypeConverterImpl.java#L437-L471
+    // Copied from OpenJDK-8
+    // https://github.com/openjdk/jdk/blob/739769c8fc4b496f08a92225a12d07414537b6c0/test/jdk/com/sun/jndi/dns/lib/DNSServer.java#L306
     //
     public static byte[] parseHexBinary(String s) {
         final int len = s.length();
@@ -423,8 +423,8 @@ public class Utils {
     }
     
     //
-    // Copied from OpenJDK-8 Infobip fork
-    // https://github.com/infobip/infobip-open-jdk-8/blob/4e5ebf728f882dd9db3ae5e12363560224213376/jaxws/src/share/jaxws_classes/javax/xml/bind/DatatypeConverterImpl.java#L437-L471
+    // Copied from OpenJDK-8
+    //https://github.com/openjdk/jdk/blob/739769c8fc4b496f08a92225a12d07414537b6c0/test/jdk/com/sun/jndi/dns/lib/DNSServer.java#L306
     //
     private static int hexToBin(char ch) {
         if ('0' <= ch && ch <= '9') {
