@@ -12,10 +12,10 @@ import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.HoverEvent.Action;
 import net.md_5.bungee.api.chat.TextComponent;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /*
@@ -114,7 +113,7 @@ public class Utils {
      * @return a List of all matches
      */
     public static List<String> getMatches(String value, Collection<String> list) {
-        return list.stream().filter(a -> a.toLowerCase().startsWith(value.toLowerCase())).collect(Collectors.toList());
+        return list.stream().filter(a -> a.toLowerCase().startsWith(value.toLowerCase())).toList();
     }
     
     /**
@@ -125,7 +124,7 @@ public class Utils {
      * @return a List of all matches
      */
     public static List<String> getMatches(String value, String[] list) {
-        return Arrays.stream(list).filter(a -> a.toLowerCase().startsWith(value.toLowerCase())).collect(Collectors.toList());
+        return Arrays.stream(list).filter(a -> a.toLowerCase().startsWith(value.toLowerCase())).toList();
     }
     
     public static float clamp(float value, float min, float max) {
@@ -156,7 +155,7 @@ public class Utils {
         String displayName = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : item.getType().name();
         
         TextComponent component = new TextComponent(displayName);
-        component.setHoverEvent(new HoverEvent(Action.SHOW_ITEM, new BaseComponent[]{NMSUtils.getItemHoverComponent(item)}));
+        component.setHoverEvent(new HoverEvent(Action.SHOW_ITEM, NMSUtils.getItemHoverTag(item)));
         
         return component;
     }
@@ -165,7 +164,7 @@ public class Utils {
         if (page < 0)
             return Collections.emptyList();
         
-        return values.skip(page * Utils.ELEMENTS_PER_PAGE).limit(Utils.ELEMENTS_PER_PAGE).collect(Collectors.toList());
+        return values.skip(page * Utils.ELEMENTS_PER_PAGE).limit(Utils.ELEMENTS_PER_PAGE).toList();
     }
     
     public static <T> List<T> paginate(Collection<T> values, long page) {
@@ -197,11 +196,11 @@ public class Utils {
     }
     
     public static Collection<String> toString(Collection<? extends Object> input) {
-        return input.stream().map(Object::toString).collect(Collectors.toList());
+        return input.stream().map(Object::toString).toList();
     }
     
     public static Collection<String> toString(Object[] values) {
-        return Arrays.stream(values).map(Object::toString).collect(Collectors.toList());
+        return Arrays.stream(values).map(Object::toString).toList();
     }
     
     public static boolean isChunkLoaded(Location loc) {
@@ -302,17 +301,11 @@ public class Utils {
     
     public static Rotation getRotationFromBlockFace(BlockFace face) {
         switch (face) {
-            case SOUTH:
-            case SOUTH_SOUTH_EAST:
-            case SOUTH_SOUTH_WEST:
+            case SOUTH, SOUTH_SOUTH_EAST, SOUTH_SOUTH_WEST:
                 return Rotation.FLIPPED;
-            case EAST:
-            case EAST_NORTH_EAST:
-            case EAST_SOUTH_EAST:
+            case EAST, EAST_NORTH_EAST, EAST_SOUTH_EAST:
                 return Rotation.CLOCKWISE;
-            case WEST:
-            case WEST_NORTH_WEST:
-            case WEST_SOUTH_WEST:
+            case WEST, WEST_NORTH_WEST, WEST_SOUTH_WEST:
                 return Rotation.COUNTER_CLOCKWISE;
             case SOUTH_WEST:
                 return Rotation.FLIPPED_45;
@@ -395,10 +388,10 @@ public class Utils {
         return meta == null || !meta.hasDisplayName() ? def : meta.getDisplayName();
     }
     
-    //
-    // Copied from OpenJDK-8
-    // https://github.com/openjdk/jdk/blob/739769c8fc4b496f08a92225a12d07414537b6c0/test/jdk/com/sun/jndi/dns/lib/DNSServer.java#L306
-    //
+    /*
+     * Copied from OpenJDK
+     * https://github.com/openjdk/jdk/blob/739769c8fc4b496f08a92225a12d07414537b6c0/test/jdk/com/sun/jndi/dns/lib/DNSServer.java#L306
+     */
     public static byte[] parseHexBinary(String s) {
         final int len = s.length();
         
@@ -422,10 +415,10 @@ public class Utils {
         return out;
     }
     
-    //
-    // Copied from OpenJDK-8
-    //https://github.com/openjdk/jdk/blob/739769c8fc4b496f08a92225a12d07414537b6c0/test/jdk/com/sun/jndi/dns/lib/DNSServer.java#L306
-    //
+    /*
+     * Copied from OpenJDK
+     * https://github.com/openjdk/jdk/blob/739769c8fc4b496f08a92225a12d07414537b6c0/test/jdk/com/sun/jndi/dns/lib/DNSServer.java#L306
+     */
     private static int hexToBin(char ch) {
         if ('0' <= ch && ch <= '9') {
             return ch - '0';
