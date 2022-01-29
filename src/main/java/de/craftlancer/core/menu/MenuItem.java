@@ -5,17 +5,19 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class MenuItem {
     
-    private final Map<ClickType, Consumer<MenuClick>> clickActions;
+    private final Map<ClickType, Consumer<MenuClick>> clickActions = new HashMap<>();
     private ItemStack item;
     private final List<MenuItemFlag> flags;
     private Predicate<ItemStack> itemFilter;
@@ -25,20 +27,18 @@ public class MenuItem {
     
     private MenuItem(@Nullable ItemStack item, Map<ClickType, Consumer<MenuClick>> clickActions, List<MenuItemFlag> flags) {
         this.item = item;
-        this.clickActions = clickActions;
-        this.flags = flags;
+        this.clickActions.putAll(clickActions);
+        this.flags = new ArrayList<>(flags);
     }
     
     public MenuItem(@Nullable ItemStack item, MenuItemFlag... flags) {
         this.item = item == null ? new ItemStack(Material.AIR) : item.clone();
         this.flags = Arrays.asList(flags);
-        this.clickActions = new HashMap<>();
     }
     
     public MenuItem(@Nullable ItemStack item) {
         this.item = item == null ? new ItemStack(Material.AIR) : item.clone();
         this.flags = Collections.emptyList();
-        this.clickActions = new HashMap<>();
     }
     
     public ItemStack getItem() {
@@ -131,7 +131,15 @@ public class MenuItem {
     }
     
     public MenuItem deepClone() {
-        MenuItem clone = new MenuItem(getItem().clone(), clickActions, flags);
+        return deepClone(item -> item);
+    }
+    
+    public MenuItem deepClone(@Nullable ItemStack replacement) {
+        return deepClone(item -> replacement == null ? new ItemStack(Material.AIR) : replacement);
+    }
+    
+    public MenuItem deepClone(Function<ItemStack, ItemStack> itemRemap) {
+        MenuItem clone = new MenuItem(itemRemap.apply(item.clone()).clone(), clickActions, flags);
         
         clone.withPickupFilter(pickupFilter);
         clone.withItemFilter(itemFilter);
