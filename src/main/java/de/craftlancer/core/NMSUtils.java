@@ -20,6 +20,7 @@ import org.spigotmc.ActivationRange;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Optional;
 
 public class NMSUtils {
     private static ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
@@ -35,13 +36,9 @@ public class NMSUtils {
         return player.getPing();
     }
     
-    public static BaseComponent getItemHoverComponent(ItemStack item) {
-        return new TextComponent(CraftItemStack.asNMSCopy(item).getTag().toString());
-    }
-    
     public static Item getItemHoverTag(ItemStack item) {
-        ItemTag tag = ItemTag.ofNbt(CraftItemStack.asNMSCopy(item).getTag().toString());
-        return new Item(item.getType().getKey().toString(), item.getAmount(), tag);
+        var tag = Optional.ofNullable(CraftItemStack.asNMSCopy(item).getTag()).map(a -> ItemTag.ofNbt(a.toString()));
+        return new Item(item.getType().getKey().toString(), item.getAmount(), tag.orElse(null));
     }
     
     public static int getServerTick() {
