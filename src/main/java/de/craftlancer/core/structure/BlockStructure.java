@@ -53,12 +53,15 @@ public class BlockStructure implements ConfigurationSerializable, AbstractBlockS
     
     @Override
     public boolean containsBlock(Block block) {
-        return blocks.contains(block.getLocation());
+        return containsBlock(block.getLocation());
     }
     
     @Override
     public boolean containsBlock(Location block) {
         if (block == null)
+            return false;
+        
+        if(!boundingBox.contains(block.getX(), block.getY(), block.getZ()))
             return false;
         
         Location loc = block.clone();
