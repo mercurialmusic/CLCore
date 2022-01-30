@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -28,6 +29,7 @@ public class MessageUtil implements Listener {
     private static final MessageSettings NULL_SETTINGS = new MessageSettings();
     private static final Map<String, MessageSettings> settings = new HashMap<>();
     private static final Map<UUID, List<BossBarMessage>> bossBars = new HashMap<>();
+    private static final Map<BossBarMessageRegistrable, Map<UUID, BukkitRunnable>> bossBarRunnables = new HashMap<>();
     
     public MessageUtil(CLCore plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -112,7 +114,18 @@ public class MessageUtil implements Listener {
     public static void sendBossBarMessage(BossBarMessageRegistrable registrable, Player player, String message, int ticks) {
         sendBossBarMessage(registrable, player, message);
         
-        new LambdaRunnable(() -> clearBossBarMessage(player.getUniqueId(), registrable)).runTaskLater(CLCore.getInstance(), ticks);
+        BukkitRunnable runnable = new LambdaRunnable(() -> clearBossBarMessage(player.getUniqueId(), registrable));
+        bossBarRunnables.put(registrable, bossBarRunnables.compute(registrable, (r, map) -> {
+            if (map == null)
+                map = new HashMap<>();
+            else
+                Optional.ofNullable(map.get(player.getUniqueId())).ifPresent(BukkitRunnable::cancel);
+            
+            map.put(player.getUniqueId(), runnable);
+            
+            return map;
+        }));
+        runnable.runTaskLater(CLCore.getInstance(), ticks);
     }
     
     public static void clearBossBarMessage(UUID uuid, BossBarMessageRegistrable registrable) {

@@ -19,6 +19,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ItemBuilder {
@@ -80,7 +81,7 @@ public class ItemBuilder {
     }
     
     public ItemBuilder setLore(int line, String message) {
-        List<String> lore = meta.getLore();
+        List<String> lore = Optional.ofNullable(meta.getLore()).orElse(new ArrayList<>());
         
         lore.set(line, message);
         
@@ -88,7 +89,7 @@ public class ItemBuilder {
     }
     
     public ItemBuilder insertLore(int line, String message) {
-        List<String> lore = meta.getLore();
+        List<String> lore = Optional.ofNullable(meta.getLore()).orElse(new ArrayList<>());
         
         lore.add(line, message);
         
