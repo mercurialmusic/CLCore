@@ -55,9 +55,8 @@ public enum NameTagFont {
     }
     
     public static String getTag(String input, ChatColor color) {
-        final String uppercaseInput = input.toUpperCase();
         
-        Map<ChatColor, String> map = nameCache.compute(uppercaseInput, (i, m) -> {
+        Map<ChatColor, String> map = nameCache.compute(input, (i, m) -> {
             if (m == null)
                 m = new HashMap<>();
             
@@ -66,7 +65,7 @@ public enum NameTagFont {
         
         return map.compute(color, (c, tag) -> {
             if (tag == null)
-                tag = buildTag(uppercaseInput, color);
+                tag = buildTag(input.toUpperCase().replaceAll("[^a-zA-Z]", " "), color);
             
             return tag;
         });
@@ -77,7 +76,7 @@ public enum NameTagFont {
         
         for (int i = 0; i < input.length(); i++) {
             String character = input.substring(i, i + 1);
-            NameTagFont font = NameTagFont.valueOf(character);
+            String font = (character.equals(" ") ? " " : NameTagFont.valueOf(character).toString());
             boolean last = i == input.length() - 1;
             boolean first = i == 0;
             
