@@ -1,10 +1,10 @@
 package de.craftlancer.core.motd;
 
 import de.craftlancer.core.CLCore;
+import de.craftlancer.core.Utils;
 import de.craftlancer.core.command.SubCommand;
 import de.craftlancer.core.util.MessageLevel;
 import de.craftlancer.core.util.MessageUtil;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -46,7 +46,7 @@ public class MOTDAddCommand extends SubCommand {
         
         String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length)).replace("%n%", "\n");
         
-        manager.getMotdList().add(ChatColor.translateAlternateColorCodes('&', message));
+        manager.getMotdList().add(Utils.translateColorCodes(message));
         
         MessageUtil.sendMessage(manager, sender, MessageLevel.SUCCESS, "MOTD added successfully.");
         return null;

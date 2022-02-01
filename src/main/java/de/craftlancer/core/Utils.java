@@ -15,7 +15,6 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.HoverEvent.Action;
 import net.md_5.bungee.api.chat.TextComponent;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
@@ -27,6 +26,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.BoundingBox;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -388,47 +394,28 @@ public class Utils {
         return meta == null || !meta.hasDisplayName() ? def : meta.getDisplayName();
     }
     
-    /*
-     * Copied from OpenJDK
-     * https://github.com/openjdk/jdk/blob/739769c8fc4b496f08a92225a12d07414537b6c0/test/jdk/com/sun/jndi/dns/lib/DNSServer.java#L306
-     */
-    public static byte[] parseHexBinary(String s) {
-        final int len = s.length();
-        
-        // "111" is not a valid hex encoding.
-        if (len % 2 != 0) {
-            throw new IllegalArgumentException("hexBinary needs to be even-length: " + s);
-        }
-        
-        byte[] out = new byte[len / 2];
-        
-        for (int i = 0; i < len; i += 2) {
-            int h = hexToBin(s.charAt(i));
-            int l = hexToBin(s.charAt(i + 1));
-            if (h == -1 || l == -1) {
-                throw new IllegalArgumentException("contains illegal character for hexBinary: " + s);
+    public static byte[] getHash(String fileUrl, String algorithm) {
+        try {
+            MessageDigest md = MessageDigest.getInstance(algorithm);
+            InputStream is;
+            URL url = new URL(fileUrl);
+            URLConnection connection = url.openConnection();
+            is = connection.getInputStream();
+            try (DigestInputStream dis = new DigestInputStream(is, md)) {
+                while (dis.read() != -1)
+                    md = dis.getMessageDigest();
             }
             
-            out[i / 2] = (byte) (h * 16 + l);
+            if (is != null)
+                is.close();
+            
+            return md.digest();
+        } catch (IOException | NoSuchAlgorithmException e) {
+            return null;
         }
-        
-        return out;
     }
     
-    /*
-     * Copied from OpenJDK
-     * https://github.com/openjdk/jdk/blob/739769c8fc4b496f08a92225a12d07414537b6c0/test/jdk/com/sun/jndi/dns/lib/DNSServer.java#L306
-     */
-    private static int hexToBin(char ch) {
-        if ('0' <= ch && ch <= '9') {
-            return ch - '0';
-        }
-        if ('A' <= ch && ch <= 'F') {
-            return ch - 'A' + 10;
-        }
-        if ('a' <= ch && ch <= 'f') {
-            return ch - 'a' + 10;
-        }
-        return -1;
+    public static byte[] getHash(String fileUrl) {
+        return getHash(fileUrl, "SHA-1");
     }
 }

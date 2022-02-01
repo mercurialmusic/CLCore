@@ -53,7 +53,7 @@ public class ResourcePackManager implements Listener {
         this.usingResourcePack = config.getBoolean("useResourcePack", false);
         this.url = config.getString("resourcePackURL", "");
         this.forceResourcePack = config.getBoolean("forceResourcePack", false);
-        setHash(config.getString("hash", ""));
+        createAndSetHash(config.getString("hash", ""));
     }
     
     public void save() {
@@ -118,12 +118,9 @@ public class ResourcePackManager implements Listener {
             player.setResourcePack(url);
     }
     
-    protected void setHash(String hash) {
-        this.hash = hash;
-        if (!hash.isEmpty())
-            this.hashCache = Utils.parseHexBinary(hash);
-        else
-            this.hashCache = null;
+    protected void createAndSetHash(String url) {
+        if (!url.isEmpty())
+            new LambdaRunnable(() -> hashCache = Utils.getHash(url)).runTaskAsynchronously(plugin);
     }
     
     @EventHandler
@@ -157,6 +154,7 @@ public class ResourcePackManager implements Listener {
     
     public void setUrl(String url) {
         this.url = url;
+        createAndSetHash(url);
     }
     
     public void setUsingResourcePack(boolean usingResourcePack) {
