@@ -12,6 +12,5 @@ public class ResourcePackCommandHandler extends CommandHandler {
         registerSubCommand("forcePack", new ResourcePackSetForceResourcePackCommand(plugin, manager));
         registerSubCommand("reload", new ResourcePackReloadCommand(plugin, manager));
         registerSubCommand("reloadAll", new ResourcePackReloadAllCommand(plugin, manager));
-        registerSubCommand("createHash", new ResourcePackCreateHashCommand(plugin, manager));
     }
 }
