@@ -2,7 +2,7 @@ name: CLCore
 main: de.craftlancer.core.CLCore
 version: ${project.version}
 api-version: 1.15
-depend: [ Vault, WorldGuard, CLAPI ]
+depend: [ Vault, WorldGuard ]
 commands:
   convo:
     description: Used for conversations to prevent input spam.
